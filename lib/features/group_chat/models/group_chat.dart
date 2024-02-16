@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/models/chat.dart';
+import 'package:splach/models/chat_category.dart';
 import 'package:splach/models/message.dart';
+import 'package:splach/utils/extensions.dart';
 
 enum GroupType {
   public,
   private,
-  restricted,
 }
 
 class GroupChat extends Chat {
@@ -14,6 +15,7 @@ class GroupChat extends Chat {
   final String title;
   final String description;
   final GroupType groupType;
+  final String category;
 
   double? distance;
 
@@ -28,6 +30,7 @@ class GroupChat extends Chat {
     required this.title,
     required this.description,
     required this.groupType,
+    required this.category,
   }) : super(
           createdAt: createdAt,
           updatedAt: updatedAt,
@@ -41,7 +44,8 @@ class GroupChat extends Chat {
       : location = document['location'],
         title = document['title'],
         description = document['description'],
-        groupType = GroupType.values[document['groupType']],
+        groupType = GroupTypeExtension.fromString(document['groupType']),
+        category = document['category'],
         super.fromDocument(document);
 
   @override
@@ -50,7 +54,8 @@ class GroupChat extends Chat {
       'location': location,
       'title': title,
       'description': description,
-      'groupType': groupType.index,
+      'groupType': groupType.toStringSimplified(),
+      'category': category,
       ...super.toMap(),
     };
   }

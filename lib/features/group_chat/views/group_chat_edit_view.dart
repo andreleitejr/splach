@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:splach/features/group_chat/controllers/group_chat_edit_controller.dart';
+import 'package:splach/models/chat_category.dart';
+import 'package:splach/widgets/custom_bottom_sheet.dart';
 import 'package:splach/widgets/input.dart';
+import 'package:splach/widgets/input_button.dart';
 
 class GroupChatEditView extends StatelessWidget {
-  final groupChatController = Get.put(GroupChatEditController());
+  final controller = Get.put(GroupChatEditController());
 
   GroupChatEditView({super.key});
 
@@ -20,22 +23,52 @@ class GroupChatEditView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Input(
-              controller: groupChatController.titleController,
+              controller: controller.titleController,
               labelText: 'Título',
             ),
             Input(
-                controller: groupChatController.descriptionController,
-                labelText: 'Descrição'),
+              controller: controller.descriptionController,
+              labelText: 'Descrição',
+            ),
+            Input(
+              controller: controller.descriptionController,
+              labelText: 'Descrição',
+            ),
+            Obx(
+              () => InputButton(
+                onPressed: () => showCategorBottomSheet(context),
+                value: controller.category.value,
+                hint: 'Categoria',
+              ),
+            ),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-                groupChatController.save();
+                controller.save();
               },
               child: const Text('Criar Chat em Grupo'),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  void showCategorBottomSheet(BuildContext context) {
+    final focus = FocusScope.of(context);
+
+    categories.removeWhere((category) => category.tag == ChatCategory.all);
+
+    Get.bottomSheet(
+      CustomBottomSheet<ChatCategory>(
+        items: categories,
+        title: 'Qual a categoria?',
+        onItemSelected: (selectedItem) async {
+          controller.category.value = selectedItem.title;
+          focus.unfocus();
+        },
+      ),
+      enableDrag: true,
     );
   }
 }

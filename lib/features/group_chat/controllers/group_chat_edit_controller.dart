@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:splach/features/group_chat/models/group_chat.dart';
 import 'package:splach/features/group_chat/repositories/group_chat_repository.dart';
 import 'package:splach/features/services/location_service.dart';
-import 'package:splach/repositories/chat_repository.dart';
+import 'package:splach/models/chat_category.dart';
 import 'package:splach/repositories/firestore_repository.dart';
 
 class GroupChatEditController extends GetxController {
@@ -19,6 +19,7 @@ class GroupChatEditController extends GetxController {
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController latitudeController = TextEditingController();
   final TextEditingController longitudeController = TextEditingController();
+  final category = ''.obs;
 
   @override
   Future<void> onInit() async {
@@ -33,7 +34,7 @@ class GroupChatEditController extends GetxController {
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
       participants: [],
-      participantsLimit: 10,
+      participantsLimit: 35,
       messages: [],
       images: [],
       location: GeoPoint(
@@ -43,10 +44,10 @@ class GroupChatEditController extends GetxController {
       title: titleController.text,
       description: descriptionController.text,
       groupType: GroupType.public,
+      category: categories.firstWhere((c) => c.name == category.value).tag,
     );
 
     return await _repository.save(newGroupChat);
     // _groupChat.value = newGroupChat;
   }
-
 }

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:diacritic/diacritic.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:splach/features/group_chat/models/group_chat.dart';
 import 'package:splach/models/message.dart';
 
 extension GeoPointExtension on GeoPoint {
@@ -53,8 +54,22 @@ extension StringExtensions on String {
   String get removeParenthesis => replaceAll(')', '').replaceAll('(', '');
 }
 
+extension GroupTypeExtension on GroupType {
+  String toStringSimplified() => toString().split('.').last;
+
+  static GroupType fromString(String value) {
+    switch (value) {
+      case 'private':
+        return GroupType.private;
+      default:
+        return GroupType.public;
+    }
+  }
+}
+
 extension MessageTypeExtension on MessageType {
   String toStringSimplified() => toString().split('.').last;
+
   static MessageType fromString(String value) {
     switch (value) {
       case 'system':

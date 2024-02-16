@@ -44,6 +44,7 @@ dependencies:
   geolocator: ^10.1.1
   diacritic: ^0.1.5
   pin_input_text_field: ^4.5.1
+  shimmer: ^3.0.0
 
 dev_dependencies:
   flutter_test:
