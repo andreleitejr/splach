@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "613182012538",
+    "project_id": "splach-413a8",
+    "storage_bucket": "splach-413a8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:613182012538:android:549e180883514848938fc3",
+        "android_client_info": {
+          "package_name": "com.splach.splach"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWOzcUkKvrvDXP54Xm6PVBqn4xRRS2scc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
