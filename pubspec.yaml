@@ -45,6 +45,8 @@ dependencies:
   diacritic: ^0.1.5
   pin_input_text_field: ^4.5.1
   shimmer: ^3.0.0
+  flutter_local_notifications: ^16.3.2
+  badges: ^3.1.2
 
 dev_dependencies:
   flutter_test:

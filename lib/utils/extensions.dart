@@ -3,6 +3,7 @@ import 'package:diacritic/diacritic.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:splach/features/group_chat/models/group_chat.dart';
+import 'package:splach/features/notification/models/notification.dart';
 import 'package:splach/models/message.dart';
 
 extension GeoPointExtension on GeoPoint {
@@ -76,6 +77,23 @@ extension MessageTypeExtension on MessageType {
         return MessageType.system;
       default:
         return MessageType.user;
+    }
+  }
+}
+
+extension AppNotificationTypeExtension on AppNotificationType {
+  String toStringSimplified() => toString().split('.').last;
+
+  static AppNotificationType fromString(String value) {
+    switch (value) {
+      case 'followRequest':
+        return AppNotificationType.followRequest;
+      case 'newFollower':
+        return AppNotificationType.newFollower;
+      case 'mention':
+        return AppNotificationType.mention;
+      default:
+        throw ArgumentError('Invalid NotificationType value');
     }
   }
 }

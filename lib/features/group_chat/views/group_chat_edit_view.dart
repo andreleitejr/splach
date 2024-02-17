@@ -57,7 +57,7 @@ class GroupChatEditView extends StatelessWidget {
   void showCategorBottomSheet(BuildContext context) {
     final focus = FocusScope.of(context);
 
-    categories.removeWhere((category) => category.tag == ChatCategory.all);
+    categories.removeWhere((category) => category.category == ChatCategory.all);
 
     Get.bottomSheet(
       CustomBottomSheet<ChatCategory>(

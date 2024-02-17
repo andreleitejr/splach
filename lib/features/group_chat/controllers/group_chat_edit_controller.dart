@@ -44,7 +44,7 @@ class GroupChatEditController extends GetxController {
       title: titleController.text,
       description: descriptionController.text,
       groupType: GroupType.public,
-      category: categories.firstWhere((c) => c.name == category.value).tag,
+      category: categories.firstWhere((c) => c.name == category.value).category,
     );
 
     return await _repository.save(newGroupChat);

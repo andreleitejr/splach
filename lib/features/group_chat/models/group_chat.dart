@@ -44,7 +44,9 @@ class GroupChat extends Chat {
       : location = document['location'],
         title = document['title'],
         description = document['description'],
-        groupType = GroupTypeExtension.fromString(document['groupType']),
+        groupType = GroupTypeExtension.fromString(
+          document['groupType'],
+        ),
         category = document['category'],
         super.fromDocument(document);
 

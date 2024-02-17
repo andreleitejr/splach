@@ -7,7 +7,7 @@ import 'package:splach/features/relationship/repositories/relationship_repositor
 class UserProfileController extends GetxController {
   UserProfileController(this.user);
 
-  final _relationshipRepository = Get.put(RelationshipRepository());
+  final RelationshipRepository _relationshipRepository = Get.find();
 
   final User user;
   final User currentUser = Get.find();
