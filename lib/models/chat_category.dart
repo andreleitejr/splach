@@ -23,6 +23,7 @@ class ChatCategory extends SelectableItem {
 }
 
 final categories = <ChatCategory>[
+  /// "ALL" ALWAYS MUST BE THE FIRST ITEM
   ChatCategory(
     category: ChatCategory.all,
     name: 'Todos',

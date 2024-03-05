@@ -6,14 +6,18 @@ import 'package:splach/models/base_model.dart';
 class User extends BaseModel {
   final String image;
   final String email;
-  final String document;
+
+  // final String document;
   final String firstName;
-  final String lastName;
+
+  // final String lastName;
   final String nickname;
   final String phone;
   final String gender;
   final DateTime birthday;
-  final Address address;
+  final String city;
+  final String? state;
+  final String country;
 
   List<Relationship> followers = [];
   List<Relationship> following = [];
@@ -24,14 +28,16 @@ class User extends BaseModel {
     required DateTime updatedAt,
     required this.email,
     required this.image,
-    required this.document,
+    // required this.document,
     required this.firstName,
-    required this.lastName,
+    // required this.lastName,
     required this.nickname,
     required this.phone,
     required this.gender,
     required this.birthday,
-    required this.address,
+    required this.city,
+    required this.state,
+    required this.country,
     // required this.type,
   }) : super(
           id: id,
@@ -42,14 +48,16 @@ class User extends BaseModel {
   User.fromDocument(DocumentSnapshot document)
       : image = document['image'],
         email = document['email'],
-        document = document['document'],
+        // document = document['document'],
         firstName = document['firstName'],
-        lastName = document['lastName'],
+        // lastName = document['lastName'],
         nickname = document['nickname'],
         phone = document['phone'],
         gender = document['gender'],
         birthday = (document['birthday'] as Timestamp).toDate(),
-        address = Address.fromMap(document['address']),
+        city = document['city'],
+        state = document['state'],
+        country = document['country'],
         super.fromDocument(document);
 
   @override
@@ -57,14 +65,16 @@ class User extends BaseModel {
     return {
       'email': email,
       'image': image,
-      'document': document,
+      // 'document': document,
       'firstName': firstName,
-      'lastName': lastName,
+      // 'lastName': lastName,
       'nickname': nickname,
       'phone': phone,
       'gender': gender,
       'birthday': birthday.toUtc(),
-      'address': address.toMap(),
+      'city': city,
+      'state': state,
+      'country': country,
       // 'type': type,
       ...super.toMap(),
     };

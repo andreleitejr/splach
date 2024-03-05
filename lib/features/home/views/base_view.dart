@@ -7,13 +7,6 @@ import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
 
 class BaseController extends GetxController {
-  // final HomeController homeController = HomeController();
-  // BaseController();
-
-  // final User tenant = Get.find();
-
-  // final int? index;
-
   var selectedIndex = 0.obs;
 }
 
@@ -31,7 +24,7 @@ class _BaseViewState extends State<BaseView> {
 
   final List<Widget> _pages = [
     HomeView(),
-    // UserProfileView(user: Get.find<User>()),
+    UserProfileView(user: Get.find<User>()),
   ];
 
   @override
@@ -77,8 +70,8 @@ class _BaseViewState extends State<BaseView> {
 
   BottomNavigationBarItem _buildNavBarItem(String icon, String label) {
     return BottomNavigationBarItem(
-      icon: Padding(
-        padding: const EdgeInsets.only(bottom: 4),
+      icon: const Padding(
+        padding: EdgeInsets.only(bottom: 4),
         child: Icon(Icons.home),
       ),
       activeIcon: Padding(

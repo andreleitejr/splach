@@ -9,6 +9,11 @@ class ThemeTypography {
     fontSize: 30,
     fontWeight: FontWeight.w600,
   );
+  static const extraBold22 = TextStyle(
+    fontSize: 30,
+    fontWeight: FontWeight.w700,
+    fontFamily: 'Gilroy'
+  );
   static const semiBold22 = TextStyle(
     fontSize: 22,
     fontWeight: FontWeight.w600,

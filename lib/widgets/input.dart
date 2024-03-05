@@ -4,12 +4,16 @@ class Input extends StatelessWidget {
   final String labelText;
   final TextEditingController controller;
   final TextInputType? keyboardType;
+  final FocusNode? currentFocus;
+  final FocusNode? nextFocus;
 
   const Input({
     super.key,
     required this.labelText,
     required this.controller,
     this.keyboardType,
+    this.currentFocus,
+    this.nextFocus,
   });
 
   @override
@@ -17,7 +21,7 @@ class Input extends StatelessWidget {
     return TextField(
       controller: controller,
       decoration: InputDecoration(labelText: labelText),
-      keyboardType: TextInputType.number,
+      keyboardType: TextInputType.text,
     );
   }
 }

@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:splach/features/auth/controllers/auth_controller.dart';
+import 'package:splach/features/auth/views/intro_view.dart';
 import 'package:splach/features/auth/views/login_view.dart';
 import 'package:splach/features/user/views/user_edit_view.dart';
+import 'package:splach/themes/theme_colors.dart';
 
 abstract class AuthNavigator {
-  void login();
-
-  void verification();
+  void intro();
 
   void register();
 
-  void home();
+   void home();
 }
 
 class AuthView extends StatefulWidget {
@@ -33,18 +33,20 @@ class _AuthViewState extends State<AuthView> implements AuthNavigator {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(),
+      body: Container(
+        color: ThemeColors.primary,
+      ),
     );
   }
 
   @override
-  void login() {
-    Get.to(() => LoginView(controller: controller));
+  void intro() {
+    Get.to(() => IntroView(controller: controller));
   }
 
   @override
-  void verification() {
-    Get.to(() => CodeVerificationView(controller: controller));
+  void home() {
+    Get.offAllNamed('/home');
   }
 
   @override
@@ -52,10 +54,5 @@ class _AuthViewState extends State<AuthView> implements AuthNavigator {
     Get.to(
       () => UserEditView(),
     );
-  }
-
-  @override
-  void home() {
-    Get.offAllNamed('/home');
   }
 }

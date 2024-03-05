@@ -5,6 +5,7 @@ import 'package:splach/features/user/models/user.dart';
 import 'package:splach/features/user/repositories/user_repository.dart';
 import 'package:splach/features/user/views/user_profile_view.dart';
 import 'package:splach/utils/extensions.dart';
+import 'package:splach/widgets/top_navigation_bar.dart';
 
 class NotificationView extends StatelessWidget {
   final List<AppNotification> notifications;
@@ -23,8 +24,8 @@ class NotificationView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Notificações'),
+      appBar: const TopNavigationBar(
+        title: 'Notificações',
       ),
       body: ListView.builder(
         itemCount: notifications.length,

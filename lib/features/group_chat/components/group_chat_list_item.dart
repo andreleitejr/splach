@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:splach/features/group_chat/models/group_chat.dart';
 
-class GroupChatListItem extends StatelessWidget {
+class ChatLargeListItem extends StatelessWidget {
   final GroupChat chat;
   final VoidCallback onPressed;
 
-  const GroupChatListItem({
+  const ChatLargeListItem({
     super.key,
     required this.chat,
     required this.onPressed,

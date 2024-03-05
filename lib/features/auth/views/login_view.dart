@@ -2,19 +2,39 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:splach/features/auth/controllers/auth_controller.dart';
+import 'package:splach/features/auth/controllers/login_controller.dart';
 import 'package:splach/features/legal/terms_and_conditions.dart';
+import 'package:splach/features/user/views/user_edit_view.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/widgets/code_widget.dart';
 import 'package:splach/widgets/flat_button.dart';
 import 'package:splach/widgets/phone_input.dart';
 
-class LoginView extends StatelessWidget {
-  final AuthController controller;
+abstract class LoginNavigator {
+  void verification();
 
-  LoginView({super.key, required this.controller});
+  void home();
 
+  void register();
+}
+
+class LoginView extends StatefulWidget {
+  const LoginView({super.key});
+
+  @override
+  State<LoginView> createState() => _LoginViewState();
+}
+
+class _LoginViewState extends State<LoginView> implements LoginNavigator {
+  late LoginController controller;
   final _loginFocus = FocusNode();
+
+  @override
+  void initState() {
+    controller = Get.put(LoginController(this));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,11 +47,9 @@ class LoginView extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Expanded(
-              //   child: Center(
-              //     child: const Logo(),
-              //   ),
-              // ),
+              Expanded(
+                child: Center(),
+              ),
               Text(
                 'Bem-vindo,',
                 style: ThemeTypography.semiBold16.apply(
@@ -51,7 +69,27 @@ class LoginView extends StatelessWidget {
                   await controller.sendVerificationCode();
                   _loginFocus.unfocus();
                 },
-                // onChanged: controller.phoneController,
+              ),
+              const SizedBox(height: 16),
+              Obx(
+                () => FlatButton(
+                  actionText: 'Enviar',
+                  onPressed: () async {
+                    if (controller.isLoginValid.isTrue) {
+                      await controller.sendVerificationCode();
+                    } else {
+                      // snackBar(
+                      //   'Erro de autenticação',
+                      //   controller.inputError,
+                      //   icon: Coolicon(
+                      //     icon: Coolicons.squareWarning,
+                      //     color: Colors.white,
+                      //   ),
+                      // );
+                    }
+                  },
+                  isValid: controller.isLoginValid.value,
+                ),
               ),
               const SizedBox(height: 16),
               Row(
@@ -88,38 +126,33 @@ class LoginView extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
-              Obx(
-                () => FlatButton(
-                  actionText: 'Enviar',
-                  onPressed: () async {
-                    if (controller.isLoginValid.isTrue) {
-                      await controller.sendVerificationCode();
-                    } else {
-                      // snackBar(
-                      //   'Erro de autenticação',
-                      //   controller.inputError,
-                      //   icon: Coolicon(
-                      //     icon: Coolicons.squareWarning,
-                      //     color: Colors.white,
-                      //   ),
-                      // );
-                    }
-                  },
-                  isValid: controller.isLoginValid.value,
-                ),
-              ),
-              // Expanded(child: Container()),
             ],
           ),
         ),
       ),
     );
   }
+
+  @override
+  void verification() {
+    Get.to(() => CodeVerificationView(controller: controller));
+  }
+
+  @override
+  void register() {
+    Get.to(
+      () => UserEditView(),
+    );
+  }
+
+  @override
+  void home() {
+    Get.offAllNamed('/home');
+  }
 }
 
 class CodeVerificationView extends StatelessWidget {
-  final AuthController controller;
+  final LoginController controller;
 
   CodeVerificationView({super.key, required this.controller});
 
@@ -135,11 +168,9 @@ class CodeVerificationView extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Expanded(
-              //   child: Center(
-              //     child: const Logo(),
-              //   ),
-              // ),
+              Expanded(
+                child: Center(),
+              ),
               const SizedBox(height: 64),
               CodeWidget(
                 controller: controller.smsController,
@@ -159,10 +190,10 @@ class CodeVerificationView extends StatelessWidget {
 
                       _pinFocus.unfocus();
                     },
-                    isValid: controller.isSmsValid.value,
-                    backgroundColor: controller.loading.isTrue
-                        ? ThemeColors.secondary
-                        : ThemeColors.primary,
+                    isValid: controller.isValid.value,
+                    backgroundColor: controller.isValid.isTrue
+                        ? ThemeColors.primary
+                        : ThemeColors.grey4,
                   );
                 },
               ),

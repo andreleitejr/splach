@@ -66,7 +66,9 @@ class HomeView extends StatelessWidget {
                     ),
                   ),
                   IconButton(
-                    onPressed: () => Get.to(() => GroupChatEditView()),
+                    onPressed: () => Get.to(
+                      () => GroupChatEditView(),
+                    ),
                     icon: const Icon(
                       Icons.add,
                       color: Colors.black,
@@ -94,7 +96,7 @@ class HomeView extends StatelessWidget {
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
                     final chat = _controller.filteredGroupChats[index];
-                    return GroupChatListItem(
+                    return ChatLargeListItem(
                       chat: chat,
                       onPressed: () async {
                         await _controller.addChatParticipant(chat);
@@ -142,7 +144,7 @@ class HomeView extends StatelessWidget {
                             ? ThemeColors.primary
                             : ThemeColors.grey1,
                       ),
-                      child: Center(
+                      child:const  Center(
                           child: Icon(
                         Icons.access_alarm,
                       )),
