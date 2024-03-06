@@ -25,13 +25,13 @@ class AddressInputs extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Input(controller: postalCodeController, labelText: 'CEP'),
-        Input(controller: streetController, labelText: 'Rua'),
-        Input(controller: numberController, labelText: 'Número'),
-        Input(controller: cityController, labelText: 'Cidade'),
-        Input(controller: stateController, labelText: 'Estado'),
-        Input(controller: countryController, labelText: 'País'),
-        Input(controller: complementController, labelText: 'Complemento'),
+        Input(controller: postalCodeController, hintText: 'CEP'),
+        Input(controller: streetController, hintText: 'Rua'),
+        Input(controller: numberController, hintText: 'Número'),
+        Input(controller: cityController, hintText: 'Cidade'),
+        Input(controller: stateController, hintText: 'Estado'),
+        Input(controller: countryController, hintText: 'País'),
+        Input(controller: complementController, hintText: 'Complemento'),
       ],
     );
   }

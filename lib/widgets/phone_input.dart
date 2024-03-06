@@ -50,7 +50,7 @@ class PhoneInput extends StatelessWidget {
             contentPadding: EdgeInsets.zero,
             hintText: '(11) 99000-0000',
             hintStyle:
-                ThemeTypography.regular14.apply(color: ThemeColors.grey4),
+                ThemeTypography.regular14.apply(color: ThemeColors.grey5),
             prefixIcon: Row(
               mainAxisSize: MainAxisSize.min,
               children: [

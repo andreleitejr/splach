@@ -33,14 +33,14 @@ class TopNavigationBar extends StatelessWidget implements PreferredSizeWidget {
               },
               icon: const Icon(
                 Icons.arrow_back,
-                color: ThemeColors.grey4,
+                color: ThemeColors.grey5,
               ),
             )
           : null,
       title: Text(
         title,
         style: ThemeTypography.medium16.apply(
-          color: ThemeColors.grey4,
+          color: ThemeColors.grey5,
         ),
       ),
       centerTitle: true,

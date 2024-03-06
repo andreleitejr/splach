@@ -107,7 +107,7 @@ class _LoginViewState extends State<LoginView> implements LoginNavigator {
                         text:
                             'Ao clicar em enviar, você concorda com os nossos ',
                         style: ThemeTypography.regular12.apply(
-                          color: ThemeColors.grey4,
+                          color: ThemeColors.grey5,
                         ),
                         children: [
                           TextSpan(
@@ -193,7 +193,7 @@ class CodeVerificationView extends StatelessWidget {
                     isValid: controller.isValid.value,
                     backgroundColor: controller.isValid.isTrue
                         ? ThemeColors.primary
-                        : ThemeColors.grey4,
+                        : ThemeColors.grey5,
                   );
                 },
               ),
@@ -216,7 +216,7 @@ class CodeVerificationView extends StatelessWidget {
                             color: ThemeColors.primary,
                           )
                         : ThemeTypography.regular14.apply(
-                            color: ThemeColors.grey4,
+                            color: ThemeColors.grey5,
                           ),
                   ),
                 ),

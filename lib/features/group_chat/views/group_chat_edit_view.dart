@@ -24,23 +24,23 @@ class GroupChatEditView extends StatelessWidget {
           children: [
             Input(
               controller: controller.titleController,
-              labelText: 'Título',
+              hintText: 'Título',
             ),
             Input(
               controller: controller.descriptionController,
-              labelText: 'Descrição',
+              hintText: 'Descrição',
             ),
             Input(
               controller: controller.descriptionController,
-              labelText: 'Descrição',
+              hintText: 'Descrição',
             ),
-            Obx(
-              () => InputButton(
-                onPressed: () => showCategorBottomSheet(context),
-                value: controller.category.value,
-                hint: 'Categoria',
-              ),
-            ),
+            // Obx(
+            //   () => InputButton(
+            //     onPressed: () => showCategoryBottomSheet(context),
+            //     value: controller.category.value,
+            //     hint: 'Categoria',
+            //   ),
+            // ),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
@@ -54,7 +54,7 @@ class GroupChatEditView extends StatelessWidget {
     );
   }
 
-  void showCategorBottomSheet(BuildContext context) {
+  void showCategoryBottomSheet(BuildContext context) {
     final focus = FocusScope.of(context);
 
     categories.removeWhere((category) => category.category == ChatCategory.all);

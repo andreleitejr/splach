@@ -49,7 +49,7 @@ class _BaseViewState extends State<BaseView> {
             color: ThemeColors.primary,
           ),
           unselectedLabelStyle: ThemeTypography.regular9.apply(
-            color: ThemeColors.grey4,
+            color: ThemeColors.grey5,
           ),
           items: _buildBottomNavBarItems(),
           currentIndex: controller.selectedIndex.value,

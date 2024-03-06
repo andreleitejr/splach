@@ -1,6 +1,6 @@
 import 'package:splach/models/selectable_item.dart';
 
-class BrazilianState extends SelectableItem{
+class BrazilianState extends SelectableItem {
   final String name;
   final String acronym;
 

@@ -39,6 +39,28 @@ extension DateTimeExtensions on DateTime {
       return '${days.toStringAsFixed(0)}d';
     }
   }
+
+
+  String toMonthlyAndYearFormattedString() {
+    final day = this.day.toString();
+    final month = [
+      'Janeiro',
+      'Fevereiro',
+      'Março',
+      'Abril',
+      'Maio',
+      'Junho',
+      'Julho',
+      'Agosto',
+      'Setembro',
+      'Outubro',
+      'Novembro',
+      'Dezembro'
+    ][this.month - 1];
+    final year = this.year.toString();
+
+    return '$day de $month de $year';
+  }
 }
 
 extension StringExtensions on String {

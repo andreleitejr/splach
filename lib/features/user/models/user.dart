@@ -15,8 +15,8 @@ class User extends BaseModel {
   final String phone;
   final String gender;
   final DateTime birthday;
-  final String city;
-  final String? state;
+  // final String city;
+  final String state;
   final String country;
 
   List<Relationship> followers = [];
@@ -35,7 +35,7 @@ class User extends BaseModel {
     required this.phone,
     required this.gender,
     required this.birthday,
-    required this.city,
+    // required this.city,
     required this.state,
     required this.country,
     // required this.type,
@@ -55,7 +55,7 @@ class User extends BaseModel {
         phone = document['phone'],
         gender = document['gender'],
         birthday = (document['birthday'] as Timestamp).toDate(),
-        city = document['city'],
+        // city = document['city'],
         state = document['state'],
         country = document['country'],
         super.fromDocument(document);
@@ -72,7 +72,7 @@ class User extends BaseModel {
       'phone': phone,
       'gender': gender,
       'birthday': birthday.toUtc(),
-      'city': city,
+      // 'city': city,
       'state': state,
       'country': country,
       // 'type': type,
