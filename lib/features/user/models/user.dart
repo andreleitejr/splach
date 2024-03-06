@@ -8,7 +8,7 @@ class User extends BaseModel {
   final String email;
 
   // final String document;
-  final String firstName;
+  final String name;
 
   // final String lastName;
   final String nickname;
@@ -29,7 +29,7 @@ class User extends BaseModel {
     required this.email,
     required this.image,
     // required this.document,
-    required this.firstName,
+    required this.name,
     // required this.lastName,
     required this.nickname,
     required this.phone,
@@ -49,7 +49,7 @@ class User extends BaseModel {
       : image = document['image'],
         email = document['email'],
         // document = document['document'],
-        firstName = document['firstName'],
+        name = document['name'],
         // lastName = document['lastName'],
         nickname = document['nickname'],
         phone = document['phone'],
@@ -66,7 +66,7 @@ class User extends BaseModel {
       'email': email,
       'image': image,
       // 'document': document,
-      'firstName': firstName,
+      'name': name,
       // 'lastName': lastName,
       'nickname': nickname,
       'phone': phone,
