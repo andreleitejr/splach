@@ -1,4 +1,5 @@
 // import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:splach/features/group_chat/models/group_chat.dart';
@@ -8,6 +9,7 @@ import 'package:splach/features/relationship/models/relationship.dart';
 import 'package:splach/features/relationship/repositories/relationship_repository.dart';
 import 'package:splach/features/services/location_service.dart';
 import 'package:splach/features/user/models/user.dart';
+import 'package:splach/features/user/repositories/user_repository.dart';
 import 'package:splach/models/chat_category.dart';
 import 'package:splach/models/message.dart';
 import 'package:splach/repositories/message_repository.dart';
@@ -16,6 +18,7 @@ import 'package:splach/utils/extensions.dart';
 class HomeController extends GetxController {
   final _user = Get.find<User>();
   final _chatRepository = Get.put(GroupChatRepository());
+  final _userRepository = Get.put(UserRepository());
   final _relationshipRepository = Get.put(RelationshipRepository());
   final _locationService = Get.put(LocationService());
 
@@ -115,21 +118,41 @@ class HomeController extends GetxController {
     notifications.add(notification);
   }
 
-  void _updateChatsList(List<GroupChat> chats) {
+  Future<void> _updateChatsList(List<GroupChat> chats) async {
+    _getChatsDistance(chats);
+
+    await _getChatUsers(chats);
+
+    final nearByChats =
+        chats.where((chat) => chat.distance! < _maxDistance).toList();
+
+    nearByChats.sort(
+      (a, b) => a.distance!.compareTo(b.distance!),
+    );
+
+    _groupChats.assignAll(nearByChats);
+    filteredGroupChats.value = _groupChats;
+  }
+
+  void _getChatsDistance(List<GroupChat> chats) {
     for (final chat in chats) {
       chat.distance = _locationService.calculateDistanceInMeters(
         _currentLocation.value!,
         chat.location.toPosition(),
       );
     }
+  }
 
-    final nearByChats =
-        chats.where((chat) => chat.distance! < _maxDistance).toList();
-
-    nearByChats.sort((a, b) => a.distance!.compareTo(b.distance!));
-
-    _groupChats.assignAll(nearByChats);
-    filteredGroupChats.value = _groupChats;
+  Future<void> _getChatUsers(List<GroupChat> chats) async {
+    for (final chat in chats) {
+      debugPrint(
+          'Home Controller | There is ${chat.participants.length} in chat');
+      if (chat.participants.isNotEmpty) {
+        debugPrint('Home Controller | Getting users for chat id: ${chat.id}');
+        chat.users = await _userRepository.getUsersByIds(chat.participants);
+      }
+      debugPrint('Home Controller | Total users for chat id ${chat.id}: ${chat.users.length}');
+    }
   }
 
   List<GroupChat> filterChatsByCategory(List<GroupChat> chats) {

@@ -16,7 +16,7 @@ class IntroBottomContent extends StatelessWidget {
         children: [
           Text(
             'splach',
-            style: ThemeTypography.extraBold22.apply(
+            style: ThemeTypography.logotype.apply(
               color: Colors.white,
             ),
           ),

@@ -11,6 +11,8 @@ import 'package:splach/widgets/code_widget.dart';
 import 'package:splach/widgets/flat_button.dart';
 import 'package:splach/widgets/phone_input.dart';
 
+import 'code_verification_view.dart';
+
 abstract class LoginNavigator {
   void verification();
 
@@ -47,18 +49,18 @@ class _LoginViewState extends State<LoginView> implements LoginNavigator {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
+              const Expanded(
                 child: Center(),
               ),
               Text(
-                'Bem-vindo,',
+                'Welcome to Splach,',
                 style: ThemeTypography.semiBold16.apply(
                   color: ThemeColors.primary,
                 ),
               ),
               const SizedBox(height: 4),
               const Text(
-                'Entre com seu número de celular',
+                'Enter with your phone number',
                 style: ThemeTypography.regular14,
               ),
               const SizedBox(height: 16),
@@ -73,7 +75,7 @@ class _LoginViewState extends State<LoginView> implements LoginNavigator {
               const SizedBox(height: 16),
               Obx(
                 () => FlatButton(
-                  actionText: 'Enviar',
+                  actionText: 'Enter',
                   onPressed: () async {
                     if (controller.isLoginValid.isTrue) {
                       await controller.sendVerificationCode();
@@ -117,7 +119,7 @@ class _LoginViewState extends State<LoginView> implements LoginNavigator {
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () => Get.to(
-                                    () => TermsAndConditions(),
+                                    () => const TermsAndConditions(),
                                   ),
                           ),
                         ],
@@ -140,91 +142,13 @@ class _LoginViewState extends State<LoginView> implements LoginNavigator {
 
   @override
   void register() {
-    Get.to(
-      () => UserEditView(),
+    Get.off(
+      () => const UserEditView(),
     );
   }
 
   @override
   void home() {
     Get.offAllNamed('/home');
-  }
-}
-
-class CodeVerificationView extends StatelessWidget {
-  final LoginController controller;
-
-  CodeVerificationView({super.key, required this.controller});
-
-  final _pinFocus = FocusNode();
-
-  @override
-  Widget build(BuildContext context) {
-    _pinFocus.requestFocus();
-    return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Center(),
-              ),
-              const SizedBox(height: 64),
-              CodeWidget(
-                controller: controller.smsController,
-                onSubmit: () => controller.verifySmsCode(),
-                phoneNumber: controller.phoneController.text,
-                // onChanged: controller.sms,
-                focusNode: _pinFocus,
-              ),
-              Obx(
-                () {
-                  return FlatButton(
-                    actionText: controller.loading.isTrue
-                        ? 'Verificando os dados...'
-                        : 'Verificar código',
-                    onPressed: () async {
-                      await controller.verifySmsCode();
-
-                      _pinFocus.unfocus();
-                    },
-                    isValid: controller.isValid.value,
-                    backgroundColor: controller.isValid.isTrue
-                        ? ThemeColors.primary
-                        : ThemeColors.grey5,
-                  );
-                },
-              ),
-              const SizedBox(height: 16),
-              Obx(
-                () => TextButton(
-                  onPressed: () async {
-                    if (controller.isCountdownFinished.isTrue) {
-                      await controller.sendVerificationCode();
-                    }
-                  },
-                  child: Text(
-                    controller.isCountdownFinished.isTrue
-                        ? 'Reenviar código '
-                            '(${controller.minutes.value.toString().padLeft(2, '0')}'
-                            ':${controller.seconds.value.toString().padLeft(2, '0')})'
-                        : '',
-                    style: controller.isCountdownFinished.isTrue
-                        ? ThemeTypography.semiBold14.apply(
-                            color: ThemeColors.primary,
-                          )
-                        : ThemeTypography.regular14.apply(
-                            color: ThemeColors.grey5,
-                          ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 }

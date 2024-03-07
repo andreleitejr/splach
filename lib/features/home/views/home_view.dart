@@ -3,16 +3,16 @@ import 'package:get/get.dart';
 import 'package:splach/features/group_chat/components/group_chat_list_item.dart';
 import 'package:splach/features/group_chat/views/group_chat_edit_view.dart';
 import 'package:splach/features/group_chat/views/group_chat_view.dart';
+import 'package:splach/features/home/components/category_button.dart';
 import 'package:splach/features/home/controllers/home_controller.dart';
 import 'package:splach/features/notification/views/notification_view.dart';
 import 'package:splach/models/chat_category.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
-import 'package:splach/widgets/shimmer_box.dart';
 import 'package:badges/badges.dart' as badges;
 
 class HomeView extends StatelessWidget {
-  final HomeController _controller = Get.put(HomeController());
+  final HomeController controller = Get.put(HomeController());
 
   HomeView({super.key});
 
@@ -31,13 +31,14 @@ class HomeView extends StatelessWidget {
                 shadowColor: Colors.black54,
                 stretch: true,
                 automaticallyImplyLeading: false,
-                backgroundColor: Colors.white,
+                backgroundColor: Colors.transparent,
                 pinned: true,
                 // centerTitle: true,
                 title: Text(
-                  'Splach',
-                  style: ThemeTypography.semiBold16
-                      .apply(color: ThemeColors.primary),
+                  'splach',
+                  style: ThemeTypography.logotype.apply(
+                    color: ThemeColors.primary,
+                  ),
                 ),
                 actions: [
                   Center(
@@ -47,7 +48,7 @@ class HomeView extends StatelessWidget {
                         end: 5,
                       ),
                       badgeContent: Text(
-                        _controller.notifications.length.toString(),
+                        controller.notifications.length.toString(),
                         style: ThemeTypography.semiBold12.apply(
                           color: Colors.white,
                         ),
@@ -55,7 +56,7 @@ class HomeView extends StatelessWidget {
                       child: IconButton(
                         onPressed: () => Get.to(
                           () => NotificationView(
-                            notifications: _controller.notifications,
+                            notifications: controller.notifications,
                           ),
                         ),
                         icon: const Icon(
@@ -80,13 +81,14 @@ class HomeView extends StatelessWidget {
                 child: SizedBox(
                   height: 88,
                   child: ListView.builder(
-                    padding: const EdgeInsets.only(left: 24),
+                    padding: const EdgeInsets.only(left: 16),
                     scrollDirection: Axis.horizontal,
                     itemCount: categories.length,
                     itemBuilder: (BuildContext context, int index) {
                       final category = categories[index];
-                      return _buildCategoryButton(
-                        category,
+                      return CategoryButton(
+                        controller: controller,
+                        category: category,
                       );
                     },
                   ),
@@ -95,85 +97,24 @@ class HomeView extends StatelessWidget {
               SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
-                    final chat = _controller.filteredGroupChats[index];
+                    final chat = controller.filteredGroupChats[index];
                     return ChatLargeListItem(
                       chat: chat,
                       onPressed: () async {
-                        await _controller.addChatParticipant(chat);
+                        await controller.addChatParticipant(chat);
                         Get.to(
                           () => ChatView(chat: chat),
                         );
                       },
                     );
                   },
-                  childCount: _controller.filteredGroupChats.length,
+                  childCount: controller.filteredGroupChats.length,
                 ),
               ),
             ],
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildCategoryButton(ChatCategory? category) {
-    return Obx(
-      () {
-        final isSelected = _controller.category.value == category!;
-
-        final loading = _controller.loading.value;
-
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Column(
-              // crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                ShimmerBox(
-                  loading: false,
-                  child: GestureDetector(
-                    onTap: () {
-                      _controller.category.value = category;
-                    },
-                    child: Container(
-                      width: 56,
-                      height: 56,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: isSelected
-                            ? ThemeColors.primary
-                            : ThemeColors.grey1,
-                      ),
-                      child:const  Center(
-                          child: Icon(
-                        Icons.access_alarm,
-                      )),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Container(
-                  width: 48,
-                  height: 24,
-                  color: Colors.white.withOpacity(0.00005),
-                  child: ShimmerBox(
-                    loading: loading,
-                    child: Text(
-                      category.name,
-                      style: ThemeTypography.regular10,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.center,
-                      // overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(width: 16),
-          ],
-        );
-      },
     );
   }
 }

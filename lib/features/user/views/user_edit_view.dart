@@ -5,6 +5,7 @@ import 'package:splach/features/home/views/base_view.dart';
 import 'package:splach/features/user/controllers/user_edit_controller.dart';
 import 'package:splach/features/user/models/gender.dart';
 import 'package:splach/repositories/firestore_repository.dart';
+import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/widgets/avatar_image_input.dart';
 import 'package:splach/widgets/custom_bottom_sheet.dart';
@@ -70,22 +71,28 @@ class _UserEditViewState extends State<UserEditView> {
           title: 'Personal data',
         ),
         body: SafeArea(
-          child: Container(
-            color: Colors.white,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: PageView(
-              controller: _pageController,
-              onPageChanged: (index) {
-                setState(() {
-                  _currentPage = index;
-                });
-              },
-              children: [
-                primaryUserData(context),
-                secondaryUserData(context),
-              ],
-            ),
-          ),
+          child: Obx(() {
+            if (controller.loading.isTrue) {
+              return const CircularProgressIndicator(
+                color: ThemeColors.primary,
+              );
+            }
+            return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: PageView(
+                controller: _pageController,
+                onPageChanged: (index) {
+                  setState(() {
+                    _currentPage = index;
+                  });
+                },
+                children: [
+                  primaryUserData(context),
+                  secondaryUserData(context),
+                ],
+              ),
+            );
+          }),
         ),
       ),
     );
@@ -95,9 +102,10 @@ class _UserEditViewState extends State<UserEditView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(child: ListView(
+        Expanded(
+            child: ListView(
           children: [
-
+            const SizedBox(height: 16),
             Input(
               controller: controller.email,
               hintText: 'E-mail',
@@ -108,7 +116,7 @@ class _UserEditViewState extends State<UserEditView> {
                 await Future.delayed(
                   const Duration(milliseconds: 300),
                 ).then(
-                      (_) => _showGenderBottomSheet(context),
+                  (_) => _showGenderBottomSheet(context),
                 );
               },
             ),
@@ -128,7 +136,7 @@ class _UserEditViewState extends State<UserEditView> {
                 await Future.delayed(
                   const Duration(milliseconds: 500),
                 ).then(
-                      (_) => _showStateBottomSheet(context),
+                  (_) => _showStateBottomSheet(context),
                 );
               },
             ),
@@ -180,12 +188,12 @@ class _UserEditViewState extends State<UserEditView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(child: ListView(
+        Expanded(
+            child: ListView(
           shrinkWrap: true,
           children: [
-
             Obx(
-                  () => Center(
+              () => Center(
                 child: AvatarImageInput(
                   image: controller.image.value,
                   onPressed: () async {
@@ -234,7 +242,7 @@ class _UserEditViewState extends State<UserEditView> {
         ),
         const SizedBox(height: 16),
         Obx(
-              () {
+          () {
             if (controller.showErrorMessage.isTrue) {
               return Column(
                 children: [

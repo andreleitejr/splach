@@ -6,20 +6,28 @@ import 'package:splach/features/group_chat/models/group_chat.dart';
 import 'package:splach/features/notification/models/notification.dart';
 import 'package:splach/models/message.dart';
 
-extension GeoPointExtension on GeoPoint {
-  Position toPosition() {
-    return Position(
-      latitude: latitude,
-      longitude: longitude,
-      accuracy: 0.0,
-      altitude: 0.0,
-      altitudeAccuracy: 0.0,
-      heading: 0.0,
-      headingAccuracy: 0.0,
-      speed: 0.0,
-      speedAccuracy: 0.0,
-      timestamp: DateTime.now(),
-    );
+extension StringExtensions on String {
+  String get clean => removeDiacritics(toLowerCase())
+      .removeDots
+      .removeHyphen
+      .removeParenthesis
+      .removeAllWhitespace;
+
+  String get removeDots => replaceAll('.', '');
+
+  String get removeHyphen => replaceAll('-', '');
+
+  String get removeParenthesis => replaceAll(')', '').replaceAll('(', '');
+}
+
+extension DoubleExtension on double {
+  String get formatDistance {
+    if (this <= 999) {
+      return '${toStringAsFixed(0)} m';
+    } else {
+      final distanceInKm = this / 1000;
+      return '${distanceInKm.toStringAsFixed(1)} km';
+    }
   }
 }
 
@@ -39,7 +47,6 @@ extension DateTimeExtensions on DateTime {
       return '${days.toStringAsFixed(0)}d';
     }
   }
-
 
   String toMonthlyAndYearFormattedString() {
     final day = this.day.toString();
@@ -63,18 +70,21 @@ extension DateTimeExtensions on DateTime {
   }
 }
 
-extension StringExtensions on String {
-  String get clean => removeDiacritics(toLowerCase())
-      .removeDots
-      .removeHyphen
-      .removeParenthesis
-      .removeAllWhitespace;
-
-  String get removeDots => replaceAll('.', '');
-
-  String get removeHyphen => replaceAll('-', '');
-
-  String get removeParenthesis => replaceAll(')', '').replaceAll('(', '');
+extension GeoPointExtension on GeoPoint {
+  Position toPosition() {
+    return Position(
+      latitude: latitude,
+      longitude: longitude,
+      accuracy: 0.0,
+      altitude: 0.0,
+      altitudeAccuracy: 0.0,
+      heading: 0.0,
+      headingAccuracy: 0.0,
+      speed: 0.0,
+      speedAccuracy: 0.0,
+      timestamp: DateTime.now(),
+    );
+  }
 }
 
 extension GroupTypeExtension on GroupType {

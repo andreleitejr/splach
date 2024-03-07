@@ -62,6 +62,7 @@ class LoginController extends GetxController {
 
   Future<void> verifySmsCode() async {
     try {
+      loading.value = true;
       await _authRepository.verifySmsCode(
         smsController.text,
       );
@@ -69,6 +70,7 @@ class LoginController extends GetxController {
       if (_authRepository.authUser != null) {
         await _checkUserInDatabase(_authRepository.authUser!.uid);
       } else {
+        loading.value = false;
         print('Auth SMS Code failed');
       }
     } catch (e) {
@@ -83,9 +85,11 @@ class LoginController extends GetxController {
       if (user != null) {
         Get.put(user, permanent: true);
         navigator.home();
+        loading.value = false;
         return;
       }
 
+      loading.value = false;
       navigator.register();
     } catch (e) {
       debugPrint('Check User in database failed: $e');

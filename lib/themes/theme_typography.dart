@@ -1,6 +1,11 @@
 import 'package:flutter/cupertino.dart';
 
 class ThemeTypography {
+  static const logotype = TextStyle(
+    fontSize: 30,
+    fontWeight: FontWeight.w700,
+    fontFamily: 'Gilroy',
+  );
   static const semiBold32 = TextStyle(
     fontSize: 32,
     fontWeight: FontWeight.w600,
@@ -8,11 +13,6 @@ class ThemeTypography {
   static const semiBold30 = TextStyle(
     fontSize: 30,
     fontWeight: FontWeight.w600,
-  );
-  static const extraBold22 = TextStyle(
-    fontSize: 30,
-    fontWeight: FontWeight.w700,
-    fontFamily: 'Gilroy'
   );
   static const semiBold22 = TextStyle(
     fontSize: 22,

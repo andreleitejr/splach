@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/repositories/firestore_repository.dart';
 
@@ -12,14 +13,14 @@ class UserRepository extends FirestoreRepository<User> {
   Future<List<User>> getUsersByIds(List<String> userIds) async {
     List<User> usersData = [];
 
-    // Acesse o Firebase para obter dados dos usuários com base nos IDs
-    // Suponha que você tenha uma coleção chamada "users" no Firestore
-    // e cada documento tenha um campo "id" e um campo "name"
-
+    debugPrint('User Repository | Getting the following users: $userIds');
     var querySnapshot = await FirebaseFirestore.instance
         .collection('users')
         .where(FieldPath.documentId, whereIn: userIds)
         .get();
+
+    debugPrint(
+        'User Repository | Got users by ids. Total users: ${querySnapshot.docs.length}');
 
     usersData.addAll(querySnapshot.docs.map((doc) => User.fromDocument(doc)));
 

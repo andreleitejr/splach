@@ -9,6 +9,8 @@ class Chat extends BaseModel {
   final List<Message> messages;
   final List<String> images;
 
+  List<User> users = [];
+
   Chat({
     required DateTime createdAt,
     required DateTime updatedAt,

@@ -36,6 +36,8 @@ class Input extends StatelessWidget {
         color: enabled ? Colors.black : ThemeColors.grey4,
       ),
       decoration: InputDecoration(
+        filled: true,
+        fillColor: Colors.white,
         contentPadding: const EdgeInsets.symmetric(horizontal: 16),
         hintText: hintText,
         hintStyle: ThemeTypography.regular14.apply(

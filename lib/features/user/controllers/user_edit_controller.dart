@@ -33,6 +33,8 @@ class UserEditController extends GetxController {
   final errorMessage = ''.obs;
   final showErrorMessage = false.obs;
 
+  final loading = false.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -126,6 +128,7 @@ class UserEditController extends GetxController {
   }
 
   Future<SaveResult?> save() async {
+    loading.value = true;
     final newUser = User(
       id: _authRepository.authUser!.uid,
       createdAt: DateTime.now(),
@@ -148,6 +151,7 @@ class UserEditController extends GetxController {
       Get.put(newUser, permanent: true);
     }
 
+    loading.value = false;
     return result;
   }
 }
