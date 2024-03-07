@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
 
-class Input extends StatelessWidget {
+class TextArea extends StatelessWidget {
   final String hintText;
   final TextEditingController controller;
   final TextInputType? keyboardType;
@@ -12,8 +12,9 @@ class Input extends StatelessWidget {
   final bool enabled;
   final List<TextInputFormatter>? inputFormatters;
   final VoidCallback? onSubmit;
+  final int maxLines;
 
-  const Input({
+  const TextArea({
     super.key,
     required this.hintText,
     required this.controller,
@@ -23,11 +24,13 @@ class Input extends StatelessWidget {
     this.enabled = true,
     this.inputFormatters,
     this.onSubmit,
+    this.maxLines = 4,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      maxLines: maxLines,
       enabled: enabled,
       controller: controller,
       focusNode: currentFocus,
@@ -36,7 +39,7 @@ class Input extends StatelessWidget {
         color: enabled ? Colors.black : ThemeColors.grey4,
       ),
       decoration: InputDecoration(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+        contentPadding: const EdgeInsets.all(16),
         hintText: hintText,
         hintStyle: ThemeTypography.regular14.apply(
           color: ThemeColors.grey4,

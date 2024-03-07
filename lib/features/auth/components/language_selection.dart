@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/widgets/top_navigation_bar.dart';
 
 class LanguageSelection extends StatelessWidget {
@@ -26,7 +27,10 @@ class LanguageSelection extends StatelessWidget {
 
   Widget _buildLanguageOption(String language) {
     return ListTile(
-      title: Text(language),
+      title: Text(
+        language,
+        style: ThemeTypography.medium14,
+      ),
       onTap: () {
         Get.back();
       },

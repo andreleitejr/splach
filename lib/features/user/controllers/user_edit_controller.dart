@@ -24,8 +24,14 @@ class UserEditController extends GetxController {
   final state = TextEditingController();
   final country = TextEditingController();
 
-  final isFormValid = false.obs;
+  final isPrimaryDataValid = false.obs;
+  final isSecondaryDataValid = false.obs;
+
+  RxBool get isValid =>
+      (isPrimaryDataValid.isTrue && isSecondaryDataValid.isTrue).obs;
+
   final errorMessage = ''.obs;
+  final showErrorMessage = false.obs;
 
   @override
   void onInit() {
@@ -33,30 +39,32 @@ class UserEditController extends GetxController {
 
     country.text = 'Brasil';
 
-    name.addListener(() => validateForm());
-    email.addListener(() => validateForm());
-    nickname.addListener(() => validateForm());
-    gender.addListener(() => validateForm());
-    state.addListener(() => validateForm());
+    email.addListener(() => validatePrimaryForm());
+    gender.addListener(() => validatePrimaryForm());
+    state.addListener(() => validatePrimaryForm());
+    ever(birthday, (_) => validatePrimaryForm());
+
+    ever(image, (_) => validateSecondaryForm());
+    nickname.addListener(() => validateSecondaryForm());
+    name.addListener(() => validateSecondaryForm());
+    description.addListener(() => validateSecondaryForm());
   }
 
-  void validateForm() {
+  void validatePrimaryForm() {
+    final requiredFields = _getPrimaryDataErrorMessage();
+    isPrimaryDataValid.value = requiredFields.isEmpty;
+  }
+
+  void validateSecondaryForm() {
+    final requiredFields = _getSecondaryDataErrorMessage();
+    isSecondaryDataValid.value = requiredFields.isEmpty;
+  }
+
+  List<String> _getPrimaryDataErrorMessage() {
     final List<String> requiredFields = [];
 
     if (!GetUtils.isEmail(email.text)) {
       requiredFields.add('Email');
-    }
-
-    if (name.text.isEmpty) {
-      requiredFields.add('Name');
-    }
-
-    if (name.text.isEmpty) {
-      requiredFields.add('Description');
-    }
-
-    if (nickname.text.isEmpty) {
-      requiredFields.add('Nickname');
     }
 
     if (gender.text.isEmpty) {
@@ -76,8 +84,34 @@ class UserEditController extends GetxController {
     } else {
       errorMessage.value = 'Mandatory fields: ${requiredFields.join(', ')}';
     }
+    return requiredFields;
+  }
 
-    isFormValid.value = requiredFields.isEmpty;
+  List<String> _getSecondaryDataErrorMessage() {
+    final List<String> requiredFields = [];
+
+    if (image.value.isEmpty) {
+      requiredFields.add('Image');
+    }
+
+    if (nickname.text.isEmpty) {
+      requiredFields.add('Nickname');
+    }
+
+    if (name.text.isEmpty) {
+      requiredFields.add('Name');
+    }
+
+    if (description.text.isEmpty) {
+      requiredFields.add('Description');
+    }
+
+    if (requiredFields.isEmpty) {
+      errorMessage.value = '';
+    } else {
+      errorMessage.value = 'Mandatory fields: ${requiredFields.join(', ')}';
+    }
+    return requiredFields;
   }
 
   Future<void> pickImage(ImageSource source) async {

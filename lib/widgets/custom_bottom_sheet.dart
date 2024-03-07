@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:splach/models/selectable_item.dart';
@@ -24,7 +23,6 @@ class CustomBottomSheet<T extends SelectableItem> extends StatelessWidget {
         : _buildFullBottomSheet(context);
   }
 
-
   final searchController = TextEditingController();
 
   Widget _buildSimpleBottomSheet() {
@@ -33,17 +31,18 @@ class CustomBottomSheet<T extends SelectableItem> extends StatelessWidget {
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(24),
-          topRight: Radius.circular(24),
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
         ),
       ),
       child: ListView(
-        // mainAxisSize: MainAxisSize.min,
         shrinkWrap: true,
         children: [
-          const SizedBox(height: 8),
+          // const SizedBox(height: 8),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+            ),
             child: Center(
               child: Text(
                 title,
@@ -62,20 +61,19 @@ class CustomBottomSheet<T extends SelectableItem> extends StatelessWidget {
 
   Widget _buildFullBottomSheet(BuildContext context) {
     return Container(
-      constraints:
-      BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.8),
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.8,
+      ),
       padding: const EdgeInsets.all(16),
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(24),
-          topRight: Radius.circular(24),
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
         ),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 8),
           Text(
             title,
             style: ThemeTypography.medium16.apply(
@@ -83,17 +81,12 @@ class CustomBottomSheet<T extends SelectableItem> extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          // SearchInput(
-          //   searchText: '',
-          //   onSearch: (String v) {},
-          //   hintText: 'Buscar itens',
-          // ),
-          const SizedBox(height: 16),
           Expanded(
             child: ListView.builder(
-              // controller: scrollController,
               itemCount: items.length,
-              itemBuilder: (context, index) => _buildListItem(items[index]),
+              itemBuilder: (_, index) => _buildListItem(
+                items[index],
+              ),
             ),
           ),
         ],
@@ -107,7 +100,8 @@ class CustomBottomSheet<T extends SelectableItem> extends StatelessWidget {
         onItemSelected(item);
         Get.back();
       },
-      child: Padding(
+      child: Container(
+        color: Colors.white.withOpacity(0),
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
@@ -116,7 +110,6 @@ class CustomBottomSheet<T extends SelectableItem> extends StatelessWidget {
               padding: const EdgeInsets.only(left: 16),
               child: Text(
                 item.title,
-                // textAlign: TextAlign.center,
                 style: ThemeTypography.medium14,
               ),
             ),
