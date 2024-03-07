@@ -30,7 +30,7 @@ class CategoryButton extends StatelessWidget {
             Column(
               children: [
                 ShimmerBox(
-                  loading: false,
+                  loading: loading,
                   child: GestureDetector(
                     onTap: () {
                       controller.category.value = category;
@@ -56,7 +56,7 @@ class CategoryButton extends StatelessWidget {
                 const SizedBox(height: 8),
                 Container(
                   width: 48,
-                  height: 24,
+                  height: 16,
                   color: Colors.white.withOpacity(0.00005),
                   child: ShimmerBox(
                     loading: loading,

@@ -44,25 +44,26 @@ class ChatLargeListItem extends StatelessWidget {
                     ),
                   ),
                 ),
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    height: 150,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.black.withOpacity(0.5),
-                          Colors.black.withOpacity(0)
-                        ],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
+                if (chat.users.isNotEmpty)
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      height: 150,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.black.withOpacity(0.5),
+                            Colors.black.withOpacity(0)
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
                       ),
                     ),
                   ),
-                ),
                 Positioned(
                   top: 8,
                   left: 8,

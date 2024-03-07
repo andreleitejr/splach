@@ -4,12 +4,14 @@ import 'package:splach/features/group_chat/components/group_chat_list_item.dart'
 import 'package:splach/features/group_chat/views/group_chat_edit_view.dart';
 import 'package:splach/features/group_chat/views/group_chat_view.dart';
 import 'package:splach/features/home/components/category_button.dart';
+import 'package:splach/features/home/components/shimmer_chat_group_list_item.dart';
 import 'package:splach/features/home/controllers/home_controller.dart';
 import 'package:splach/features/notification/views/notification_view.dart';
 import 'package:splach/models/chat_category.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:splach/widgets/shimmer_box.dart';
 
 class HomeView extends StatelessWidget {
   final HomeController controller = Get.put(HomeController());
@@ -97,6 +99,9 @@ class HomeView extends StatelessWidget {
               SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
+                    if (controller.loading.isTrue) {
+                      return const ShimmerChatGroupListItem();
+                    }
                     final chat = controller.filteredGroupChats[index];
                     return ChatLargeListItem(
                       chat: chat,
@@ -108,7 +113,9 @@ class HomeView extends StatelessWidget {
                       },
                     );
                   },
-                  childCount: controller.filteredGroupChats.length,
+                  childCount: controller.loading.value
+                      ? 5
+                      : controller.filteredGroupChats.length,
                 ),
               ),
             ],
