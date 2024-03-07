@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:splach/themes/theme_typography.dart';
 
-Future<ImageSource?> showImagePickerBottomSheet(BuildContext context) async {
+Future<ImageSource?> showImageSourceBottomSheet(BuildContext context) async {
   return await showModalBottomSheet<ImageSource>(
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.only(

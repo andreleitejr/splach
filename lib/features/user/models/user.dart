@@ -4,18 +4,14 @@ import 'package:splach/features/relationship/models/relationship.dart';
 import 'package:splach/models/base_model.dart';
 
 class User extends BaseModel {
-  final String image;
-  final String email;
-
-  // final String document;
-  final String name;
-
-  // final String lastName;
-  final String nickname;
   final String phone;
+  final String email;
+  final String nickname;
+  final String image;
+  final String name;
+  final String description;
   final String gender;
   final DateTime birthday;
-  // final String city;
   final String state;
   final String country;
 
@@ -26,19 +22,16 @@ class User extends BaseModel {
     required String id,
     required DateTime createdAt,
     required DateTime updatedAt,
-    required this.email,
-    required this.image,
-    // required this.document,
-    required this.name,
-    // required this.lastName,
-    required this.nickname,
     required this.phone,
+    required this.email,
+    required this.nickname,
+    required this.image,
+    required this.name,
+    required this.description,
     required this.gender,
     required this.birthday,
-    // required this.city,
     required this.state,
     required this.country,
-    // required this.type,
   }) : super(
           id: id,
           createdAt: createdAt,
@@ -46,16 +39,14 @@ class User extends BaseModel {
         );
 
   User.fromDocument(DocumentSnapshot document)
-      : image = document['image'],
+      : phone = document['phone'],
         email = document['email'],
-        // document = document['document'],
-        name = document['name'],
-        // lastName = document['lastName'],
         nickname = document['nickname'],
-        phone = document['phone'],
+        image = document['image'],
+        name = document['name'],
+        description = document['description'],
         gender = document['gender'],
         birthday = (document['birthday'] as Timestamp).toDate(),
-        // city = document['city'],
         state = document['state'],
         country = document['country'],
         super.fromDocument(document);
@@ -63,19 +54,16 @@ class User extends BaseModel {
   @override
   Map<String, dynamic> toMap() {
     return {
-      'email': email,
-      'image': image,
-      // 'document': document,
-      'name': name,
-      // 'lastName': lastName,
-      'nickname': nickname,
       'phone': phone,
+      'email': email,
+      'nickname': nickname,
+      'image': image,
+      'name': name,
+      'description': description,
       'gender': gender,
       'birthday': birthday.toUtc(),
-      // 'city': city,
       'state': state,
       'country': country,
-      // 'type': type,
       ...super.toMap(),
     };
   }
