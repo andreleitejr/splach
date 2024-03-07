@@ -5,6 +5,8 @@ import 'package:splach/features/group_chat/models/group_chat.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/utils/extensions.dart';
+import 'package:splach/widgets/avatar_image.dart';
+import 'package:splach/widgets/avatar_image_input.dart';
 
 class ChatLargeListItem extends StatelessWidget {
   final GroupChat chat;
@@ -16,7 +18,7 @@ class ChatLargeListItem extends StatelessWidget {
     required this.onPressed,
   });
 
-  final double userAvatarSize = 36;
+  final double userAvatarSize = 42;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +35,7 @@ class ChatLargeListItem extends StatelessWidget {
             Stack(
               children: [
                 Container(
-                  height: 175,
+                  height: 225,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     image: DecorationImage(
@@ -150,21 +152,6 @@ class ChatLargeListItem extends StatelessWidget {
         ),
       );
     }
-    return Container(
-      height: userAvatarSize,
-      width: userAvatarSize,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: ThemeColors.grey3,
-        image: DecorationImage(
-          image: MemoryImage(
-            base64Decode(chat.users[index].image),
-          ),
-        ),
-        border: Border.all(
-          color: Colors.white,
-        ),
-      ),
-    );
+    return AvatarImage(image: chat.users[index].image);
   }
 }

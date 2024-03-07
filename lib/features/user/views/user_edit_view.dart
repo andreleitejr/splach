@@ -62,38 +62,36 @@ class _UserEditViewState extends State<UserEditView> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () => Scaffold(
-        appBar: TopNavigationBar(
-          showLeading: _currentPage == 1,
-          onLeadingPressed:
-              _currentPage == 1 ? () => _navigateToPreviousPage() : null,
-          title: 'Personal data',
-        ),
-        body: SafeArea(
-          child: Obx(() {
-            if (controller.loading.isTrue) {
-              return const CircularProgressIndicator(
-                color: ThemeColors.primary,
-              );
-            }
-            return Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: PageView(
-                controller: _pageController,
-                onPageChanged: (index) {
-                  setState(() {
-                    _currentPage = index;
-                  });
-                },
-                children: [
-                  primaryUserData(context),
-                  secondaryUserData(context),
-                ],
-              ),
+    return Scaffold(
+      appBar: TopNavigationBar(
+        showLeading: _currentPage == 1,
+        onLeadingPressed:
+        _currentPage == 1 ? () => _navigateToPreviousPage() : null,
+        title: 'Personal data',
+      ),
+      body: SafeArea(
+        child: Obx(() {
+          if (controller.loading.isTrue) {
+            return const CircularProgressIndicator(
+              color: ThemeColors.primary,
             );
-          }),
-        ),
+          }
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: PageView(
+              controller: _pageController,
+              onPageChanged: (index) {
+                setState(() {
+                  _currentPage = index;
+                });
+              },
+              children: [
+                primaryUserData(context),
+                secondaryUserData(context),
+              ],
+            ),
+          );
+        }),
       ),
     );
   }

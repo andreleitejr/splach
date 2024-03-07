@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/models/base_model.dart';
 import 'package:splach/utils/extensions.dart';
@@ -40,4 +41,6 @@ class Message extends BaseModel {
   }
 
   bool get isFromSystem => messageType == MessageType.system;
+
+  bool get isFromUser => senderId == Get.find<User>().id;
 }

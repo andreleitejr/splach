@@ -14,7 +14,7 @@ class ShimmerChatGroupListItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              height: 175,
+              height: 225,
               width: double.infinity,
               decoration: BoxDecoration(
                 color: Colors.black,
@@ -32,11 +32,11 @@ class ShimmerChatGroupListItem extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Container(
-              height: 24,
+              height: 14,
               width: MediaQuery.of(context).size.width * 0.75,
               decoration: BoxDecoration(
                 color: Colors.black,
-                borderRadius: BorderRadius.circular(96),
+                borderRadius: BorderRadius.circular(24),
               ),
             ),
             const SizedBox(height: 8),

@@ -9,4 +9,6 @@ class ThemeColors {
   static const primary = Color(0xFF7E30E1);
   static const secondary = Color(0xFFE26EE5);
   static const tertiary = Color(0xFF49108B);
+  static const fuchsia60 = Color(0xFFFCDDEC);
+  static const light = Color(0xFFF3F8FF);
 }

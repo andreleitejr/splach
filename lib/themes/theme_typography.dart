@@ -77,4 +77,9 @@ class ThemeTypography {
     fontWeight: FontWeight.w400,
     fontFamily: 'Inter',
   );
+  static const regular8 = TextStyle(
+    fontSize: 8,
+    fontWeight: FontWeight.w400,
+    fontFamily: 'Inter',
+  );
 }
