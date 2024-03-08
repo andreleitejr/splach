@@ -33,6 +33,7 @@ class HomeView extends StatelessWidget {
                 stretch: true,
                 automaticallyImplyLeading: false,
                 backgroundColor: Colors.transparent,
+                foregroundColor: Colors.white,
                 pinned: true,
                 // centerTitle: true,
                 title: Text(

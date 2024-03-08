@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:splach/features/group_chat/controllers/group_chat_controller.dart';
+import 'package:splach/repositories/firestore_repository.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
 
@@ -85,8 +86,15 @@ class _ChatInputState extends State<ChatInput> {
                   Icons.send,
                   color: ThemeColors.grey4,
                 ),
-                onPressed: () =>
-                    widget.controller.sendMessage(messageController.text),
+                onPressed: () async {
+                  final controller = widget.controller;
+
+                  final result =
+                      await controller.sendMessage(messageController.text);
+                  if (result == SaveResult.success) {
+                    messageController.clear();
+                  }
+                },
               ),
             ],
           ),

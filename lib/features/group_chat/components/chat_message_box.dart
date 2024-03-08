@@ -17,7 +17,7 @@ class ChatMessageBox extends StatelessWidget {
           message.isFromUser ? MainAxisAlignment.end : MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (!message.isFromUser) ...[
+        if (!message.isFromUser && message.sender != null) ...[
           AvatarImage(image: message.sender!.image),
           const SizedBox(width: 8),
         ],

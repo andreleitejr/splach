@@ -5,6 +5,7 @@ import 'package:splach/features/group_chat/repositories/group_chat_repository.da
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/features/user/repositories/user_repository.dart';
 import 'package:splach/models/message.dart';
+import 'package:splach/repositories/firestore_repository.dart';
 import 'package:splach/repositories/message_repository.dart';
 
 class GroupChatController extends GetxController {
@@ -46,13 +47,14 @@ class GroupChatController extends GetxController {
   void _listenToReservationsStream() {
     _messageRepository.streamLastMessages().listen((messageData) async {
       messages.assignAll(messageData);
-      messages.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+      messages.sort((b, a) => a.createdAt.compareTo(b.createdAt));
 
       messages.value = messages.map((message) {
-        print('Found message sender? ${message.sender}');
         final sender =
             users.firstWhereOrNull((user) => user.id == message.senderId);
+
         message.sender = sender;
+
         return message;
       }).toList();
     });
@@ -81,7 +83,7 @@ class GroupChatController extends GetxController {
     });
   }
 
-  void sendMessage(String content) {
+  Future<SaveResult> sendMessage(String content) async {
     final newMessage = Message(
       content: content,
       senderId: user.id!,
@@ -89,7 +91,7 @@ class GroupChatController extends GetxController {
       updatedAt: DateTime.now(),
     );
 
-    _messageRepository.save(newMessage);
+    return await _messageRepository.save(newMessage);
   }
 
   Future<void> removeChatParticipant() async {

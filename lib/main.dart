@@ -8,6 +8,6 @@ Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // AuthRepository().signOut();
+  // await AuthRepository().signOut();
   runApp(const App());
 }
