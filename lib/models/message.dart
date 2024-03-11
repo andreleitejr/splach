@@ -4,11 +4,16 @@ import 'package:splach/features/user/models/user.dart';
 import 'package:splach/models/base_model.dart';
 import 'package:splach/utils/extensions.dart';
 
-enum MessageType { system, user }
+enum MessageType {
+  system,
+  user,
+}
 
 class Message extends BaseModel {
   final String content;
   final String senderId;
+  final String? replyId;
+  final String? image;
   final MessageType messageType;
 
   User? sender;
@@ -18,6 +23,8 @@ class Message extends BaseModel {
     required DateTime updatedAt,
     required this.content,
     required this.senderId,
+    this.replyId,
+    this.image,
     this.messageType = MessageType.user,
   }) : super(
           createdAt: createdAt,
@@ -27,6 +34,8 @@ class Message extends BaseModel {
   Message.fromDocument(DocumentSnapshot document)
       : content = document['content'],
         senderId = document['senderId'],
+        replyId = document['replyId'],
+        image = document['image'],
         messageType = MessageTypeExtension.fromString(document['messageType']),
         super.fromDocument(document);
 
@@ -35,6 +44,8 @@ class Message extends BaseModel {
     return {
       'content': content,
       'senderId': senderId,
+      'replyId': replyId,
+      'image': image,
       'messageType': messageType.toStringSimplified(),
       ...super.toMap(),
     };

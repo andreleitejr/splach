@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:splach/models/message.dart';
 import 'package:splach/repositories/firestore_repository.dart';
 
@@ -11,10 +12,12 @@ class MessageRepository extends FirestoreRepository<Message> {
 
   Stream<List<Message>> streamLastMessages() {
     try {
-      Query query = firestore
+      debugPrint('Message Repository | Listen to last messages of  $collectionName');
+
+      final query = firestore
           .collection(collectionName)
           .orderBy('createdAt', descending: true)
-          .limit(200);
+          .limit(100);
 
       final stream = query.snapshots().map(
         (querySnapshot) {

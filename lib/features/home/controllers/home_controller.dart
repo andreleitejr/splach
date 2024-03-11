@@ -145,13 +145,13 @@ class HomeController extends GetxController {
 
   Future<void> _getChatUsers(List<GroupChat> chats) async {
     for (final chat in chats) {
-      debugPrint(
-          'Home Controller | There is ${chat.participants.length} in chat');
+      // debugPrint(
+      //     'Home Controller | There is ${chat.participants.length} in chat');
       if (chat.participants.isNotEmpty) {
-        debugPrint('Home Controller | Getting users for chat id: ${chat.id}');
+        // debugPrint('Home Controller | Getting users for chat id: ${chat.id}');
         chat.users = await _userRepository.getUsersByIds(chat.participants);
       }
-      debugPrint('Home Controller | Total users for chat id ${chat.id}: ${chat.users.length}');
+      // debugPrint('Home Controller | Total users for chat id ${chat.id}: ${chat.users.length}');
     }
   }
 

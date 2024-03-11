@@ -13,14 +13,14 @@ class UserRepository extends FirestoreRepository<User> {
   Future<List<User>> getUsersByIds(List<String> userIds) async {
     List<User> usersData = [];
 
-    debugPrint('User Repository | Getting the following users: $userIds');
+    // debugPrint('User Repository | Getting the following users: $userIds');
     var querySnapshot = await FirebaseFirestore.instance
         .collection('users')
         .where(FieldPath.documentId, whereIn: userIds)
         .get();
 
-    debugPrint(
-        'User Repository | Got users by ids. Total users: ${querySnapshot.docs.length}');
+    // debugPrint(
+    //     'User Repository | Got users by ids. Total users: ${querySnapshot.docs.length}');
 
     usersData.addAll(querySnapshot.docs.map((doc) => User.fromDocument(doc)));
 

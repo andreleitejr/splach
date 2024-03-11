@@ -10,7 +10,9 @@ import 'package:splach/repositories/message_repository.dart';
 
 class GroupChatController extends GetxController {
   GroupChatController(this.groupChat) {
-    _messageRepository = Get.put(MessageRepository(groupChat.id!));
+    debugPrint(
+        'Chat Controller | Initializing the group chat for ${groupChat.id}');
+    _messageRepository = MessageRepository(groupChat.id!);
   }
 
   final GroupChatRepository _chatRepository = Get.find();
@@ -21,13 +23,24 @@ class GroupChatController extends GetxController {
   final GroupChat groupChat;
   final users = <User>[].obs;
   final messages = <Message>[].obs;
+  final replyUser = Rx<User?>(null);
+
+  final scrollController = ScrollController();
+  final showButton = false.obs;
+  final loading = false.obs;
 
   @override
   Future<void> onInit() async {
     super.onInit();
+    loading.value = true;
     await _fetchChatUsers();
     _listenToChatParticipants();
     _listenToReservationsStream();
+
+    scrollController.addListener(scrollListener);
+
+    print('################################### Loading Controller ${loading.value}');
+    loading.value = false;
   }
 
   Future<void> _fetchChatUsers() async {
@@ -41,6 +54,8 @@ class GroupChatController extends GetxController {
   @override
   void onClose() {
     removeChatParticipant();
+    scrollController.removeListener(scrollListener);
+    scrollController.dispose();
     super.onClose();
   }
 
@@ -89,6 +104,7 @@ class GroupChatController extends GetxController {
       senderId: user.id!,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
+      replyId: replyUser.value?.id,
     );
 
     return await _messageRepository.save(newMessage);
@@ -111,5 +127,17 @@ class GroupChatController extends GetxController {
     );
 
     _messageRepository.save(message);
+  }
+
+  void scrollListener() {
+    showButton.value = scrollController.position.pixels >= 500;
+  }
+
+  void scrollToBottom() {
+    scrollController.animateTo(
+      scrollController.position.minScrollExtent,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeInOut,
+    );
   }
 }

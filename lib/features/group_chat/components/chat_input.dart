@@ -93,6 +93,7 @@ class _ChatInputState extends State<ChatInput> {
                       await controller.sendMessage(messageController.text);
                   if (result == SaveResult.success) {
                     messageController.clear();
+                    controller.scrollToBottom();
                   }
                 },
               ),
