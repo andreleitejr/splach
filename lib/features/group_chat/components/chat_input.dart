@@ -64,39 +64,38 @@ class _ChatInputState extends State<ChatInput> {
               if (!_isTyping)
                 IconButton(
                   icon: const Icon(
-                    Icons.clear,
-                    color: ThemeColors.grey4,
-                  ),
-                  onPressed: () {
-                    // Handle clear action
-                  },
-                ),
-              if (!_isTyping)
-                IconButton(
-                  icon: const Icon(
-                    Icons.attach_file,
+                    Icons.image_outlined,
                     color: ThemeColors.grey4,
                   ),
                   onPressed: () {
                     // Handle attach file action
                   },
                 ),
-              IconButton(
-                icon: const Icon(
-                  Icons.send,
-                  color: ThemeColors.grey4,
+              Container(
+                // height: 48,
+                margin: EdgeInsets.only(right: 6),
+                width: 36,
+                decoration: BoxDecoration(
+                  color: ThemeColors.primary,
+                  shape: BoxShape.circle,
                 ),
-                onPressed: () async {
-                  final controller = widget.controller;
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.send_outlined,
+                    color: Colors.white,
+                  ),
+                  onPressed: () async {
+                    final controller = widget.controller;
 
-                  final result =
-                      await controller.sendMessage(messageController.text);
-                  if (result == SaveResult.success) {
-                    messageController.clear();
-                    controller.scrollToBottom();
-                  }
-                },
-              ),
+                    final result =
+                        await controller.sendMessage(messageController.text);
+                    if (result == SaveResult.success) {
+                      messageController.clear();
+                      controller.scrollToBottom();
+                    }
+                  },
+                ),
+              )
             ],
           ),
           enabledBorder: OutlineInputBorder(

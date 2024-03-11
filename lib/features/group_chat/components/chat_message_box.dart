@@ -22,7 +22,10 @@ class ChatMessageBox extends StatelessWidget {
           const SizedBox(width: 8),
         ],
         Container(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.symmetric(
+            vertical: 6,
+            horizontal: 8,
+          ),
           decoration: BoxDecoration(
             color: message.isFromUser ? ThemeColors.primary : Colors.white,
             border: Border.all(

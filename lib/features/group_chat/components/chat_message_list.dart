@@ -37,7 +37,7 @@ class ChatMessageList extends StatelessWidget {
                       message.isFromSystem
                           ? ChatSystemMessage(message: message)
                           : ChatMessageBox(message: message),
-                      const SizedBox(height: 16),
+                      SizedBox(height: message.isFromSystem ? 12 : 8),
                     ],
                   );
                 },

@@ -19,7 +19,7 @@ class ChatSystemMessage extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(
             horizontal: 12,
-            vertical: 4,
+            vertical: 3,
           ),
           alignment: Alignment.center,
           decoration: BoxDecoration(
@@ -28,7 +28,7 @@ class ChatSystemMessage extends StatelessWidget {
           ),
           child: Text(
             message.content,
-            style: ThemeTypography.regular14.apply(
+            style: ThemeTypography.regular12.apply(
               color: ThemeColors.grey4,
             ),
           ),
