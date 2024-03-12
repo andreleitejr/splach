@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:splach/features/group_chat/components/chat_input.dart';
-import 'package:splach/features/group_chat/components/chat_message_box.dart';
+import 'package:splach/features/group_chat/components/chat_sender_message.dart';
 import 'package:splach/features/group_chat/components/chat_message_list.dart';
 import 'package:splach/features/group_chat/components/chat_participants_list.dart';
 import 'package:splach/features/group_chat/components/chat_system_message.dart';

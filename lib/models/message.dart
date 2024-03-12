@@ -17,6 +17,7 @@ class Message extends BaseModel {
   final MessageType messageType;
 
   User? sender;
+  Message? replyMessage;
 
   Message({
     required DateTime createdAt,

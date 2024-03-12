@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:splach/features/group_chat/components/chat_user_message.dart';
 import 'package:splach/features/group_chat/controllers/group_chat_controller.dart';
+import 'package:splach/models/message.dart';
 import 'package:splach/themes/theme_colors.dart';
 
-import 'chat_message_box.dart';
+import 'chat_sender_message.dart';
 import 'chat_system_message.dart';
 
 class ChatMessageList extends StatelessWidget {
@@ -34,10 +36,23 @@ class ChatMessageList extends StatelessWidget {
                   final message = controller.messages[index];
                   return Column(
                     children: [
-                      message.isFromSystem
-                          ? ChatSystemMessage(message: message)
-                          : ChatMessageBox(message: message),
-                      SizedBox(height: message.isFromSystem ? 12 : 8),
+                      if (message.isFromSystem) ...[
+                        ChatSystemMessage(
+                          message: message,
+                        )
+                      ] else if (message.isFromUser) ...[
+                        ChatUserMessage(
+                          message: message,
+                        ),
+                      ] else ...[
+                        ChatSenderMessage(
+                          message: message,
+                          onHorizontalDragEnd: (_) => replyMessage(message),
+                        ),
+                      ],
+                      SizedBox(
+                        height: message.isFromSystem ? 12 : 8,
+                      ),
                     ],
                   );
                 },
@@ -83,5 +98,11 @@ class ChatMessageList extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void replyMessage(Message message) {
+    print(
+        '############################## Replying message: ${message.content}');
+    controller.replyMessage.value = message;
   }
 }
