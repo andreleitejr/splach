@@ -18,8 +18,9 @@ class ChatMessageList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () => Expanded(
+    return Obx(() {
+      final messages = controller.messages;
+      return Expanded(
         child: Stack(
           children: [
             NotificationListener<ScrollNotification>(
@@ -31,9 +32,18 @@ class ChatMessageList extends StatelessWidget {
                 controller: controller.scrollController,
                 reverse: true,
                 padding: const EdgeInsets.all(8),
-                itemCount: controller.messages.length,
+                itemCount: messages.length,
                 itemBuilder: (context, index) {
-                  final message = controller.messages[index];
+                  final message = messages[index];
+
+                  if (message.replyId != null) {
+                    message.replyMessage =
+                        messages.firstWhereOrNull((m){
+                          return message.replyId == m.id;
+                        });
+                    print('### Reply Id is not null: ${message.replyId}');
+                    print('### Reply Id is not null Content: ${message.content}');
+                  }
                   return Column(
                     children: [
                       if (message.isFromSystem) ...[
@@ -66,8 +76,8 @@ class ChatMessageList extends StatelessWidget {
             }),
           ],
         ),
-      ),
-    );
+      );
+    });
   }
 
   Widget backToBottomButton() {
@@ -103,6 +113,7 @@ class ChatMessageList extends StatelessWidget {
   void replyMessage(Message message) {
     print(
         '############################## Replying message: ${message.content}');
+    print('############################## Replying message: ${message.sender}');
     controller.replyMessage.value = message;
   }
 }

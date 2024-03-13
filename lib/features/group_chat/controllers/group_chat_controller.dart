@@ -21,7 +21,7 @@ class GroupChatController extends GetxController {
 
   late MessageRepository _messageRepository;
   final GroupChat groupChat;
-  final users = <User>[].obs;
+  final participants = <User>[].obs;
   final messages = <Message>[].obs;
 
   // final replyUser = Rx<User?>(null);
@@ -48,8 +48,9 @@ class GroupChatController extends GetxController {
     final chatUsers =
         await _userRepository.getUsersByIds(groupChat.participants);
 
-    users.assignAll(chatUsers);
-    debugPrint('Chat Group Controller | There is ${users.length} in chat.');
+    participants.assignAll(chatUsers);
+    debugPrint(
+        'Chat Group Controller | There is ${participants.length} in chat.');
   }
 
   @override
@@ -60,32 +61,27 @@ class GroupChatController extends GetxController {
     super.onClose();
   }
 
-  void _listenToMessageStream() {
+  void _listenToMessageStream() async {
     _messageRepository.streamLastMessages().listen((messageData) async {
       messages.assignAll(messageData);
       messages.sort((b, a) => a.createdAt.compareTo(b.createdAt));
 
-      messages.value = messages.map((message) {
-        final sender =
-            users.firstWhereOrNull((user) => user.id == message.senderId);
-
-        message.sender = sender;
-
-        return message;
-      }).toList();
+      updateMessageSenders();
     });
   }
 
   void _listenToChatParticipants() {
     _chatRepository.stream(groupChat.id!).listen(
       (chat) async {
-        users.removeWhere((user) => !chat.participants.contains(user.id));
+        participants
+            .removeWhere((user) => !chat.participants.contains(user.id));
 
-        debugPrint('User list after removal: ${users.map((user) => user.id)}');
+        debugPrint(
+            'User list after removal: ${participants.map((user) => user.id)}');
 
         List<String> participantsNotInUserList = chat.participants
             .where((participantId) =>
-                !users.any((user) => user.id == participantId))
+                !participants.any((user) => user.id == participantId))
             .toList();
 
         if (participantsNotInUserList.isNotEmpty) {
@@ -95,10 +91,27 @@ class GroupChatController extends GetxController {
           final newUsers =
               await _userRepository.getUsersByIds(participantsNotInUserList);
 
-          users.addAll(newUsers);
+          participants.addAll(newUsers);
+          updateMessageSenders();
         }
       },
     );
+  }
+
+  void updateMessageSenders() {
+    messages.value = messages.map((message) {
+      User? sender =
+          participants.firstWhereOrNull((user) => user.id == message.senderId);
+
+      message.sender = sender;
+
+      print(
+          ' HUASDHAUHA##########DHUDASHDUMMESSSAGE users ${participants.length}');
+      print(
+          ' HUASDHAUHA##########DHUDASHDUMMESSSAGE senderId ${message.senderId}');
+      print(' HUASDHAUHA##########DHUDASHDUMMESSSAGE sender ${message.sender}');
+      return message;
+    }).toList();
   }
 
   Future<SaveResult> sendMessage(String content) async {

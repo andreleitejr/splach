@@ -13,7 +13,7 @@ class ChatParticipantsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      if (controller.users.isEmpty) {
+      if (controller.participants.isEmpty) {
         return Container();
       }
 
@@ -22,9 +22,9 @@ class ChatParticipantsList extends StatelessWidget {
         child: ListView.builder(
           padding: const EdgeInsets.only(left: 16),
           scrollDirection: Axis.horizontal,
-          itemCount: controller.users.length,
+          itemCount: controller.participants.length,
           itemBuilder: (BuildContext context, int index) {
-            final participant = controller.users[index];
+            final participant = controller.participants[index];
             return Container(
               margin: const EdgeInsets.only(right: 12),
               child: Column(
