@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:splach/features/group_chat/models/group_chat.dart';
 import 'package:splach/features/group_chat/repositories/group_chat_repository.dart';
 import 'package:splach/features/user/models/user.dart';
@@ -7,6 +8,7 @@ import 'package:splach/features/user/repositories/user_repository.dart';
 import 'package:splach/models/message.dart';
 import 'package:splach/repositories/firestore_repository.dart';
 import 'package:splach/repositories/message_repository.dart';
+import 'package:splach/services/image_service.dart';
 
 class GroupChatController extends GetxController {
   GroupChatController(this.groupChat) {
@@ -18,11 +20,13 @@ class GroupChatController extends GetxController {
   final GroupChatRepository _chatRepository = Get.find();
   final UserRepository _userRepository = Get.find();
   final User user = Get.find();
+  final _imageService = ImageService();
 
   late MessageRepository _messageRepository;
   final GroupChat groupChat;
   final participants = <User>[].obs;
   final messages = <Message>[].obs;
+  final image = Rx<String?>(null);
 
   // final replyUser = Rx<User?>(null);
 
@@ -104,19 +108,25 @@ class GroupChatController extends GetxController {
           participants.firstWhereOrNull((user) => user.id == message.senderId);
 
       message.sender = sender;
-
-      print(
-          ' HUASDHAUHA##########DHUDASHDUMMESSSAGE users ${participants.length}');
-      print(
-          ' HUASDHAUHA##########DHUDASHDUMMESSSAGE senderId ${message.senderId}');
-      print(' HUASDHAUHA##########DHUDASHDUMMESSSAGE sender ${message.sender}');
       return message;
     }).toList();
   }
 
-  Future<SaveResult> sendMessage(String content) async {
+  Future<void> pickImage(ImageSource source) async {
+    final String? base64Image = await _imageService.takePhoto(source);
+
+    if (base64Image != null) {
+      image.value = base64Image;
+    } else {
+      // errorMessage.value =
+      //     'Houve um erro ao carregar a imagem. Tente novamente.';
+    }
+  }
+
+  Future<SaveResult> sendMessage({String? content}) async {
     final newMessage = Message(
       content: content,
+      image: image.value,
       senderId: user.id!,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),

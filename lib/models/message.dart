@@ -10,7 +10,7 @@ enum MessageType {
 }
 
 class Message extends BaseModel {
-  final String content;
+  final String? content;
   final String senderId;
   final String? replyId;
   final String? image;
@@ -22,7 +22,7 @@ class Message extends BaseModel {
   Message({
     required DateTime createdAt,
     required DateTime updatedAt,
-    required this.content,
+    this.content,
     required this.senderId,
     this.replyId,
     this.image,

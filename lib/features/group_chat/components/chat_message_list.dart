@@ -10,10 +10,11 @@ import 'chat_system_message.dart';
 
 class ChatMessageList extends StatelessWidget {
   final GroupChatController controller;
+  final FocusNode focus;
 
   const ChatMessageList({
     super.key,
-    required this.controller,
+    required this.controller, required this.focus,
   });
 
   @override
@@ -37,12 +38,11 @@ class ChatMessageList extends StatelessWidget {
                   final message = messages[index];
 
                   if (message.replyId != null) {
-                    message.replyMessage =
-                        messages.firstWhereOrNull((m){
-                          return message.replyId == m.id;
-                        });
-                    print('### Reply Id is not null: ${message.replyId}');
-                    print('### Reply Id is not null Content: ${message.content}');
+                    message.replyMessage = messages.firstWhereOrNull(
+                      (m) {
+                        return message.replyId == m.id;
+                      },
+                    );
                   }
                   return Column(
                     children: [
@@ -57,7 +57,7 @@ class ChatMessageList extends StatelessWidget {
                       ] else ...[
                         ChatSenderMessage(
                           message: message,
-                          onHorizontalDragEnd: (_) => replyMessage(message),
+                          onHorizontalDragEnd: () => replyMessage(message),
                         ),
                       ],
                       SizedBox(
@@ -111,9 +111,8 @@ class ChatMessageList extends StatelessWidget {
   }
 
   void replyMessage(Message message) {
-    print(
-        '############################## Replying message: ${message.content}');
-    print('############################## Replying message: ${message.sender}');
+    focus.requestFocus();
     controller.replyMessage.value = message;
+    print('Requesting focus!');
   }
 }

@@ -36,6 +36,8 @@ class _ChatViewState extends State<ChatView> {
     super.initState();
   }
 
+  final focus = FocusNode();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,8 +58,14 @@ class _ChatViewState extends State<ChatView> {
           children: [
             const ChatTopNavigationBar(),
             ChatParticipantsList(controller: controller),
-            ChatMessageList(controller: controller),
-            ChatInput(controller: controller),
+            ChatMessageList(
+              controller: controller,
+              focus: focus,
+            ),
+            ChatInput(
+              controller: controller,
+              focus: focus,
+            ),
           ],
         ),
       ),
