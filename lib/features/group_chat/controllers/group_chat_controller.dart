@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -12,6 +13,7 @@ import 'package:splach/services/image_service.dart';
 
 class GroupChatController extends GetxController {
   GroupChatController(this.groupChat) {
+    initializeCamera();
     debugPrint(
         'Chat Controller | Initializing the group chat for ${groupChat.id}');
     _messageRepository = MessageRepository(groupChat.id!);
@@ -20,7 +22,7 @@ class GroupChatController extends GetxController {
   final GroupChatRepository _chatRepository = Get.find();
   final UserRepository _userRepository = Get.find();
   final User user = Get.find();
-  final _imageService = ImageService();
+  final _imageService = CameraService();
 
   late MessageRepository _messageRepository;
   final GroupChat groupChat;
@@ -35,6 +37,8 @@ class GroupChatController extends GetxController {
   final replyMessage = Rx<Message?>(null);
 
   final loading = false.obs;
+
+  final cameraController = Rx<CameraController?>(null);
 
   @override
   Future<void> onInit() async {
@@ -57,12 +61,9 @@ class GroupChatController extends GetxController {
         'Chat Group Controller | There is ${participants.length} in chat.');
   }
 
-  @override
-  void onClose() {
-    removeChatParticipant();
-    scrollController.removeListener(scrollListener);
-    scrollController.dispose();
-    super.onClose();
+  Future<void> initializeCamera() async {
+    await _imageService.initializeCamera();
+    cameraController.value = _imageService.getController();
   }
 
   void _listenToMessageStream() async {
@@ -77,8 +78,9 @@ class GroupChatController extends GetxController {
   void _listenToChatParticipants() {
     _chatRepository.stream(groupChat.id!).listen(
       (chat) async {
-        participants
-            .removeWhere((user) => !chat.participants.contains(user.id));
+        participants.removeWhere(
+          (user) => !chat.participants.contains(user.id),
+        );
 
         debugPrint(
             'User list after removal: ${participants.map((user) => user.id)}');
@@ -92,8 +94,9 @@ class GroupChatController extends GetxController {
           debugPrint(
               'Searching for ${participantsNotInUserList.length} not found in local user list.');
 
-          final newUsers =
-              await _userRepository.getUsersByIds(participantsNotInUserList);
+          final newUsers = await _userRepository.getUsersByIds(
+            participantsNotInUserList,
+          );
 
           participants.addAll(newUsers);
           updateMessageSenders();
@@ -104,23 +107,56 @@ class GroupChatController extends GetxController {
 
   void updateMessageSenders() {
     messages.value = messages.map((message) {
-      User? sender =
-          participants.firstWhereOrNull((user) => user.id == message.senderId);
+      User? sender = participants.firstWhereOrNull(
+        (user) => user.id == message.senderId,
+      );
 
       message.sender = sender;
       return message;
     }).toList();
   }
 
-  Future<void> pickImage(ImageSource source) async {
-    final String? base64Image = await _imageService.takePhoto(source);
+  Future<void> pickImage() async {
+    final base64Image = await _imageService.takePhoto();
 
     if (base64Image != null) {
       image.value = base64Image;
-    } else {
-      // errorMessage.value =
-      //     'Houve um erro ao carregar a imagem. Tente novamente.';
     }
+
+    // _imageService.dispose();
+  }
+
+  Future<void> pickImageFromGallery() async {
+    final base64Image = await _imageService.pickImageFromGallery();
+
+    if (base64Image != null) {
+      image.value = base64Image;
+    }
+  }
+
+  void toggleCamera() {
+    if (cameraController.value!.value.isInitialized) {
+      final direction = _getDirection();
+
+      CameraDescription newCamera = _imageService.cameras.firstWhere(
+        (camera) => camera.lensDirection == direction,
+      );
+
+      cameraController.value!.dispose();
+
+      cameraController.value = CameraController(
+        newCamera,
+        ResolutionPreset.medium,
+      );
+      cameraController.value!.initialize();
+    }
+  }
+
+  CameraLensDirection _getDirection() {
+    return cameraController.value!.description.lensDirection ==
+            CameraLensDirection.front
+        ? CameraLensDirection.back
+        : CameraLensDirection.front;
   }
 
   Future<SaveResult> sendMessage({String? content}) async {
@@ -165,5 +201,14 @@ class GroupChatController extends GetxController {
       duration: const Duration(milliseconds: 500),
       curve: Curves.easeInOut,
     );
+  }
+
+  @override
+  void onClose() {
+    removeChatParticipant();
+    scrollController.removeListener(scrollListener);
+    scrollController.dispose();
+    _imageService.dispose();
+    super.onClose();
   }
 }

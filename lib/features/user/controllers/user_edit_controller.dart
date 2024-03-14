@@ -12,7 +12,7 @@ import 'package:splach/services/image_service.dart';
 class UserEditController extends GetxController {
   final _authRepository = Get.find<AuthRepository>();
   final _repository = Get.put(UserRepository());
-  final _imageService = ImageService();
+  final _imageService = CameraService();
 
   final image = RxString('');
   final name = TextEditingController();
@@ -117,7 +117,7 @@ class UserEditController extends GetxController {
   }
 
   Future<void> pickImage(ImageSource source) async {
-    final String? base64Image = await _imageService.takePhoto(source);
+    final String? base64Image = await _imageService.takePhoto();
 
     if (base64Image != null) {
       image.value = base64Image;
@@ -129,6 +129,7 @@ class UserEditController extends GetxController {
 
   Future<SaveResult?> save() async {
     loading.value = true;
+
     final newUser = User(
       id: _authRepository.authUser!.uid,
       createdAt: DateTime.now(),

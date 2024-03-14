@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:splach/features/group_chat/components/chat_image.dart';
 import 'package:splach/models/message.dart';
@@ -7,8 +5,6 @@ import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/utils/extensions.dart';
 import 'package:splach/widgets/avatar_image.dart';
-import 'package:splach/widgets/image_viewer.dart';
-
 import 'chat_highlight_mention.dart';
 
 class ChatSenderMessage extends StatelessWidget {
