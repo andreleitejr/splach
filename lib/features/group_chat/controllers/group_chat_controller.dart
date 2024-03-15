@@ -17,7 +17,6 @@ import 'package:splach/services/image_service.dart';
 
 class GroupChatController extends GetxController {
   GroupChatController(this.groupChat) {
-    initializeCamera();
     debugPrint(
         'Chat Controller | Initializing the group chat for ${groupChat.id}');
     _messageRepository = MessageRepository(groupChat.id!);
@@ -26,13 +25,13 @@ class GroupChatController extends GetxController {
   final GroupChatRepository _chatRepository = Get.find();
   final UserRepository _userRepository = Get.find();
   final User user = Get.find();
-  final _imageService = CameraService();
 
   late MessageRepository _messageRepository;
   final GroupChat groupChat;
   final participants = <User>[].obs;
   final messages = <Message>[].obs;
   final image = Rx<String?>(null);
+  final isCameraOpen = false.obs;
 
   // final replyUser = Rx<User?>(null);
 
@@ -40,20 +39,7 @@ class GroupChatController extends GetxController {
   final showButton = false.obs;
   final replyMessage = Rx<Message?>(null);
 
-  AssetPathEntity? _path;
-  final galleryImages = <String>[].obs;
-  final int _sizePerPage = 16;
-
-  final FilterOptionGroup _filterOptionGroup = FilterOptionGroup(
-    imageOption: const FilterOption(
-      sizeConstraint: SizeConstraint(ignoreSize: true),
-    ),
-  );
-
   final loading = false.obs;
-
-  final cameraController = Rx<CameraController?>(null);
-  var cameras = <CameraDescription>[];
 
   @override
   Future<void> onInit() async {
@@ -62,7 +48,6 @@ class GroupChatController extends GetxController {
     await _fetchChatUsers();
     _listenToChatParticipants();
     _listenToMessageStream();
-    await initializeCamera();
     scrollController.addListener(scrollListener);
 
     // cameraController.value = CameraController(
@@ -71,7 +56,6 @@ class GroupChatController extends GetxController {
     //   // Define the resolution to use.
     //   ResolutionPreset.medium,
     // );
-    _requestAssets();
     loading.value = false;
   }
 
@@ -82,12 +66,6 @@ class GroupChatController extends GetxController {
     participants.assignAll(chatUsers);
     debugPrint(
         'Chat Group Controller | There is ${participants.length} in chat.');
-  }
-
-  Future<void> initializeCamera() async {
-    await _imageService.initializeCamera();
-    cameraController.value = _imageService.getController();
-    cameras = _imageService.cameras;
   }
 
   void _listenToMessageStream() async {
@@ -140,82 +118,6 @@ class GroupChatController extends GetxController {
     }).toList();
   }
 
-  Future<void> takePhoto() async {
-    final base64Image = await _imageService.takePhoto();
-
-    if (base64Image != null) {
-      image.value = base64Image;
-    }
-
-    // _imageService.dispose();
-  }
-
-  Future<void> pickImageFromGallery() async {
-    final base64Image = await _imageService.pickImageFromGallery();
-
-    if (base64Image != null) {
-      image.value = base64Image;
-    }
-  }
-
-  Future<void> toggleCameraLens() async {
-    final lensDirection = cameraController.value!.description.lensDirection;
-    CameraDescription newDescription;
-    if (lensDirection == CameraLensDirection.front) {
-      newDescription = cameras.firstWhere((description) =>
-          description.lensDirection == CameraLensDirection.back);
-    } else {
-      newDescription = cameras.firstWhere((description) =>
-          description.lensDirection == CameraLensDirection.front);
-    }
-
-    await _initCamera(newDescription);
-  }
-
-  Future<void> _initCamera(CameraDescription description) async {
-    cameraController.value =
-        CameraController(description, ResolutionPreset.medium);
-
-    try {
-      await cameraController.value!.initialize();
-    } catch (e) {
-      debugPrint('Initializing Camera after toggle error: $e');
-    }
-  }
-
-  Future<void> _requestAssets() async {
-    final PermissionStatus status = await Permission.photos.request();
-
-    if (status.isDenied) {
-      print('Permission is not accessible. $status');
-      return;
-    }
-
-    final List<AssetPathEntity> paths = await PhotoManager.getAssetPathList(
-      onlyAll: true,
-      filterOption: _filterOptionGroup,
-    );
-
-    if (paths.isEmpty) {
-      return;
-    }
-
-    _path = paths.first;
-    // _totalEntitiesCount = await _path!.assetCountAsync;
-    final List<AssetEntity> entities = await _path!.getAssetListPaged(
-      page: 0,
-      size: _sizePerPage,
-    );
-
-    final files = <File>[];
-    for (final entity in entities) {
-      final file = await entity.file;
-      files.add(file!);
-    }
-
-    galleryImages.value = await _imageService.filesToBase64(files);
-  }
-
   Future<SaveResult> sendMessage({String? content}) async {
     final newMessage = Message(
       content: content,
@@ -265,7 +167,6 @@ class GroupChatController extends GetxController {
     removeChatParticipant();
     scrollController.removeListener(scrollListener);
     scrollController.dispose();
-    _imageService.dispose();
     super.onClose();
   }
 }

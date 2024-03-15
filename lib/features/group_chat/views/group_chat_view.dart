@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:splach/features/group_chat/components/chat_image_input.dart';
 import 'package:splach/features/group_chat/components/chat_input.dart';
 import 'package:splach/features/group_chat/components/chat_sender_message.dart';
 import 'package:splach/features/group_chat/components/chat_message_list.dart';
@@ -40,35 +41,40 @@ class _ChatViewState extends State<ChatView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Color(0xFFF8F2FF),
-            Color(0xFFF3F8FF),
-            Color(0xFFFFF2FF),
-          ],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
+    return Obx(() {
+      if (controller.isCameraOpen.isTrue && controller.image.value != null) {
+        return ChatImageInput(controller: controller);
+      }
+      return Scaffold(
+          body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFFF8F2FF),
+              Color(0xFFF3F8FF),
+              Color(0xFFFFF2FF),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
         ),
-      ),
-      child: SafeArea(
-        child: Column(
-          children: [
-            const ChatTopNavigationBar(),
-            ChatParticipantsList(controller: controller),
-            ChatMessageList(
-              controller: controller,
-              focus: focus,
-            ),
-            ChatInput(
-              controller: controller,
-              focus: focus,
-            ),
-          ],
+        child: SafeArea(
+          child: Column(
+            children: [
+              const ChatTopNavigationBar(),
+              ChatParticipantsList(controller: controller),
+              ChatMessageList(
+                controller: controller,
+                focus: focus,
+              ),
+              ChatInput(
+                controller: controller,
+                focus: focus,
+              ),
+            ],
+          ),
         ),
-      ),
-    ));
+      ));
+    });
   }
 }

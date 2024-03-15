@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:splach/features/group_chat/components/chat_image_input.dart';
 import 'package:splach/features/group_chat/components/chat_user_message.dart';
 import 'package:splach/features/group_chat/controllers/group_chat_controller.dart';
 import 'package:splach/models/message.dart';
@@ -20,6 +21,8 @@ class ChatMessageList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
+
+
       final messages = controller.messages;
       return Expanded(
         child: Stack(

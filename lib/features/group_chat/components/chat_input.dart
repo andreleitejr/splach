@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:splach/features/camera/views/camera_view.dart';
 import 'package:splach/features/group_chat/components/chat_highlight_mention.dart';
 import 'package:splach/features/group_chat/components/chat_image.dart';
+import 'package:splach/features/group_chat/components/chat_image_input.dart';
 import 'package:splach/features/group_chat/controllers/group_chat_controller.dart';
 import 'package:splach/repositories/firestore_repository.dart';
 import 'package:splach/themes/theme_colors.dart';
@@ -43,7 +45,7 @@ class _ChatInputState extends State<ChatInput> {
   @override
   Widget build(BuildContext context) {
     final controller = widget.controller;
-    return Container(
+    return  Container(
       decoration: BoxDecoration(
         color: Colors.white,
         border: const Border(
@@ -146,8 +148,8 @@ class _ChatInputState extends State<ChatInput> {
                               constraints: BoxConstraints(
                                 minWidth: 75,
                                 maxWidth:
-                                    MediaQuery.of(context).size.width * 0.65 -
-                                        32,
+                                MediaQuery.of(context).size.width * 0.65 -
+                                    32,
                               ),
                               child: RichText(
                                 text: TextSpan(
@@ -192,11 +194,15 @@ class _ChatInputState extends State<ChatInput> {
                         Icons.image_outlined,
                         color: ThemeColors.grey4,
                       ),
-                      onPressed: () => Get.to(
-                        () => CameraView(
-                          controller: controller,
-                        ),
-                      ),
+                      onPressed: () async {
+                        controller.isCameraOpen.value = true;
+                        final image = await Get.to(
+                              () => const CameraGalleryView(),
+                        );
+                        if (image != null) {
+                          controller.image.value = image;
+                        }
+                      },
                     ),
                   Container(
                     // height: 48,
@@ -254,267 +260,4 @@ class _ChatInputState extends State<ChatInput> {
       ),
     );
   }
-}
-
-class CameraView extends StatefulWidget {
-  final GroupChatController controller;
-
-  const CameraView({
-    super.key,
-    required this.controller,
-  });
-
-  @override
-  State<CameraView> createState() => _CameraViewState();
-}
-
-class _CameraViewState extends State<CameraView> {
-  final messageController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    final controller = widget.controller;
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Obx(
-              () {
-                if (controller.cameraController.value == null) {
-                  return Container();
-                }
-                print(
-                    ' ###################### CONTORLLER IMAGE ${controller.image.value == null}');
-                if (controller.image.value != null) {
-                  return Expanded(
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: MemoryImage(
-                            base64Decode(
-                              controller.image.value!,
-                            ),
-                          ),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  );
-                }
-                return Expanded(
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    alignment: Alignment.center,
-                    child: CameraPreview(
-                      controller.cameraController.value!,
-                    ),
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 24),
-            Obx(() {
-              if (controller.galleryImages.isNotEmpty &&
-                  controller.image.value == null) {
-                return SizedBox(
-                  height: 80,
-                  width: double.infinity,
-                  child: ListView.builder(
-                    padding: const EdgeInsets.only(left: 16),
-                    itemCount: controller.galleryImages.length,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (BuildContext context, int index) {
-                      final galleryImage = controller.galleryImages[index];
-                      return GestureDetector(
-                        onTap: () => controller.image(galleryImage),
-                        child: Container(
-                          height: 80,
-                          width: 80,
-                          margin: const EdgeInsets.only(right: 16),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(4),
-                            image: DecorationImage(
-                              image: MemoryImage(
-                                base64Decode(
-                                  controller.galleryImages[index],
-                                ),
-                              ),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                );
-              }
-              return Container();
-            }),
-            const SizedBox(height: 16),
-            Obx(() {
-              if (controller.image.value == null) {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: TextButton(
-                          onPressed: () {
-                            controller.pickImageFromGallery();
-                          },
-                          child: Container(
-                            height: 36,
-                            width: 36,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(4),
-                              image: DecorationImage(
-                                image: MemoryImage(
-                                  base64Decode(
-                                    controller.galleryImages.first,
-                                  ),
-                                ),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Center(
-                      child: TextButton(
-                        onPressed: () {
-                          widget.controller.takePhoto();
-                        },
-                        child: Container(
-                          height: 75,
-                          width: 75,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Colors.white,
-                              width: 6,
-                            ),
-                          ),
-                          child: Container(
-                            margin: const EdgeInsets.all(4),
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.white,
-                            ),
-                            child: Container(),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton(
-                          onPressed: () async {
-                            await controller.toggleCameraLens();
-                            setState(() {});
-                          },
-                          child: const Icon(
-                            Icons.change_circle_outlined,
-                            color: Colors.white,
-                            size: 32,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                );
-              } else {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: TextField(
-                    // focusNode: widget.focus,
-                    style: ThemeTypography.regular14.apply(
-                      color: ThemeColors.light,
-                    ),
-                    controller: messageController,
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                      ),
-                      hintText: 'What\'s in your mind?',
-                      hintStyle: ThemeTypography.regular14.apply(
-                        color: ThemeColors.light,
-                      ),
-                      suffixIcon: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            // height: 48,
-                            margin: const EdgeInsets.only(right: 6),
-                            width: 36,
-                            decoration: const BoxDecoration(
-                              color: ThemeColors.primary,
-                              shape: BoxShape.circle,
-                            ),
-                            child: IconButton(
-                              icon: const Icon(
-                                Icons.send_outlined,
-                                color: Colors.white,
-                              ),
-                              onPressed: () async {
-                                Get.back();
-                                final result = await controller.sendMessage(
-                                  content: messageController.text,
-                                );
-
-                                if (result == SaveResult.success) {
-                                  controller.replyMessage.value = null;
-                                  messageController.clear();
-                                  controller.image.value = null;
-                                  controller.scrollToBottom();
-                                }
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(96),
-                        borderSide: const BorderSide(
-                          width: 1,
-                          color: ThemeColors.grey2,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(96),
-                        borderSide: const BorderSide(
-                          width: 1,
-                          color: ThemeColors.grey3,
-                        ),
-                      ),
-                      disabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(96),
-                        borderSide: const BorderSide(
-                          width: 1,
-                          color: ThemeColors.grey2,
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              }
-            }),
-            const SizedBox(height: 16),
-          ],
-        ),
-      ),
-    );
-  }
-
-// Future<void> _sendMessage() async {
-//   if (controller.image.value != null) {
-//     await controller.sendMessage();
-//     Get.back();
-//   }
-// }
 }
