@@ -1,10 +1,7 @@
-import 'dart:io';
-
+import 'dart:convert';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:photo_manager/photo_manager.dart';
 import 'package:splach/features/group_chat/components/chat_highlight_mention.dart';
 import 'package:splach/features/group_chat/components/chat_image.dart';
 import 'package:splach/features/group_chat/controllers/group_chat_controller.dart';
@@ -272,111 +269,80 @@ class CameraView extends StatefulWidget {
 }
 
 class _CameraViewState extends State<CameraView> {
-  final FilterOptionGroup _filterOptionGroup = FilterOptionGroup(
-    imageOption: const FilterOption(
-      sizeConstraint: SizeConstraint(ignoreSize: true),
-    ),
-  );
-  final int _sizePerPage = 50;
-
-  AssetPathEntity? _path;
-  List<AssetEntity>? _entities;
-  final _images = <File>[];
-  File? _lastImage;
-  int _totalEntitiesCount = 0;
-
-  int _page = 0;
-
-  Future<void> _requestAssets() async {
-    final PermissionStatus status = await Permission.photos.request();
-    // Request permissions.
-    // final PermissionState ps = await PhotoManager.requestPermissionExtend();
-    if (!mounted) {
-      return;
-    }
-
-    if (status.isDenied) {
-      print('Permission is not accessible. $status');
-      return;
-    }
-    // Obtain assets using the path entity.
-    final List<AssetPathEntity> paths = await PhotoManager.getAssetPathList(
-      onlyAll: true,
-      filterOption: _filterOptionGroup,
-    );
-    if (!mounted) {
-      return;
-    }
-    // Return if not paths found.
-    if (paths.isEmpty) {
-      print('No paths found.');
-      return;
-    }
-    setState(() {
-      _path = paths.first;
-    });
-    _totalEntitiesCount = await _path!.assetCountAsync;
-    final List<AssetEntity> entities = await _path!.getAssetListPaged(
-      page: 0,
-      size: _sizePerPage,
-    );
-    if (!mounted) {
-      return;
-    }
-    for (final entity in entities) {
-      final file = await entity.file;
-      _images.add(file!);
-    }
-    setState(() {});
-    print('asdhuhsdausah my assets ${_images.length}');
-  }
-
-  @override
-  void initState() {
-    _requestAssets();
-    super.initState();
-  }
+  final messageController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    final controller = widget.controller;
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Obx(
               () {
-                if (widget.controller.cameraController.value == null) {
+                if (controller.cameraController.value == null) {
                   return Container();
                 }
-               return Container(
-                  // height: MediaQuery.of(context).size.height,
-                  // width: MediaQuery.of(context).size.width,
-                  alignment: Alignment.center,
-                  child: CameraPreview(
-                    widget.controller.cameraController.value!,
+                print(
+                    ' ###################### CONTORLLER IMAGE ${controller.image.value == null}');
+                if (controller.image.value != null) {
+                  return Expanded(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: MemoryImage(
+                            base64Decode(
+                              controller.image.value!,
+                            ),
+                          ),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  );
+                }
+                return Expanded(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    alignment: Alignment.center,
+                    child: CameraPreview(
+                      controller.cameraController.value!,
+                    ),
                   ),
                 );
               },
             ),
             const SizedBox(height: 24),
-            if (_images.isNotEmpty)
+            if (controller.galleryImages.isNotEmpty &&
+                controller.image.value == null)
               SizedBox(
                 height: 80,
                 width: double.infinity,
                 child: ListView.builder(
                   padding: const EdgeInsets.only(left: 16),
-                  itemCount: _images.length,
+                  itemCount: controller.galleryImages.length,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (BuildContext context, int index) {
-                    return Container(
-                      height: 80,
-                      width: 80,
-                      margin: const EdgeInsets.only(right: 16),
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: FileImage(_images[index]),
-                          fit: BoxFit.cover,
+                    final galleryImage = controller.galleryImages[index];
+                    return GestureDetector(
+                      onTap: () => controller.image(galleryImage),
+                      child: Container(
+                        height: 80,
+                        width: 80,
+                        margin: const EdgeInsets.only(right: 16),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4),
+                          image: DecorationImage(
+                            image: MemoryImage(
+                              base64Decode(
+                                controller.galleryImages[index],
+                              ),
+                            ),
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     );
@@ -384,88 +350,162 @@ class _CameraViewState extends State<CameraView> {
                 ),
               ),
             const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: TextButton(
-                      onPressed: () {
-                        _pickImage(context);
-                      },
-                      child: const Icon(
-                        Icons.image,
-                        color: Colors.white,
-                        size: 32,
+            if (controller.image.value == null) ...[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: TextButton(
+                        onPressed: () {
+                          controller.pickImageFromGallery();
+                        },
+                        child: Container(
+                          height: 36,
+                          width: 36,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                            image: DecorationImage(
+                              image: MemoryImage(
+                                base64Decode(
+                                  controller.galleryImages.first,
+                                ),
+                              ),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Center(
-                  child: TextButton(
-                    onPressed: () {
-                      _captureImage(context);
-                    },
-                    child: Container(
-                      height: 75,
-                      width: 75,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Colors.white,
-                          width: 6,
-                        ),
-                      ),
+                  Center(
+                    child: TextButton(
+                      onPressed: () {
+                        widget.controller.pickImage();
+                      },
                       child: Container(
-                        margin: const EdgeInsets.all(4),
-                        decoration: const BoxDecoration(
+                        height: 75,
+                        width: 75,
+                        decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors.white,
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 6,
+                          ),
                         ),
-                        child: Container(),
+                        child: Container(
+                          margin: const EdgeInsets.all(4),
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                          ),
+                          child: Container(),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: () async {
+                          await controller.toggleCameraLens();
+                          setState(() {});
+                        },
+                        child: const Icon(
+                          Icons.change_circle_outlined,
+                          color: Colors.white,
+                          size: 32,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ] else ...[
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: TextField(
+                  // focusNode: widget.focus,
+                  controller: messageController,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                    ),
+                    hintText: 'What\'s in your mind?',
+                    hintStyle: ThemeTypography.regular14.apply(
+                      color: ThemeColors.grey4,
+                    ),
+                    suffixIcon: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          // height: 48,
+                          margin: const EdgeInsets.only(right: 6),
+                          width: 36,
+                          decoration: const BoxDecoration(
+                            color: ThemeColors.primary,
+                            shape: BoxShape.circle,
+                          ),
+                          child: IconButton(
+                            icon: const Icon(
+                              Icons.send_outlined,
+                              color: Colors.white,
+                            ),
+                            onPressed: () async {
+                              final result = await controller.sendMessage(
+                                content: messageController.text,
+                              );
+
+                              if (result == SaveResult.success) {
+                                controller.replyMessage.value = null;
+                                messageController.clear();
+                                controller.image.value = null;
+                                controller.scrollToBottom();
+                                Get.back();
+                              }
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(96),
+                      borderSide: const BorderSide(
+                        width: 1,
+                        color: ThemeColors.grey2,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(96),
+                      borderSide: const BorderSide(
+                        width: 1,
+                        color: ThemeColors.grey3,
+                      ),
+                    ),
+                    disabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(96),
+                      borderSide: const BorderSide(
+                        width: 1,
+                        color: ThemeColors.grey2,
                       ),
                     ),
                   ),
                 ),
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {
-                        widget.controller.toggleCamera();
-                      },
-                      child: const Icon(
-                        Icons.change_circle_outlined,
-                        color: Colors.white,
-                        size: 32,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
+              ),
+            ],
+            const SizedBox(height: 16),
           ],
         ),
       ),
     );
   }
 
-  Future<void> _captureImage(BuildContext context) async {
-    await widget.controller.pickImage();
-    _sendMessage();
-  }
-
-  Future<void> _pickImage(BuildContext context) async {
-    await widget.controller.pickImageFromGallery();
-    _sendMessage();
-  }
-
-  Future<void> _sendMessage() async {
-    if (widget.controller.image.value != null) {
-      await widget.controller.sendMessage();
-      Get.back();
-    }
-  }
+// Future<void> _sendMessage() async {
+//   if (controller.image.value != null) {
+//     await controller.sendMessage();
+//     Get.back();
+//   }
+// }
 }

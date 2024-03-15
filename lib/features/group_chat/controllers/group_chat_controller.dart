@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:photo_manager/photo_manager.dart';
 import 'package:splach/features/group_chat/models/group_chat.dart';
 import 'package:splach/features/group_chat/repositories/group_chat_repository.dart';
 import 'package:splach/features/user/models/user.dart';
@@ -36,9 +40,20 @@ class GroupChatController extends GetxController {
   final showButton = false.obs;
   final replyMessage = Rx<Message?>(null);
 
+  AssetPathEntity? _path;
+  final galleryImages = <String>[].obs;
+  final int _sizePerPage = 16;
+
+  final FilterOptionGroup _filterOptionGroup = FilterOptionGroup(
+    imageOption: const FilterOption(
+      sizeConstraint: SizeConstraint(ignoreSize: true),
+    ),
+  );
+
   final loading = false.obs;
 
   final cameraController = Rx<CameraController?>(null);
+  var cameras = <CameraDescription>[];
 
   @override
   Future<void> onInit() async {
@@ -47,8 +62,16 @@ class GroupChatController extends GetxController {
     await _fetchChatUsers();
     _listenToChatParticipants();
     _listenToMessageStream();
-
+    await initializeCamera();
     scrollController.addListener(scrollListener);
+
+    // cameraController.value = CameraController(
+    //   // Get a specific camera from the list of available cameras.
+    //   cameras.first,
+    //   // Define the resolution to use.
+    //   ResolutionPreset.medium,
+    // );
+    _requestAssets();
     loading.value = false;
   }
 
@@ -64,6 +87,7 @@ class GroupChatController extends GetxController {
   Future<void> initializeCamera() async {
     await _imageService.initializeCamera();
     cameraController.value = _imageService.getController();
+    cameras = _imageService.cameras;
   }
 
   void _listenToMessageStream() async {
@@ -134,29 +158,62 @@ class GroupChatController extends GetxController {
     }
   }
 
-  void toggleCamera() {
-    if (cameraController.value!.value.isInitialized) {
-      final direction = _getDirection();
+  Future<void> toggleCameraLens() async {
+    final lensDirection = cameraController.value!.description.lensDirection;
+    CameraDescription newDescription;
+    if (lensDirection == CameraLensDirection.front) {
+      newDescription = cameras.firstWhere((description) =>
+          description.lensDirection == CameraLensDirection.back);
+    } else {
+      newDescription = cameras.firstWhere((description) =>
+          description.lensDirection == CameraLensDirection.front);
+    }
 
-      CameraDescription newCamera = _imageService.cameras.firstWhere(
-        (camera) => camera.lensDirection == direction,
-      );
+    await _initCamera(newDescription);
+  }
 
-      cameraController.value!.dispose();
+  Future<void> _initCamera(CameraDescription description) async {
+    cameraController.value =
+        CameraController(description, ResolutionPreset.medium);
 
-      cameraController.value = CameraController(
-        newCamera,
-        ResolutionPreset.medium,
-      );
-      cameraController.value!.initialize();
+    try {
+      await cameraController.value!.initialize();
+    } catch (e) {
+      debugPrint('Initializing Camera after toggle error: $e');
     }
   }
 
-  CameraLensDirection _getDirection() {
-    return cameraController.value!.description.lensDirection ==
-            CameraLensDirection.front
-        ? CameraLensDirection.back
-        : CameraLensDirection.front;
+  Future<void> _requestAssets() async {
+    final PermissionStatus status = await Permission.photos.request();
+
+    if (status.isDenied) {
+      print('Permission is not accessible. $status');
+      return;
+    }
+
+    final List<AssetPathEntity> paths = await PhotoManager.getAssetPathList(
+      onlyAll: true,
+      filterOption: _filterOptionGroup,
+    );
+
+    if (paths.isEmpty) {
+      return;
+    }
+
+    _path = paths.first;
+    // _totalEntitiesCount = await _path!.assetCountAsync;
+    final List<AssetEntity> entities = await _path!.getAssetListPaged(
+      page: 0,
+      size: _sizePerPage,
+    );
+
+    final files = <File>[];
+    for (final entity in entities) {
+      final file = await entity.file;
+      files.add(file!);
+    }
+
+    galleryImages.value = await _imageService.filesToBase64(files);
   }
 
   Future<SaveResult> sendMessage({String? content}) async {

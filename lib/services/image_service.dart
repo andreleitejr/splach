@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:camera/camera.dart';
 import 'package:image_picker/image_picker.dart';
@@ -72,7 +73,15 @@ class CameraService {
       return null;
     }
   }
-
+  Future<List<String>> filesToBase64(List<File> files) async {
+    List<String> base64Images = [];
+    for (var file in files) {
+      final bytes = await file.readAsBytes();
+      final String base64Image = base64Encode(Uint8List.fromList(bytes));
+      base64Images.add(base64Image);
+    }
+    return base64Images;
+  }
   CameraController getController() {
     return _controller;
   }
