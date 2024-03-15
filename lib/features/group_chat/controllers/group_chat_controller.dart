@@ -140,7 +140,7 @@ class GroupChatController extends GetxController {
     }).toList();
   }
 
-  Future<void> pickImage() async {
+  Future<void> takePhoto() async {
     final base64Image = await _imageService.takePhoto();
 
     if (base64Image != null) {

@@ -316,185 +316,194 @@ class _CameraViewState extends State<CameraView> {
               },
             ),
             const SizedBox(height: 24),
-            if (controller.galleryImages.isNotEmpty &&
-                controller.image.value == null)
-              SizedBox(
-                height: 80,
-                width: double.infinity,
-                child: ListView.builder(
-                  padding: const EdgeInsets.only(left: 16),
-                  itemCount: controller.galleryImages.length,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (BuildContext context, int index) {
-                    final galleryImage = controller.galleryImages[index];
-                    return GestureDetector(
-                      onTap: () => controller.image(galleryImage),
-                      child: Container(
-                        height: 80,
-                        width: 80,
-                        margin: const EdgeInsets.only(right: 16),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(4),
-                          image: DecorationImage(
-                            image: MemoryImage(
-                              base64Decode(
-                                controller.galleryImages[index],
-                              ),
-                            ),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            const SizedBox(height: 16),
-            if (controller.image.value == null) ...[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: TextButton(
-                        onPressed: () {
-                          controller.pickImageFromGallery();
-                        },
+            Obx(() {
+              if (controller.galleryImages.isNotEmpty &&
+                  controller.image.value == null) {
+                return SizedBox(
+                  height: 80,
+                  width: double.infinity,
+                  child: ListView.builder(
+                    padding: const EdgeInsets.only(left: 16),
+                    itemCount: controller.galleryImages.length,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (BuildContext context, int index) {
+                      final galleryImage = controller.galleryImages[index];
+                      return GestureDetector(
+                        onTap: () => controller.image(galleryImage),
                         child: Container(
-                          height: 36,
-                          width: 36,
+                          height: 80,
+                          width: 80,
+                          margin: const EdgeInsets.only(right: 16),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(4),
                             image: DecorationImage(
                               image: MemoryImage(
                                 base64Decode(
-                                  controller.galleryImages.first,
+                                  controller.galleryImages[index],
                                 ),
                               ),
                               fit: BoxFit.cover,
                             ),
                           ),
                         ),
-                      ),
-                    ),
+                      );
+                    },
                   ),
-                  Center(
-                    child: TextButton(
-                      onPressed: () {
-                        widget.controller.pickImage();
-                      },
-                      child: Container(
-                        height: 75,
-                        width: 75,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Colors.white,
-                            width: 6,
+                );
+              }
+              return Container();
+            }),
+            const SizedBox(height: 16),
+            Obx(() {
+              if (controller.image.value == null) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: TextButton(
+                          onPressed: () {
+                            controller.pickImageFromGallery();
+                          },
+                          child: Container(
+                            height: 36,
+                            width: 36,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
+                              image: DecorationImage(
+                                image: MemoryImage(
+                                  base64Decode(
+                                    controller.galleryImages.first,
+                                  ),
+                                ),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                           ),
                         ),
-                        child: Container(
-                          margin: const EdgeInsets.all(4),
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
-                          child: Container(),
-                        ),
                       ),
                     ),
-                  ),
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.centerRight,
+                    Center(
                       child: TextButton(
-                        onPressed: () async {
-                          await controller.toggleCameraLens();
-                          setState(() {});
+                        onPressed: () {
+                          widget.controller.takePhoto();
                         },
-                        child: const Icon(
-                          Icons.change_circle_outlined,
-                          color: Colors.white,
-                          size: 32,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ] else ...[
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: TextField(
-                  // focusNode: widget.focus,
-                  controller: messageController,
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                    ),
-                    hintText: 'What\'s in your mind?',
-                    hintStyle: ThemeTypography.regular14.apply(
-                      color: ThemeColors.grey4,
-                    ),
-                    suffixIcon: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          // height: 48,
-                          margin: const EdgeInsets.only(right: 6),
-                          width: 36,
-                          decoration: const BoxDecoration(
-                            color: ThemeColors.primary,
+                        child: Container(
+                          height: 75,
+                          width: 75,
+                          decoration: BoxDecoration(
                             shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.white,
+                              width: 6,
+                            ),
                           ),
-                          child: IconButton(
-                            icon: const Icon(
-                              Icons.send_outlined,
+                          child: Container(
+                            margin: const EdgeInsets.all(4),
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
                               color: Colors.white,
                             ),
-                            onPressed: () async {
-                              final result = await controller.sendMessage(
-                                content: messageController.text,
-                              );
-
-                              if (result == SaveResult.success) {
-                                controller.replyMessage.value = null;
-                                messageController.clear();
-                                controller.image.value = null;
-                                controller.scrollToBottom();
-                                Get.back();
-                              }
-                            },
+                            child: Container(),
                           ),
                         ),
-                      ],
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(96),
-                      borderSide: const BorderSide(
-                        width: 1,
-                        color: ThemeColors.grey2,
                       ),
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(96),
-                      borderSide: const BorderSide(
-                        width: 1,
-                        color: ThemeColors.grey3,
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: () async {
+                            await controller.toggleCameraLens();
+                            setState(() {});
+                          },
+                          child: const Icon(
+                            Icons.change_circle_outlined,
+                            color: Colors.white,
+                            size: 32,
+                          ),
+                        ),
                       ),
                     ),
-                    disabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(96),
-                      borderSide: const BorderSide(
-                        width: 1,
-                        color: ThemeColors.grey2,
+                  ],
+                );
+              } else {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: TextField(
+                    // focusNode: widget.focus,
+                    style: ThemeTypography.regular14.apply(
+                      color: ThemeColors.light,
+                    ),
+                    controller: messageController,
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                      ),
+                      hintText: 'What\'s in your mind?',
+                      hintStyle: ThemeTypography.regular14.apply(
+                        color: ThemeColors.light,
+                      ),
+                      suffixIcon: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            // height: 48,
+                            margin: const EdgeInsets.only(right: 6),
+                            width: 36,
+                            decoration: const BoxDecoration(
+                              color: ThemeColors.primary,
+                              shape: BoxShape.circle,
+                            ),
+                            child: IconButton(
+                              icon: const Icon(
+                                Icons.send_outlined,
+                                color: Colors.white,
+                              ),
+                              onPressed: () async {
+                                Get.back();
+                                final result = await controller.sendMessage(
+                                  content: messageController.text,
+                                );
+
+                                if (result == SaveResult.success) {
+                                  controller.replyMessage.value = null;
+                                  messageController.clear();
+                                  controller.image.value = null;
+                                  controller.scrollToBottom();
+                                }
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(96),
+                        borderSide: const BorderSide(
+                          width: 1,
+                          color: ThemeColors.grey2,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(96),
+                        borderSide: const BorderSide(
+                          width: 1,
+                          color: ThemeColors.grey3,
+                        ),
+                      ),
+                      disabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(96),
+                        borderSide: const BorderSide(
+                          width: 1,
+                          color: ThemeColors.grey2,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ),
-            ],
+                );
+              }
+            }),
             const SizedBox(height: 16),
           ],
         ),
