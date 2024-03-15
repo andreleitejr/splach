@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:splach/features/group_chat/components/chat_gallery_view.dart';
+import 'package:splach/features/group_chat/controllers/group_chat_controller.dart';
+import 'package:splach/features/group_chat/views/chat_participants_view.dart';
 
 class ChatTopNavigationBar extends StatelessWidget {
-  const ChatTopNavigationBar({super.key});
+  final GroupChatController controller;
+
+  const ChatTopNavigationBar({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -22,15 +27,37 @@ class ChatTopNavigationBar extends StatelessWidget {
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              final participants = controller.participants
+                  .where(
+                    (participant) => participant.id != controller.user.id,
+                  )
+                  .toList();
+
+              Get.to(
+                () => ChatParticipantsView(
+                  users: participants,
+                ),
+              );
+            },
             icon: const Icon(
               Icons.people_outline,
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              controller.groupChat.messages = controller.messages
+                  .where((message) => message.image != null)
+                  .toList();
+
+              Get.to(
+                () => ChatGalleryView(
+                  chat: controller.groupChat,
+                ),
+              );
+            },
             icon: const Icon(
-              Icons.notifications_none_outlined,
+              Icons.image_outlined,
             ),
           ),
         ],

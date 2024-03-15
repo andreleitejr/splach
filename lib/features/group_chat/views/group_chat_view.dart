@@ -47,7 +47,7 @@ class _ChatViewState extends State<ChatView> {
       }
       return Scaffold(
           body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
               Color(0xFFF8F2FF),
@@ -61,7 +61,9 @@ class _ChatViewState extends State<ChatView> {
         child: SafeArea(
           child: Column(
             children: [
-              const ChatTopNavigationBar(),
+              ChatTopNavigationBar(
+                controller: controller,
+              ),
               ChatParticipantsList(controller: controller),
               ChatMessageList(
                 controller: controller,

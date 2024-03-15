@@ -86,30 +86,7 @@ class ChatSenderMessage extends StatelessWidget {
                   const SizedBox(height: 8),
                 ],
                 if (message.replyMessage != null) ...[
-                  // Row(
-                  //   // mainAxisAlignment: MainAxisAlignment.start,
-                  //   children: [
-                  //     // if (message.replyId != null) ...[
-                  //     //   AvatarImage(
-                  //     //     image: message.replyMessage!.sender!.image,
-                  //     //     width: 32,
-                  //     //     height: 32,
-                  //     //   ),
-                  //     //   const SizedBox(width: 8),
-                  //     // ],
-                  //     Text(
-                  //       'Answering',
-                  //       style: ThemeTypography.regular12.apply(
-                  //         color: Colors.white,
-                  //       ),
-                  //     ),
-                  //     const SizedBox(
-                  //       width: 4,
-                  //     ),
-                  //   ],
-                  // ),
                   const SizedBox(height: 2),
-
                   if (message.replyMessage!.content != null ||
                       message.replyMessage!.image != null) ...[
                     Container(

@@ -6,7 +6,7 @@ import 'package:splach/models/message.dart';
 class Chat extends BaseModel {
   final List<String> participants;
   final int participantsLimit;
-  final List<Message> messages;
+  List<Message> messages;
   final List<String> images;
 
   List<User> users = [];

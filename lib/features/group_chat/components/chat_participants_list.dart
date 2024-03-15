@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:splach/features/group_chat/controllers/group_chat_controller.dart';
 import 'package:splach/features/user/models/user.dart';
+import 'package:splach/features/user/views/user_profile_view.dart';
 import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/widgets/avatar_image.dart';
 
@@ -25,25 +26,34 @@ class ChatParticipantsList extends StatelessWidget {
           itemCount: controller.participants.length,
           itemBuilder: (BuildContext context, int index) {
             final participant = controller.participants[index];
-            return Container(
-              margin: const EdgeInsets.only(right: 12),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  AvatarImage(
-                    image: participant.image,
-                  ),
-                  Text(
-                    participant.nickname,
-                    style: ThemeTypography.regular9,
-                  ),
-                  const SizedBox(height: 8),
-                ],
-              ),
-            );
+            return _buildParticipantAvatar(participant);
           },
         ),
       );
     });
+  }
+
+  Widget _buildParticipantAvatar(User participant) {
+    return GestureDetector(
+      onTap: () => Get.to(
+        () => UserProfileView(user: participant),
+      ),
+      child: Container(
+        margin: const EdgeInsets.only(right: 12),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            AvatarImage(
+              image: participant.image,
+            ),
+            Text(
+              participant.nickname,
+              style: ThemeTypography.regular9,
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
   }
 }

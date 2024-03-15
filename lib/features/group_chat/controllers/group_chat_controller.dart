@@ -118,7 +118,11 @@ class GroupChatController extends GetxController {
     }).toList();
   }
 
-  Future<SaveResult> sendMessage({String? content}) async {
+  Future<SaveResult?> sendMessage({String? content}) async {
+    if (loading.isTrue) return null;
+
+    loading.value = true;
+
     final newMessage = Message(
       content: content,
       image: image.value,
@@ -128,7 +132,11 @@ class GroupChatController extends GetxController {
       replyId: replyMessage.value?.id,
     );
 
-    return await _messageRepository.save(newMessage);
+    final result = await _messageRepository.save(newMessage);
+
+    loading.value = false;
+
+    return result;
   }
 
   Future<void> removeChatParticipant() async {
