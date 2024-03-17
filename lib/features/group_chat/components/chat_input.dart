@@ -6,7 +6,9 @@ import 'package:splach/features/camera/views/camera_view.dart';
 import 'package:splach/features/group_chat/components/chat_highlight_mention.dart';
 import 'package:splach/features/group_chat/components/chat_image.dart';
 import 'package:splach/features/group_chat/components/chat_image_input.dart';
+import 'package:splach/features/group_chat/components/chat_participant_mention_list.dart';
 import 'package:splach/features/group_chat/controllers/group_chat_controller.dart';
+import 'package:splach/features/user/models/user.dart';
 import 'package:splach/repositories/firestore_repository.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
@@ -26,7 +28,7 @@ class ChatInput extends StatefulWidget {
 }
 
 class _ChatInputState extends State<ChatInput> {
-  final messageController = TextEditingController();
+  final messageController = MentionHighlightingController();
 
   bool _isTyping = false;
 
@@ -39,13 +41,24 @@ class _ChatInputState extends State<ChatInput> {
   void _onTextChanged() {
     setState(() {
       _isTyping = messageController.text.isNotEmpty;
+      widget.controller.updateMentionListVisibility(messageController.text);
     });
+  }
+
+  void _addUserToChatInput(User user) {
+    final String currentText = messageController.text;
+    final String newUserText = user.nickname;
+    final String newText = currentText + newUserText;
+    messageController.text = newText;
+    messageController.selection = TextSelection.fromPosition(
+      TextPosition(offset: newText.length),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final controller = widget.controller;
-    return  Container(
+    return Container(
       decoration: BoxDecoration(
         color: Colors.white,
         border: const Border(
@@ -148,8 +161,8 @@ class _ChatInputState extends State<ChatInput> {
                               constraints: BoxConstraints(
                                 minWidth: 75,
                                 maxWidth:
-                                MediaQuery.of(context).size.width * 0.65 -
-                                    32,
+                                    MediaQuery.of(context).size.width * 0.65 -
+                                        32,
                               ),
                               child: RichText(
                                 text: TextSpan(
@@ -174,6 +187,12 @@ class _ChatInputState extends State<ChatInput> {
               ],
             );
           }),
+          if (controller.isShowingMentionList.isTrue) ...[
+            ChatParticipantMentionList(
+              controller: controller,
+              onUserSelected: _addUserToChatInput,
+            ),
+          ],
           TextField(
             focusNode: widget.focus,
             controller: messageController,
@@ -197,7 +216,7 @@ class _ChatInputState extends State<ChatInput> {
                       onPressed: () async {
                         controller.isCameraOpen.value = true;
                         final image = await Get.to(
-                              () => const CameraGalleryView(),
+                          () => const CameraGalleryView(),
                         );
                         if (image != null) {
                           controller.image.value = image;
@@ -259,5 +278,27 @@ class _ChatInputState extends State<ChatInput> {
         ],
       ),
     );
+  }
+}
+
+
+class MentionHighlightingController extends TextEditingController {
+  MentionHighlightingController({String? text}) : super(text: text);
+
+  @override
+  set text(String newText) {
+    value = TextEditingValue(
+      text: newText,
+      selection: selection,
+      composing: TextRange.empty,
+    );
+  }
+
+  @override
+  TextSpan buildTextSpan({required BuildContext context, TextStyle? style, required bool withComposing}) {
+    final text = value.text;
+    final spans = highlightMentions(text);
+
+    return TextSpan(style: style, children: spans);
   }
 }

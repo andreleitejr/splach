@@ -1,11 +1,5 @@
-import 'dart:io';
-
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:photo_manager/photo_manager.dart';
 import 'package:splach/features/group_chat/models/group_chat.dart';
 import 'package:splach/features/group_chat/repositories/group_chat_repository.dart';
 import 'package:splach/features/user/models/user.dart';
@@ -13,7 +7,6 @@ import 'package:splach/features/user/repositories/user_repository.dart';
 import 'package:splach/models/message.dart';
 import 'package:splach/repositories/firestore_repository.dart';
 import 'package:splach/repositories/message_repository.dart';
-import 'package:splach/services/image_service.dart';
 
 class GroupChatController extends GetxController {
   GroupChatController(this.groupChat) {
@@ -38,6 +31,31 @@ class GroupChatController extends GetxController {
   final scrollController = ScrollController();
   final showButton = false.obs;
   final replyMessage = Rx<Message?>(null);
+  final isShowingMentionList = false.obs;
+
+  void updateMentionListVisibility(String value) {
+    isShowingMentionList.value = value.endsWith('@');
+    update();
+  }
+
+  RxList<int> get mentionIndexes {
+    final list = <int>[];
+    for (var i = 0; i < messages.length; i++) {
+      final message = messages[i];
+
+      final userMentioned = message.content != null &&
+          message.content!.contains('@${user.nickname.removeAllWhitespace}');
+
+      print(
+          ' ################## hudhuasdhauhasuhasduhsdauashdudashu ${message.content} @${user.nickname} ${message.content!.contains('@${user.nickname}')}');
+      if (userMentioned) {
+        print(
+            'HAHAHAHAHAH  ################## hudhuasdhauhasuhasduhsdauashdudashu ${message.content}');
+      }
+      list.add(i);
+    }
+    return list.obs;
+  }
 
   final loading = false.obs;
 
@@ -119,7 +137,7 @@ class GroupChatController extends GetxController {
   }
 
   Future<SaveResult?> sendMessage({String? content}) async {
-    if (loading.isTrue) return null;
+    if (loading.isTrue || content == null || content.isEmpty) return null;
 
     loading.value = true;
 
@@ -168,6 +186,16 @@ class GroupChatController extends GetxController {
       duration: const Duration(milliseconds: 500),
       curve: Curves.easeInOut,
     );
+  }
+
+  void scrollToMessageIndex() {
+    scrollController.animateTo(
+        scrollController.position.minScrollExtent +
+            (mentionIndexes.last *
+                scrollController.position.viewportDimension /
+                25),
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut);
   }
 
   @override

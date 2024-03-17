@@ -27,19 +27,9 @@ class ChatTopNavigationBar extends StatelessWidget {
             ),
           ),
           IconButton(
-            onPressed: () {
-              final participants = controller.participants
-                  .where(
-                    (participant) => participant.id != controller.user.id,
-                  )
-                  .toList();
-
-              Get.to(
-                () => ChatParticipantsView(
-                  users: participants,
-                ),
-              );
-            },
+            onPressed: () => Get.to(
+              () => ChatParticipantsView(users: controller.participants),
+            ),
             icon: const Icon(
               Icons.people_outline,
             ),

@@ -15,14 +15,13 @@ class ChatMessageList extends StatelessWidget {
 
   const ChatMessageList({
     super.key,
-    required this.controller, required this.focus,
+    required this.controller,
+    required this.focus,
   });
 
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-
-
       final messages = controller.messages;
       return Expanded(
         child: Stack(
@@ -47,6 +46,8 @@ class ChatMessageList extends StatelessWidget {
                       },
                     );
                   }
+
+
                   return Column(
                     children: [
                       if (message.isFromSystem) ...[
@@ -71,6 +72,12 @@ class ChatMessageList extends StatelessWidget {
                 },
               ),
             ),
+            // Obx(() {
+            //   if (controller.mentionIndexes.isNotEmpty) {
+            //     return goToMentionMessageButton();
+            //   }
+            //   return Container();
+            // }),
             Obx(() {
               if (controller.showButton.isTrue) {
                 return backToBottomButton();
@@ -106,6 +113,36 @@ class ChatMessageList extends StatelessWidget {
           ),
           child: const Icon(
             Icons.keyboard_double_arrow_down,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget goToMentionMessageButton() {
+    return Positioned(
+      right: 24,
+      bottom: 24,
+      child: GestureDetector(
+        onTap: () => controller.scrollToMessageIndex(),
+        child: Container(
+          height: 48,
+          width: 48,
+          decoration: BoxDecoration(
+            color: ThemeColors.secondary.withOpacity(0.85),
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: ThemeColors.tertiary.withOpacity(0.25),
+                spreadRadius: 4,
+                blurRadius: 20,
+                offset: const Offset(-2, 5),
+              ),
+            ],
+          ),
+          child: const Icon(
+            Icons.message_outlined,
             color: Colors.white,
           ),
         ),

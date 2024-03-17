@@ -165,6 +165,7 @@ class ChatUserMessage extends StatelessWidget {
                           ),
                           children: highlightMentions(
                             message.content!,
+                            isFromUser: true,
                           ),
                         ),
                       ),
