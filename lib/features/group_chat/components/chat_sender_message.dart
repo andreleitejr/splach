@@ -26,7 +26,14 @@ class ChatSenderMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isReplied = message.recipients!.contains(Get.find<User>().id);
+    final userId = Get.find<User>().id;
+
+    final isReplied = message.recipients!.contains(userId);
+
+    if (message.private && !isReplied) {
+      return Container();
+    }
+
     final isHighlighted = message.private && isReplied;
 
     return GestureDetector(

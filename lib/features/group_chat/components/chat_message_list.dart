@@ -40,11 +40,6 @@ class ChatMessageList extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final message = messages[index];
 
-                  if (message.private &&
-                      message.replyId != Get.find<User>().id) {
-                    return Container();
-                  }
-
                   if (message.replyId != null) {
                     message.replyMessage = messages.firstWhereOrNull(
                       (m) {
