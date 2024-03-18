@@ -4,9 +4,9 @@ import 'package:splach/features/group_chat/models/group_chat.dart';
 import 'package:splach/features/group_chat/repositories/group_chat_repository.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/features/user/repositories/user_repository.dart';
-import 'package:splach/models/message.dart';
+import 'package:splach/features/group_chat/models/message.dart';
 import 'package:splach/repositories/firestore_repository.dart';
-import 'package:splach/repositories/message_repository.dart';
+import 'package:splach/features/group_chat/repositories/message_repository.dart';
 
 class GroupChatController extends GetxController {
   GroupChatController(this.groupChat) {
@@ -24,6 +24,8 @@ class GroupChatController extends GetxController {
   final participants = <User>[].obs;
   final messages = <Message>[].obs;
   final image = Rx<String?>(null);
+  final private = false.obs;
+  final recipients = <String>[].obs;
   final isCameraOpen = false.obs;
 
   // final replyUser = Rx<User?>(null);
@@ -32,39 +34,20 @@ class GroupChatController extends GetxController {
   final showButton = false.obs;
   final replyMessage = Rx<Message?>(null);
   final isShowingMentionList = false.obs;
+  final loading = false.obs;
 
   void updateMentionListVisibility(String value) {
     isShowingMentionList.value = value.endsWith('@');
     update();
   }
 
-  RxList<int> get mentionIndexes {
-    final list = <int>[];
-    for (var i = 0; i < messages.length; i++) {
-      final message = messages[i];
-
-      final userMentioned = message.content != null &&
-          message.content!.contains('@${user.nickname.removeAllWhitespace}');
-
-      print(
-          ' ################## hudhuasdhauhasuhasduhsdauashdudashu ${message.content} @${user.nickname} ${message.content!.contains('@${user.nickname}')}');
-      if (userMentioned) {
-        print(
-            'HAHAHAHAHAH  ################## hudhuasdhauhasuhasduhsdauashdudashu ${message.content}');
-      }
-      list.add(i);
-    }
-    return list.obs;
-  }
-
-  final loading = false.obs;
-
   @override
   Future<void> onInit() async {
     super.onInit();
     loading.value = true;
-    await _fetchChatUsers();
+    // await _fetchChatUsers();
     _listenToChatParticipants();
+    // await Future.delayed(const Duration(seconds: 4));
     _listenToMessageStream();
     scrollController.addListener(scrollListener);
 
@@ -77,18 +60,19 @@ class GroupChatController extends GetxController {
     loading.value = false;
   }
 
-  Future<void> _fetchChatUsers() async {
-    final chatUsers =
-        await _userRepository.getUsersByIds(groupChat.participants);
-
-    participants.assignAll(chatUsers);
-    debugPrint(
-        'Chat Group Controller | There is ${participants.length} in chat.');
-  }
+  // Future<void> _fetchChatUsers() async {
+  //   final chatUsers =
+  //       await _userRepository.getUsersByIds(groupChat.participants);
+  //
+  //   participants.assignAll(chatUsers);
+  //   debugPrint(
+  //       'Chat Group Controller | There is ${participants.length} in chat.');
+  // }
 
   void _listenToMessageStream() async {
     _messageRepository.streamLastMessages().listen((messageData) async {
       messages.assignAll(messageData);
+      // _filterPrivateMessages();
       messages.sort((b, a) => a.createdAt.compareTo(b.createdAt));
 
       updateMessageSenders();
@@ -106,8 +90,11 @@ class GroupChatController extends GetxController {
             'User list after removal: ${participants.map((user) => user.id)}');
 
         List<String> participantsNotInUserList = chat.participants
-            .where((participantId) =>
-                !participants.any((user) => user.id == participantId))
+            .where(
+              (participantId) => !participants.any(
+                (user) => user.id == participantId,
+              ),
+            )
             .toList();
 
         if (participantsNotInUserList.isNotEmpty) {
@@ -136,6 +123,15 @@ class GroupChatController extends GetxController {
     }).toList();
   }
 
+  // void _filterPrivateMessages() {
+  //   messages.value = messages.where((message) {
+  //     if (message.private && message.replyId != user.id) {
+  //       return false;
+  //     }
+  //     return true;
+  //   }).toList();
+  // }
+
   Future<SaveResult?> sendMessage({String? content}) async {
     if (loading.isTrue || content == null || content.isEmpty) return null;
 
@@ -148,6 +144,8 @@ class GroupChatController extends GetxController {
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
       replyId: replyMessage.value?.id,
+      private: private.value,
+      recipients: recipients.isEmpty ? null : recipients,
     );
 
     final result = await _messageRepository.save(newMessage);
@@ -188,15 +186,29 @@ class GroupChatController extends GetxController {
     );
   }
 
-  void scrollToMessageIndex() {
-    scrollController.animateTo(
-        scrollController.position.minScrollExtent +
-            (mentionIndexes.last *
-                scrollController.position.viewportDimension /
-                25),
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.easeInOut);
-  }
+  // void scrollToMessageIndex() {
+  //   scrollController.animateTo(
+  //       scrollController.position.minScrollExtent +
+  //           (mentionIndexes.last *
+  //               scrollController.position.viewportDimension /
+  //               25),
+  //       duration: const Duration(milliseconds: 500),
+  //       curve: Curves.easeInOut);
+  // }
+
+  // RxList<int> get mentionIndexes {
+  //   final list = <int>[];
+  //   for (var i = 0; i < messages.length; i++) {
+  //     final message = messages[i];
+  //
+  //     final userMentioned = message.content != null &&
+  //         message.content!.contains('@${user.nickname.removeAllWhitespace}');
+  //
+  //     if (userMentioned) {}
+  //     list.add(i);
+  //   }
+  //   return list.obs;
+  // }
 
   @override
   void onClose() {

@@ -11,8 +11,8 @@ import 'package:splach/features/services/location_service.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/features/user/repositories/user_repository.dart';
 import 'package:splach/models/chat_category.dart';
-import 'package:splach/models/message.dart';
-import 'package:splach/repositories/message_repository.dart';
+import 'package:splach/features/group_chat/models/message.dart';
+import 'package:splach/features/group_chat/repositories/message_repository.dart';
 import 'package:splach/utils/extensions.dart';
 
 class HomeController extends GetxController {

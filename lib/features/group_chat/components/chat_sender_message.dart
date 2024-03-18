@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:splach/features/group_chat/components/chat_image.dart';
-import 'package:splach/models/message.dart';
+import 'package:splach/features/group_chat/models/message.dart';
+import 'package:splach/features/group_chat/widgets/private_message_sign.dart';
+import 'package:splach/features/user/models/user.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/utils/extensions.dart';
@@ -23,6 +26,9 @@ class ChatSenderMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isReplied = message.recipients!.contains(Get.find<User>().id);
+    final isHighlighted = message.private && isReplied;
+
     return GestureDetector(
       onDoubleTap: onDoubleTap,
       onHorizontalDragEnd: (_) {
@@ -42,9 +48,10 @@ class ChatSenderMessage extends StatelessWidget {
               horizontal: 8,
             ),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: isHighlighted ? ThemeColors.grey1 : Colors.white,
               border: Border.all(
-                color: ThemeColors.grey2,
+                color:
+                    isHighlighted ? ThemeColors.secondary : ThemeColors.grey2,
               ),
               borderRadius: BorderRadius.only(
                 topLeft: Radius.zero,
@@ -56,35 +63,42 @@ class ChatSenderMessage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (message.sender != null) ...[
-                  RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: '@${message.sender!.nickname}',
-                          style: ThemeTypography.semiBold12.copyWith(
-                            color: ThemeColors.primary,
-                          ),
-                        ),
-                        if (message.replyMessage != null) ...[
+                Row(
+                  children: [
+                    RichText(
+                      text: TextSpan(
+                        children: [
                           TextSpan(
-                            text: ' answered ',
-                            style: ThemeTypography.regular12.copyWith(
-                              color: ThemeColors.grey4,
-                            ),
-                          ),
-                          TextSpan(
-                            text: '@${message.replyMessage!.sender?.nickname}',
+                            text: '@${message.sender?.nickname ?? 'user'}',
                             style: ThemeTypography.semiBold12.copyWith(
                               color: ThemeColors.primary,
                             ),
                           ),
+                          if (message.replyMessage != null) ...[
+                            TextSpan(
+                              text: ' answered ',
+                              style: ThemeTypography.regular12.copyWith(
+                                color: ThemeColors.grey4,
+                              ),
+                            ),
+                            // TextSpan(
+                            //   text:
+                            //       '@${message.replyMessage!.sender?.nickname}',
+                            //   style: ThemeTypography.semiBold12.copyWith(
+                            //     color: ThemeColors.primary,
+                            //   ),
+                            // ),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                ],
+                    const SizedBox(height: 8),
+                    const SizedBox(width: 16),
+                    if (message.private) ...[
+                      const PrivateMessageSign(),
+                    ],
+                  ],
+                ),
                 if (message.replyMessage != null) ...[
                   const SizedBox(height: 2),
                   if (message.replyMessage!.content != null ||

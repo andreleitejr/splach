@@ -7,7 +7,10 @@ import 'package:splach/features/group_chat/views/chat_participants_view.dart';
 class ChatTopNavigationBar extends StatelessWidget {
   final GroupChatController controller;
 
-  const ChatTopNavigationBar({super.key, required this.controller});
+  const ChatTopNavigationBar({
+    super.key,
+    required this.controller,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +31,9 @@ class ChatTopNavigationBar extends StatelessWidget {
           ),
           IconButton(
             onPressed: () => Get.to(
-              () => ChatParticipantsView(users: controller.participants),
+              () => ChatParticipantsView(
+                users: controller.participants,
+              ),
             ),
             icon: const Icon(
               Icons.people_outline,
@@ -37,7 +42,9 @@ class ChatTopNavigationBar extends StatelessWidget {
           IconButton(
             onPressed: () {
               controller.groupChat.messages = controller.messages
-                  .where((message) => message.image != null)
+                  .where(
+                    (message) => message.image != null,
+                  )
                   .toList();
 
               Get.to(

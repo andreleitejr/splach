@@ -1,17 +1,15 @@
-import 'dart:convert';
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:splach/features/camera/views/camera_view.dart';
 import 'package:splach/features/group_chat/components/chat_highlight_mention.dart';
 import 'package:splach/features/group_chat/components/chat_image.dart';
-import 'package:splach/features/group_chat/components/chat_image_input.dart';
 import 'package:splach/features/group_chat/components/chat_participant_mention_list.dart';
 import 'package:splach/features/group_chat/controllers/group_chat_controller.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/repositories/firestore_repository.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
+import 'package:splach/widgets/switch_button.dart';
 
 class ChatInput extends StatefulWidget {
   final GroupChatController controller;
@@ -79,114 +77,128 @@ class _ChatInputState extends State<ChatInput> {
       child: Column(
         children: [
           const SizedBox(height: 16),
-          Obx(() {
-            if (controller.replyMessage.value == null) {
-              return Container();
-            }
+          Obx(
+            () {
+              if (controller.replyMessage.value == null) {
+                return Container();
+              }
 
-            final replyMessage = controller.replyMessage.value!;
+              final replyMessage = controller.replyMessage.value!;
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    if (replyMessage.sender != null) ...[
-                      // AvatarImage(
-                      //   image: replyMessage.sender!.image,
-                      //   width: 32,
-                      //   height: 32,
-                      // ),
-                      // const SizedBox(width: 8),
-                      Expanded(
-                        child: RichText(
-                          text: TextSpan(
-                            style: ThemeTypography.regular14.apply(
-                              color: Colors.black,
-                            ),
-                            children: highlightMentions(
-                              'Asnwering @${replyMessage.sender!.nickname}',
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      if (replyMessage.sender != null) ...[
+                        // AvatarImage(
+                        //   image: replyMessage.sender!.image,
+                        //   width: 32,
+                        //   height: 32,
+                        // ),
+                        // const SizedBox(width: 8),
+                        Expanded(
+                          child: RichText(
+                            text: TextSpan(
+                              style: ThemeTypography.regular14.apply(
+                                color: Colors.black,
+                              ),
+                              children: highlightMentions(
+                                'Asnwering @${replyMessage.sender!.nickname}',
+                              ),
                             ),
                           ),
                         ),
+                      ],
+                      IconButton(
+                        onPressed: () {
+                          controller.replyMessage.value = null;
+                        },
+                        constraints: const BoxConstraints(
+                          maxHeight: 30,
+                        ),
+                        icon: const Icon(
+                          size: 20,
+                          Icons.close,
+                        ),
                       ),
                     ],
-                    IconButton(
-                      onPressed: () {
-                        controller.replyMessage.value = null;
-                      },
-                      constraints: const BoxConstraints(
-                        maxHeight: 30,
+                  ),
+                  const SizedBox(height: 8),
+                  if (replyMessage.image != null &&
+                      replyMessage.image!.isNotEmpty) ...[
+                    ChatImage(
+                      image: replyMessage.image!,
+                      maxHeight: 200,
+                      maxWidth: double.infinity,
+                    ),
+                  ],
+                  if (replyMessage.content != null) ...[
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: ThemeColors.grey1,
+                        border: Border.all(
+                          color: ThemeColors.grey2,
+                        ),
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.zero,
+                          topRight: Radius.circular(12),
+                          bottomLeft: Radius.circular(12),
+                          bottomRight: Radius.circular(12),
+                        ),
                       ),
-                      icon: const Icon(
-                        size: 20,
-                        Icons.close,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  minWidth: 75,
+                                  maxWidth:
+                                      MediaQuery.of(context).size.width * 0.65 -
+                                          32,
+                                ),
+                                child: RichText(
+                                  text: TextSpan(
+                                    style: ThemeTypography.regular14.apply(
+                                      color: Colors.black,
+                                    ),
+                                    children: highlightMentions(
+                                      replyMessage.content!,
+                                    ),
+                                  ),
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   ],
-                ),
-                const SizedBox(height: 8),
-                if (replyMessage.image != null &&
-                    replyMessage.image!.isNotEmpty) ...[
-                  ChatImage(
-                    image: replyMessage.image!,
-                    maxHeight: 200,
-                    maxWidth: double.infinity,
-                  ),
-                ],
-                if (replyMessage.content != null) ...[
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: ThemeColors.grey1,
-                      border: Border.all(
-                        color: ThemeColors.grey2,
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      const Expanded(
+                        child: Text('Mensagem privada?'),
                       ),
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.zero,
-                        topRight: Radius.circular(12),
-                        bottomLeft: Radius.circular(12),
-                        bottomRight: Radius.circular(12),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ConstrainedBox(
-                              constraints: BoxConstraints(
-                                minWidth: 75,
-                                maxWidth:
-                                    MediaQuery.of(context).size.width * 0.65 -
-                                        32,
-                              ),
-                              child: RichText(
-                                text: TextSpan(
-                                  style: ThemeTypography.regular14.apply(
-                                    color: Colors.black,
-                                  ),
-                                  children: highlightMentions(
-                                    replyMessage.content!,
-                                  ),
-                                ),
-                                maxLines: 3,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                      SwitchButton(
+                        value: controller.private.value,
+                        onChanged: controller.private,
+                      )
+                    ],
                   ),
+                  const SizedBox(height: 16),
                 ],
-                const SizedBox(height: 16),
-              ],
-            );
-          }),
+              );
+            },
+          ),
           if (controller.isShowingMentionList.isTrue) ...[
             ChatParticipantMentionList(
               controller: controller,
@@ -243,6 +255,7 @@ class _ChatInputState extends State<ChatInput> {
 
                         if (result == SaveResult.success) {
                           controller.replyMessage.value = null;
+                          controller.private.value = false;
                           messageController.clear();
                           controller.scrollToBottom();
                         }
@@ -281,7 +294,6 @@ class _ChatInputState extends State<ChatInput> {
   }
 }
 
-
 class MentionHighlightingController extends TextEditingController {
   MentionHighlightingController({String? text}) : super(text: text);
 
@@ -295,10 +307,16 @@ class MentionHighlightingController extends TextEditingController {
   }
 
   @override
-  TextSpan buildTextSpan({required BuildContext context, TextStyle? style, required bool withComposing}) {
+  TextSpan buildTextSpan(
+      {required BuildContext context,
+      TextStyle? style,
+      required bool withComposing}) {
     final text = value.text;
     final spans = highlightMentions(text);
 
-    return TextSpan(style: style, children: spans);
+    return TextSpan(
+      style: style,
+      children: spans,
+    );
   }
 }

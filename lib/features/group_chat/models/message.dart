@@ -15,6 +15,8 @@ class Message extends BaseModel {
   final String? replyId;
   final String? image;
   final MessageType messageType;
+  final bool private;
+  final List<String>? recipients;
 
   User? sender;
   Message? replyMessage;
@@ -27,17 +29,25 @@ class Message extends BaseModel {
     this.replyId,
     this.image,
     this.messageType = MessageType.user,
+    this.private = false,
+    this.recipients,
   }) : super(
           createdAt: createdAt,
           updatedAt: updatedAt,
         );
 
   Message.fromDocument(DocumentSnapshot document)
-      : content = document['content'],
-        senderId = document['senderId'],
-        replyId = document['replyId'],
-        image = document['image'],
-        messageType = MessageTypeExtension.fromString(document['messageType']),
+      : content = document.get('content'),
+        senderId = document.get('senderId'),
+        replyId = document.get('replyId'),
+        image = document.get('image'),
+        messageType = MessageTypeExtension.fromString(
+          document.get('messageType'),
+        ),
+        private = document.get('private'),
+        recipients = List<String>.from(
+          document.get('recipients') ?? [],
+        ),
         super.fromDocument(document);
 
   @override
@@ -48,6 +58,8 @@ class Message extends BaseModel {
       'replyId': replyId,
       'image': image,
       'messageType': messageType.toStringSimplified(),
+      'private': private,
+      'recipients': recipients,
       ...super.toMap(),
     };
   }

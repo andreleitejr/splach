@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:splach/models/message.dart';
+import 'package:splach/features/group_chat/models/message.dart';
 import 'package:splach/repositories/firestore_repository.dart';
 
 class MessageRepository extends FirestoreRepository<Message> {
@@ -10,9 +10,14 @@ class MessageRepository extends FirestoreRepository<Message> {
           fromDocument: (document) => Message.fromDocument(document),
         );
 
+
+  /// MODIFICAR ESSA STREAM PARA EVITAR BUSCAS DE MENSAGENS PRIVADAS
+  /// EM QUE O USER NAO ESTA NA LISTA DE RECIPIENTS
+
   Stream<List<Message>> streamLastMessages() {
     try {
-      debugPrint('Message Repository | Listen to last messages of  $collectionName');
+      debugPrint(
+          'Message Repository | Listen to last messages of  $collectionName');
 
       final query = firestore
           .collection(collectionName)

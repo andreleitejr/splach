@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:splach/features/group_chat/models/group_chat.dart';
-import 'package:splach/models/message.dart';
+import 'package:splach/features/group_chat/models/message.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/widgets/image_viewer.dart';

@@ -2,7 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:splach/features/group_chat/components/chat_image.dart';
-import 'package:splach/models/message.dart';
+import 'package:splach/features/group_chat/models/message.dart';
+import 'package:splach/features/group_chat/widgets/private_message_sign.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/utils/extensions.dart';
@@ -96,13 +97,19 @@ class ChatUserMessage extends StatelessWidget {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  '@${message.replyMessage?.sender?.nickname}',
-                                  style: ThemeTypography.semiBold12.apply(
-                                    color: ThemeColors.primary,
-                                  ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      '@${message.replyMessage?.sender?.nickname ?? 'user'}',
+                                      style: ThemeTypography.semiBold12.apply(
+                                        color: ThemeColors.primary,
+                                      ),
+                                    ),
+                                    if (message.private) ...[
+                                      const PrivateMessageSign(),
+                                    ],
+                                  ],
                                 ),
-
                                 const SizedBox(height: 8),
                                 if (message.replyMessage!.image != null &&
                                     message
@@ -133,14 +140,6 @@ class ChatUserMessage extends StatelessWidget {
                                     ),
                                   ),
                                 ],
-                                // const SizedBox(height: 8),
-                                // Text(
-                                //   '${replyMessage.createdAt.toTimeString()} ago',
-                                //   style: ThemeTypography.regular9.apply(
-                                //     color: ThemeColors.grey4,
-                                //   ),
-                                //   textAlign: TextAlign.right,
-                                // ),
                               ],
                             ),
                           ],
