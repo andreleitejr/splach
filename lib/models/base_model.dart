@@ -13,8 +13,8 @@ class BaseModel {
 
   BaseModel.fromDocument(DocumentSnapshot document)
       : id = document.id,
-        createdAt = (document['createdAt'] as Timestamp).toDate(),
-        updatedAt = (document['updatedAt'] as Timestamp).toDate();
+        createdAt = (document.get('createdAt') as Timestamp).toDate(),
+        updatedAt = (document.get('updatedAt') as Timestamp).toDate();
 
   Map<String, dynamic> toMap() {
     return {

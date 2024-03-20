@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:splach/features/group_chat/models/group_chat.dart';
+import 'package:splach/features/group_chat/models/participant.dart';
 import 'package:splach/features/group_chat/repositories/group_chat_repository.dart';
+import 'package:splach/features/group_chat/repositories/participant_repository.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/features/user/repositories/user_repository.dart';
 import 'package:splach/features/group_chat/models/message.dart';
@@ -13,6 +15,7 @@ class GroupChatController extends GetxController {
     debugPrint(
         'Chat Controller | Initializing the group chat for ${groupChat.id}');
     _messageRepository = MessageRepository(groupChat.id!);
+    _participantRepository = ParticipantRepository(groupChat.id!);
   }
 
   final GroupChatRepository _chatRepository = Get.find();
@@ -20,8 +23,9 @@ class GroupChatController extends GetxController {
   final User user = Get.find();
 
   late MessageRepository _messageRepository;
+  late ParticipantRepository _participantRepository;
   final GroupChat groupChat;
-  final participants = <User>[].obs;
+  final participants = <Participant>[].obs;
   final messages = <Message>[].obs;
   final image = Rx<String?>(null);
   final private = false.obs;
@@ -46,9 +50,10 @@ class GroupChatController extends GetxController {
     super.onInit();
     loading.value = true;
     // await _fetchChatUsers();
-    _listenToChatParticipants();
+    // _listenToChatParticipants();
     // await Future.delayed(const Duration(seconds: 4));
     _listenToMessageStream();
+    _listenToParticipants();
     scrollController.addListener(scrollListener);
 
     // cameraController.value = CameraController(
@@ -75,53 +80,63 @@ class GroupChatController extends GetxController {
       // _filterPrivateMessages();
       messages.sort((b, a) => a.createdAt.compareTo(b.createdAt));
 
-      updateMessageSenders();
+      // updateMessageSenders();
     });
   }
 
-  void _listenToChatParticipants() {
-    _chatRepository.stream(groupChat.id!).listen(
-      (chat) async {
-        participants.removeWhere(
-          (user) => !chat.participants.contains(user.id),
-        );
+  void _listenToParticipants() async {
+    _participantRepository.streamParticipants().listen((participantData) async {
+      if (participants.isNotEmpty) {
+        final newParticipants = participantData.where((participant) {
+          return !participants.any((existingParticipant) =>
+              existingParticipant.id == participant.id);
+        }).toList();
 
-        debugPrint(
-            'User list after removal: ${participants.map((user) => user.id)}');
+        final leftParticipants = participants.where((participant) {
+          return !participantData
+              .any((leftParticipant) => leftParticipant.id == participant.id);
+        }).toList();
 
-        List<String> participantsNotInUserList = chat.participants
-            .where(
-              (participantId) => !participants.any(
-                (user) => user.id == participantId,
-              ),
-            )
-            .toList();
-
-        if (participantsNotInUserList.isNotEmpty) {
-          debugPrint(
-              'Searching for ${participantsNotInUserList.length} not found in local user list.');
-
-          final newUsers = await _userRepository.getUsersByIds(
-            participantsNotInUserList,
-          );
-
-          participants.addAll(newUsers);
-          updateMessageSenders();
+        if (newParticipants.isNotEmpty) {
+          addSystemMessage(newParticipants);
         }
-      },
+        if (leftParticipants.isNotEmpty) {
+          addSystemMessage(leftParticipants, isLeaving: true);
+        }
+      }
+      participants.assignAll(participantData);
+      // _filterPrivateMessages();
+      messages.sort((b, a) => a.createdAt.compareTo(b.createdAt));
+
+      // updateMessageSenders();
+    });
+  }
+
+  void addSystemMessage(List<Participant> participants,
+      {bool isLeaving = false}) {
+    final nicknames = participants.map((participant) => participant.nickname);
+    final systemMessage = Message(
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      content:
+          '${nicknames.toString()} ${isLeaving ? 'saiu' : 'entrou'} da sala',
+      senderId: user.id!,
+      messageType: MessageType.system,
     );
+
+    messages.add(systemMessage);
   }
 
-  void updateMessageSenders() {
-    messages.value = messages.map((message) {
-      User? sender = participants.firstWhereOrNull(
-        (user) => user.id == message.senderId,
-      );
-
-      message.sender = sender;
-      return message;
-    }).toList();
-  }
+  // void updateMessageSenders() {
+  //   messages.value = messages.map((message) {
+  //     Participant? sender = participants.firstWhereOrNull(
+  //       (user) => user.id == message.senderId,
+  //     );
+  //
+  //     message.sender = sender;
+  //     return message;
+  //   }).toList();
+  // }
 
   // void _filterPrivateMessages() {
   //   messages.value = messages.where((message) {
@@ -156,23 +171,29 @@ class GroupChatController extends GetxController {
   }
 
   Future<void> removeChatParticipant() async {
-    groupChat.participants
-        .removeWhere((participant) => participant == user.id!);
-    _chatRepository.update(groupChat);
-    addSystemMessage();
-  }
-
-  Future<void> addSystemMessage() async {
-    final message = Message(
+    final participant = Participant(
+      id: user.id,
+      nickname: user.nickname,
+      image: user.image,
+      status: Status.offline,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
-      content: '${user.nickname} saiu da sala',
-      senderId: user.id!,
-      messageType: MessageType.system,
     );
 
-    _messageRepository.save(message);
+    _participantRepository.save(participant, docId: user.id);
   }
+
+  // Future<void> addSystemMessage() async {
+  //   final message = Message(
+  //     createdAt: DateTime.now(),
+  //     updatedAt: DateTime.now(),
+  //     content: '${user.nickname} saiu da sala',
+  //     senderId: user.id!,
+  //     messageType: MessageType.system,
+  //   );
+  //
+  //   _messageRepository.save(message);
+  // }
 
   void scrollListener() {
     showButton.value = scrollController.position.pixels >= 500;

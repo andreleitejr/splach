@@ -22,8 +22,8 @@ class Message extends BaseModel {
   Message? replyMessage;
 
   Message({
-    required DateTime createdAt,
-    required DateTime updatedAt,
+    required super.createdAt,
+    required super.updatedAt,
     this.content,
     required this.senderId,
     this.replyId,
@@ -31,10 +31,7 @@ class Message extends BaseModel {
     this.messageType = MessageType.user,
     this.private = false,
     this.recipients,
-  }) : super(
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-        );
+  });
 
   Message.fromDocument(DocumentSnapshot document)
       : content = document.get('content'),

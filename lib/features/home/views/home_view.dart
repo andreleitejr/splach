@@ -106,7 +106,7 @@ class HomeView extends StatelessWidget {
                     return ChatLargeListItem(
                       chat: chat,
                       onPressed: () async {
-                        await controller.addChatParticipant(chat);
+                        await controller.addParticipantToChat(chat);
                         Get.to(
                           () => ChatView(chat: chat),
                         );

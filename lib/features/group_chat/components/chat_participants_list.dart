@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:splach/features/group_chat/controllers/group_chat_controller.dart';
+import 'package:splach/features/group_chat/models/participant.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/features/user/views/user_profile_view.dart';
 import 'package:splach/themes/theme_typography.dart';
@@ -33,11 +34,11 @@ class ChatParticipantsList extends StatelessWidget {
     });
   }
 
-  Widget _buildParticipantAvatar(User participant) {
+  Widget _buildParticipantAvatar(Participant participant) {
     return GestureDetector(
-      onTap: () => Get.to(
-        () => UserProfileView(user: participant),
-      ),
+      // onTap: () => Get.to(
+      //   () => UserProfileView(user: participant),
+      // ),
       child: Container(
         margin: const EdgeInsets.only(right: 12),
         child: Column(

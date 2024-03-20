@@ -1,20 +1,22 @@
+import 'package:splach/features/group_chat/models/participant.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/models/base_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:splach/features/group_chat/models/message.dart';
 
 class Chat extends BaseModel {
-  final List<String> participants;
+  // final List<String> participants;
   final int participantsLimit;
   List<Message> messages;
   final List<String> images;
 
-  List<User> users = [];
+  // List<User> users = [];
+  var participants = <Participant>[];
 
   Chat({
     required DateTime createdAt,
     required DateTime updatedAt,
-    required this.participants,
+    // required this.participants,
     required this.participantsLimit,
     required this.messages,
     required this.images,
@@ -24,18 +26,19 @@ class Chat extends BaseModel {
         );
 
   Chat.fromDocument(DocumentSnapshot document)
-      : participants = List<String>.from(document['participants']),
-        participantsLimit = document['participantsLimit'],
-        messages = (document['messages'] as List)
+      :
+        // participants = List<String>.from(document.get('participants')),
+        participantsLimit = document.get('participantsLimit'),
+        messages = (document.get('messages') as List)
             .map((message) => Message.fromDocument(message))
             .toList(),
-        images = List<String>.from(document['images']),
+        images = List<String>.from(document.get('images')),
         super.fromDocument(document);
 
   @override
   Map<String, dynamic> toMap() {
     return {
-      'participants': participants,
+      // 'participants': participants,
       'participantsLimit': participantsLimit,
       'messages': messages.map((message) => message.toMap()).toList(),
       'images': images,

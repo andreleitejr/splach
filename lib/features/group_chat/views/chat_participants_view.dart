@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:splach/features/group_chat/models/participant.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/features/user/views/user_profile_view.dart';
 import 'package:splach/themes/theme_colors.dart';
@@ -9,7 +10,7 @@ import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/widgets/top_navigation_bar.dart';
 
 class ChatParticipantsView extends StatelessWidget {
-  final List<User> users;
+  final List<Participant> users;
 
   const ChatParticipantsView({
     super.key,
@@ -44,11 +45,11 @@ class ChatParticipantsView extends StatelessWidget {
     );
   }
 
-  Widget _buildUserCard(User user) {
+  Widget _buildUserCard(Participant participant) {
     return GestureDetector(
-      onTap: () => Get.to(
-        () => UserProfileView(user: user),
-      ),
+      // onTap: () => Get.to(
+      //   () => UserProfileView(user: user),
+      // ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -58,7 +59,7 @@ class ChatParticipantsView extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
               image: DecorationImage(
                 image: MemoryImage(
-                  base64Decode(user.image),
+                  base64Decode(participant.image),
                 ),
                 fit: BoxFit.cover,
               ),
@@ -74,18 +75,18 @@ class ChatParticipantsView extends StatelessWidget {
           //   overflow: TextOverflow.ellipsis,
           // ),
           Text(
-            '@${user.nickname}',
+            '@${participant.nickname}',
             style: ThemeTypography.medium14.apply(
               color: ThemeColors.primary,
             ),
           ),
           const SizedBox(height: 8),
-          Text(
-            '${user.followers.length} followers',
-            style: ThemeTypography.regular12.apply(
-              color: ThemeColors.grey5,
-            ),
-          ),
+          // Text(
+          //   '${user.followers.length} followers',
+          //   style: ThemeTypography.regular12.apply(
+          //     color: ThemeColors.grey5,
+          //   ),
+          // ),
         ],
       ),
     );

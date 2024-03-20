@@ -3,6 +3,7 @@ import 'package:diacritic/diacritic.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:splach/features/group_chat/models/group_chat.dart';
+import 'package:splach/features/group_chat/models/participant.dart';
 import 'package:splach/features/notification/models/notification.dart';
 import 'package:splach/features/group_chat/models/message.dart';
 
@@ -109,6 +110,19 @@ extension MessageTypeExtension on MessageType {
         return MessageType.system;
       default:
         return MessageType.user;
+    }
+  }
+}
+
+extension StatusExtension on Status {
+  String toStringSimplified() => toString().split('.').last;
+
+  static Status fromString(String value) {
+    switch (value) {
+      case 'online':
+        return Status.online;
+      default:
+        return Status.offline;
     }
   }
 }

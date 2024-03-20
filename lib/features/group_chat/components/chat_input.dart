@@ -5,6 +5,7 @@ import 'package:splach/features/group_chat/components/chat_highlight_mention.dar
 import 'package:splach/features/group_chat/components/chat_image.dart';
 import 'package:splach/features/group_chat/components/chat_participant_mention_list.dart';
 import 'package:splach/features/group_chat/controllers/group_chat_controller.dart';
+import 'package:splach/features/group_chat/models/participant.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/repositories/firestore_repository.dart';
 import 'package:splach/themes/theme_colors.dart';
@@ -43,9 +44,9 @@ class _ChatInputState extends State<ChatInput> {
     });
   }
 
-  void _addUserToChatInput(User user) {
+  void _addUserToChatInput(Participant participant) {
     final String currentText = messageController.text;
-    final String newUserText = user.nickname;
+    final String newUserText = participant.nickname;
     final String newText = currentText + newUserText;
     messageController.text = newText;
     messageController.selection = TextSelection.fromPosition(

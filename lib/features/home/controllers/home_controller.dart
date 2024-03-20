@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:splach/features/group_chat/models/group_chat.dart';
+import 'package:splach/features/group_chat/models/participant.dart';
 import 'package:splach/features/group_chat/repositories/group_chat_repository.dart';
+import 'package:splach/features/group_chat/repositories/participant_repository.dart';
 import 'package:splach/features/notification/models/notification.dart';
 import 'package:splach/features/relationship/models/relationship.dart';
 import 'package:splach/features/relationship/repositories/relationship_repository.dart';
 import 'package:splach/features/services/location_service.dart';
 import 'package:splach/features/user/models/user.dart';
-import 'package:splach/features/user/repositories/user_repository.dart';
 import 'package:splach/models/chat_category.dart';
 import 'package:splach/features/group_chat/models/message.dart';
 import 'package:splach/features/group_chat/repositories/message_repository.dart';
@@ -18,7 +19,6 @@ import 'package:splach/utils/extensions.dart';
 class HomeController extends GetxController {
   final _user = Get.find<User>();
   final _chatRepository = Get.put(GroupChatRepository());
-  final _userRepository = Get.put(UserRepository());
   final _relationshipRepository = Get.put(RelationshipRepository());
   final _locationService = Get.put(LocationService());
 
@@ -59,11 +59,11 @@ class HomeController extends GetxController {
     });
   }
 
-  void _listenToChatsStream() {
-    _chatRepository.streamAll().listen((chats) {
-      _updateChatsList(chats);
-      _checkNewNearbyChat(chats);
-    });
+  void _listenToChatsStream() async {
+    final chats = await _chatRepository.getAll();
+
+    _updateChatsList(chats);
+    _checkNewNearbyChat(chats);
   }
 
   void _checkNewNearbyChat(List<GroupChat> chats) {
@@ -75,7 +75,9 @@ class HomeController extends GetxController {
     }).toList();
 
     for (final chat in newNearbyChats) {
-      _createNearbyChatNotification(chat);
+      if (chat.distance! < 500) {
+        _createNearbyChatNotification(chat);
+      }
     }
   }
 
@@ -121,7 +123,7 @@ class HomeController extends GetxController {
   Future<void> _updateChatsList(List<GroupChat> chats) async {
     _getChatsDistance(chats);
 
-    await _getChatUsers(chats);
+    // await _getChatUsers(chats);
 
     final nearByChats =
         chats.where((chat) => chat.distance! < _maxDistance).toList();
@@ -143,17 +145,17 @@ class HomeController extends GetxController {
     }
   }
 
-  Future<void> _getChatUsers(List<GroupChat> chats) async {
-    for (final chat in chats) {
-      // debugPrint(
-      //     'Home Controller | There is ${chat.participants.length} in chat');
-      if (chat.participants.isNotEmpty) {
-        // debugPrint('Home Controller | Getting users for chat id: ${chat.id}');
-        chat.users = await _userRepository.getUsersByIds(chat.participants);
-      }
-      // debugPrint('Home Controller | Total users for chat id ${chat.id}: ${chat.users.length}');
-    }
-  }
+  // Future<void> _getChatUsers(List<GroupChat> chats) async {
+  //   // for (final chat in chats) {
+  //   //   // debugPrint(
+  //   //   //     'Home Controller | There is ${chat.participants.length} in chat');
+  //   //   if (chat.participants.isNotEmpty) {
+  //   //     // debugPrint('Home Controller | Getting users for chat id: ${chat.id}');
+  //   //     chat.users = await _userRepository.getUsersByIds(chat.participants);
+  //   //   }
+  //   //   // debugPrint('Home Controller | Total users for chat id ${chat.id}: ${chat.users.length}');
+  //   // }
+  // }
 
   List<GroupChat> filterChatsByCategory(List<GroupChat> chats) {
     if (category.value.category == ChatCategory.all) {
@@ -165,23 +167,46 @@ class HomeController extends GetxController {
     }
   }
 
-  Future<void> addChatParticipant(GroupChat chat) async {
-    chat.participants.add(_user.id!);
-    _chatRepository.update(chat);
-    _addSystemMessage(chat);
-  }
+  // Future<void> addChatParticipant(GroupChat chat) async {
+  //   // if (!chat.participants.contains(_user.id)) {
+  //   //   chat.participants.add(_user.id!);
+  //   //   _chatRepository.update(chat);
+  //   // }
+  //   // _addSystemMessage(chat);
+  // }
 
-  Future<void> _addSystemMessage(GroupChat chat) async {
-    final messageRepository = Get.put(MessageRepository(chat.id!));
+  Future<void> addParticipantToChat(GroupChat chat) async {
+    final participantRepository = Get.put(ParticipantRepository(chat.id!));
 
-    final message = Message(
-      createdAt: DateTime.now(),
+    final createdAt = chat.participants
+        .firstWhereOrNull(
+          (participant) => participant.id == _user.id,
+        )
+        ?.createdAt;
+
+    final participant = Participant(
+      id: _user.id,
+      nickname: _user.nickname,
+      image: _user.image,
+      status: Status.online,
+      createdAt: createdAt ?? DateTime.now(),
       updatedAt: DateTime.now(),
-      content: '${_user.nickname} entrou na sala',
-      senderId: _user.id!,
-      messageType: MessageType.system,
     );
 
-    messageRepository.save(message);
+    participantRepository.save(participant, docId: _user.id);
   }
+
+// Future<void> _addSystemMessage(GroupChat chat) async {
+//   final messageRepository = Get.put(MessageRepository(chat.id!));
+//
+//   final message = Message(
+//     createdAt: DateTime.now(),
+//     updatedAt: DateTime.now(),
+//     content: '${_user.nickname} entrou na sala',
+//     senderId: _user.id!,
+//     messageType: MessageType.system,
+//   );
+//
+//   messageRepository.save(message);
+// }
 }

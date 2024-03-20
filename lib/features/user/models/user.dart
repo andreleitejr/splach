@@ -39,17 +39,18 @@ class User extends BaseModel {
         );
 
   User.fromDocument(DocumentSnapshot document)
-      : phone = document['phone'],
-        email = document['email'],
-        nickname = document['nickname'],
-        image = document['image'],
-        name = document['name'],
-        description = document['description'],
-        gender = document['gender'],
-        birthday = (document['birthday'] as Timestamp).toDate(),
-        state = document['state'],
-        country = document['country'],
+      : phone =  document.get('phone'),
+        email = document.get('email'),
+        nickname = document.get('nickname'),
+        image = document.get('image'),
+        name = document.get('name'),
+        description = document.get('description'),
+        gender = document.get('gender'),
+        birthday = (document.get('birthday') as Timestamp).toDate(),
+        state = document.get('state'),
+        country = document.get('country'),
         super.fromDocument(document);
+
 
   @override
   Map<String, dynamic> toMap() {

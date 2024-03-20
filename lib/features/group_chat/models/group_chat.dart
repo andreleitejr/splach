@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:splach/features/group_chat/models/participant.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/models/chat.dart';
 import 'package:splach/models/chat_category.dart';
@@ -34,7 +35,7 @@ class GroupChat extends Chat {
   }) : super(
           createdAt: createdAt,
           updatedAt: updatedAt,
-          participants: participants,
+          // participants: participants,
           participantsLimit: participantsLimit,
           messages: messages,
           images: images,

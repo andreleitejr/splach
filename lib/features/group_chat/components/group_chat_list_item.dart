@@ -46,7 +46,7 @@ class ChatLargeListItem extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (chat.users.isNotEmpty)
+                if (chat.participants.isNotEmpty)
                   Positioned(
                     top: 0,
                     left: 0,
@@ -74,7 +74,7 @@ class ChatLargeListItem extends StatelessWidget {
                     width: userAvatarSize * 5,
                     child: Stack(
                       children: [
-                        for (var i = 0; i < chat.users.length; i++) ...[
+                        for (var i = 0; i < chat.participants.length; i++) ...[
                           if (i < 5) ...[
                             Positioned(
                               top: 0,
@@ -145,13 +145,13 @@ class ChatLargeListItem extends StatelessWidget {
           ),
         ),
         child: Text(
-          '+${chat.participants.length - 5}',
+          '+9000',
           style: ThemeTypography.semiBold12.apply(
             color: Colors.white,
           ),
         ),
       );
     }
-    return AvatarImage(image: chat.users[index].image);
+    return AvatarImage(image: chat.participants[index].image);
   }
 }
