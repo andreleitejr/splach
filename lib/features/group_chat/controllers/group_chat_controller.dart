@@ -52,8 +52,8 @@ class GroupChatController extends GetxController {
     // await _fetchChatUsers();
     // _listenToChatParticipants();
     // await Future.delayed(const Duration(seconds: 4));
-    _listenToMessageStream();
     _listenToParticipants();
+    _listenToMessageStream();
     scrollController.addListener(scrollListener);
 
     // cameraController.value = CameraController(
@@ -80,7 +80,7 @@ class GroupChatController extends GetxController {
       // _filterPrivateMessages();
       messages.sort((b, a) => a.createdAt.compareTo(b.createdAt));
 
-      // updateMessageSenders();
+      updateMessageSenders();
     });
   }
 
@@ -127,16 +127,16 @@ class GroupChatController extends GetxController {
     messages.add(systemMessage);
   }
 
-  // void updateMessageSenders() {
-  //   messages.value = messages.map((message) {
-  //     Participant? sender = participants.firstWhereOrNull(
-  //       (user) => user.id == message.senderId,
-  //     );
-  //
-  //     message.sender = sender;
-  //     return message;
-  //   }).toList();
-  // }
+  void updateMessageSenders() {
+    messages.value = messages.map((message) {
+      Participant? sender = participants.firstWhereOrNull(
+        (participant) => participant.id == message.senderId,
+      );
+
+      message.sender = sender;
+      return message;
+    }).toList();
+  }
 
   // void _filterPrivateMessages() {
   //   messages.value = messages.where((message) {
@@ -181,6 +181,7 @@ class GroupChatController extends GetxController {
     );
 
     _participantRepository.save(participant, docId: user.id);
+    _chatRepository.updateLastActivity(groupChat.id!);
   }
 
   // Future<void> addSystemMessage() async {

@@ -27,7 +27,7 @@ class HomeController extends GetxController {
 
   final _followers = <Relationship>[].obs;
 
-  final _maxDistance = 41000;
+  final _maxDistance = 1000;
   final _currentLocation = Rx<Position?>(null);
 
   final notifications = <AppNotification>[].obs;
@@ -42,7 +42,7 @@ class HomeController extends GetxController {
     loading.value = true;
 
     await _getCurrentLocation();
-    _listenToChatsStream();
+    _getNearByChats();
     _listenToRelationshipsStream();
     _listenToCategories();
 
@@ -59,38 +59,35 @@ class HomeController extends GetxController {
     });
   }
 
-  void _listenToChatsStream() async {
-    final chats = await _chatRepository.getAll();
-
-    _updateChatsList(chats);
-    _checkNewNearbyChat(chats);
-  }
-
-  void _checkNewNearbyChat(List<GroupChat> chats) {
-    final newNearbyChats = chats.where((chat) {
-      return chat.distance! < _maxDistance &&
-          !_groupChats.any(
-            (existingChat) => existingChat.id == chat.id,
-          );
-    }).toList();
-
-    for (final chat in newNearbyChats) {
-      if (chat.distance! < 500) {
-        _createNearbyChatNotification(chat);
+  void _getNearByChats() {
+    _chatRepository.streamAll().listen((chats) {
+      for (final chat in chats) {
+        print(
+            ' KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK CHATS ${chat.participants} ');
       }
-    }
+      _updateChatsList(chats);
+    });
+    // _checkNewNearbyChat(chats);
   }
 
-  void _createNearbyChatNotification(GroupChat chat) {
-    final notification = AppNotification(
-      createdAt: chat.createdAt,
-      content: 'Um novo chat foi criado próximo de você',
-      relatedId: chat.id!,
-      notificationType: AppNotificationType.newChat,
-    );
+  // void _checkNewNearbyChat(List<GroupChat> chats) {
+  //   for (final chat in chats) {
+  //     if (chat.distance! < 500) {
+  //       _createNearbyChatNotification(chat);
+  //     }
+  //   }
+  // }
 
-    notifications.add(notification);
-  }
+  // void _createNearbyChatNotification(GroupChat chat) {
+  //   final notification = AppNotification(
+  //     createdAt: chat.createdAt,
+  //     content: 'Um novo chat foi criado próximo de você',
+  //     relatedId: chat.id!,
+  //     notificationType: AppNotificationType.newChat,
+  //   );
+  //
+  //   notifications.add(notification);
+  // }
 
   void _listenToRelationshipsStream() {
     _relationshipRepository.streamAll().listen((relationships) {
@@ -121,9 +118,12 @@ class HomeController extends GetxController {
   }
 
   Future<void> _updateChatsList(List<GroupChat> chats) async {
-    _getChatsDistance(chats);
-
-    // await _getChatUsers(chats);
+    for (final chat in chats) {
+      chat.distance = _locationService.calculateDistanceInMeters(
+        _currentLocation.value!,
+        chat.location.toPosition(),
+      );
+    }
 
     final nearByChats =
         chats.where((chat) => chat.distance! < _maxDistance).toList();
@@ -134,15 +134,6 @@ class HomeController extends GetxController {
 
     _groupChats.assignAll(nearByChats);
     filteredGroupChats.value = _groupChats;
-  }
-
-  void _getChatsDistance(List<GroupChat> chats) {
-    for (final chat in chats) {
-      chat.distance = _locationService.calculateDistanceInMeters(
-        _currentLocation.value!,
-        chat.location.toPosition(),
-      );
-    }
   }
 
   // Future<void> _getChatUsers(List<GroupChat> chats) async {
@@ -176,7 +167,7 @@ class HomeController extends GetxController {
   // }
 
   Future<void> addParticipantToChat(GroupChat chat) async {
-    final participantRepository = Get.put(ParticipantRepository(chat.id!));
+    final _participantRepository = Get.put(ParticipantRepository(chat.id!));
 
     final createdAt = chat.participants
         .firstWhereOrNull(
@@ -193,7 +184,8 @@ class HomeController extends GetxController {
       updatedAt: DateTime.now(),
     );
 
-    participantRepository.save(participant, docId: _user.id);
+    _participantRepository.save(participant, docId: _user.id);
+    _chatRepository.updateLastActivity(chat.id!);
   }
 
 // Future<void> _addSystemMessage(GroupChat chat) async {

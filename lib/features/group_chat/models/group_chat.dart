@@ -17,6 +17,7 @@ class GroupChat extends Chat {
   final String description;
   final GroupType groupType;
   final String category;
+  final DateTime lastActivity;
 
   double? distance;
 
@@ -32,6 +33,7 @@ class GroupChat extends Chat {
     required this.description,
     required this.groupType,
     required this.category,
+    required this.lastActivity,
   }) : super(
           createdAt: createdAt,
           updatedAt: updatedAt,
@@ -42,13 +44,14 @@ class GroupChat extends Chat {
         );
 
   GroupChat.fromDocument(DocumentSnapshot document)
-      : location = document['location'],
-        title = document['title'],
-        description = document['description'],
+      : location = document.get('location'),
+        title = document.get('title'),
+        description = document.get('description'),
         groupType = GroupTypeExtension.fromString(
-          document['groupType'],
+          document.get('groupType'),
         ),
-        category = document['category'],
+        category = document.get('category'),
+        lastActivity = (document.get('lastActivity') as Timestamp).toDate(),
         super.fromDocument(document);
 
   @override
@@ -59,6 +62,7 @@ class GroupChat extends Chat {
       'description': description,
       'groupType': groupType.toStringSimplified(),
       'category': category,
+      'lastActivity': lastActivity,
       ...super.toMap(),
     };
   }
