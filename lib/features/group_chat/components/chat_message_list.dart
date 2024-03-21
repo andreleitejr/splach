@@ -4,6 +4,8 @@ import 'package:splach/features/group_chat/components/chat_image_input.dart';
 import 'package:splach/features/group_chat/components/chat_user_message.dart';
 import 'package:splach/features/group_chat/controllers/group_chat_controller.dart';
 import 'package:splach/features/group_chat/models/message.dart';
+import 'package:splach/features/refactor/models/report_message_topic.dart';
+import 'package:splach/features/refactor/widgets/report_message_bottom_sheet.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/themes/theme_colors.dart';
 
@@ -61,6 +63,7 @@ class ChatMessageList extends StatelessWidget {
                         ChatSenderMessage(
                           message: message,
                           onHorizontalDragEnd: () => _replyMessage(message),
+                          onButtonTap: () => _reportMessage(message.id!),
                         ),
                       ],
                       SizedBox(
@@ -117,5 +120,22 @@ class ChatMessageList extends StatelessWidget {
     focus.requestFocus();
     controller.replyMessage.value = message;
     controller.recipients.add(message.senderId);
+  }
+
+  void _reportMessage(String messageId) {
+    Get.bottomSheet(
+      ReportMessageBottomSheet<ReportMessageTopic>(
+        items: reportMessageTopics,
+        onItemSelected: (selectedItem) async {
+          controller.reportMessage(
+            messageId,
+            selectedItem.title,
+            '',
+          );
+          focus.unfocus();
+        },
+      ),
+      enableDrag: true,
+    );
   }
 }

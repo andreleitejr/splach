@@ -1,5 +1,3 @@
-// import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:splach/features/group_chat/models/group_chat.dart';
@@ -12,8 +10,6 @@ import 'package:splach/features/relationship/repositories/relationship_repositor
 import 'package:splach/features/services/location_service.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/models/chat_category.dart';
-import 'package:splach/features/group_chat/models/message.dart';
-import 'package:splach/features/group_chat/repositories/message_repository.dart';
 import 'package:splach/utils/extensions.dart';
 
 class HomeController extends GetxController {
@@ -61,10 +57,6 @@ class HomeController extends GetxController {
 
   void _getNearByChats() {
     _chatRepository.streamAll().listen((chats) {
-      for (final chat in chats) {
-        print(
-            ' KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK CHATS ${chat.participants} ');
-      }
       _updateChatsList(chats);
     });
     // _checkNewNearbyChat(chats);
@@ -181,7 +173,7 @@ class HomeController extends GetxController {
       image: _user.image,
       status: Status.online,
       createdAt: createdAt ?? DateTime.now(),
-      updatedAt: DateTime.now(),
+      // updatedAt: DateTime.now(),
     );
 
     _participantRepository.save(participant, docId: _user.id);

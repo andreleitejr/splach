@@ -133,7 +133,7 @@ class UserEditController extends GetxController {
     final newUser = User(
       id: _authRepository.authUser!.uid,
       createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
+      // updatedAt: DateTime.now(),
       phone: _authRepository.authUser!.phoneNumber!,
       email: email.text,
       image: image.value,

@@ -24,7 +24,7 @@ class Message extends BaseModel {
 
   Message({
     required super.createdAt,
-    required super.updatedAt,
+    // required super.updatedAt,
     this.content,
     required this.senderId,
     this.replyId,

@@ -14,16 +14,13 @@ class Chat extends BaseModel {
   var participants = <Participant>[];
 
   Chat({
-    required DateTime createdAt,
+    required super.createdAt,
     required DateTime updatedAt,
     // required this.participants,
     required this.participantsLimit,
     required this.messages,
     required this.images,
-  }) : super(
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-        );
+  });
 
   Chat.fromDocument(DocumentSnapshot document)
       :

@@ -19,9 +19,9 @@ class User extends BaseModel {
   List<Relationship> following = [];
 
   User({
-    required String id,
-    required DateTime createdAt,
-    required DateTime updatedAt,
+    required super.id,
+    required super.createdAt,
+    // required DateTime updatedAt,
     required this.phone,
     required this.email,
     required this.nickname,
@@ -32,11 +32,7 @@ class User extends BaseModel {
     required this.birthday,
     required this.state,
     required this.country,
-  }) : super(
-          id: id,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-        );
+  });
 
   User.fromDocument(DocumentSnapshot document)
       : phone =  document.get('phone'),

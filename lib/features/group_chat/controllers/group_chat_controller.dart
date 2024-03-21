@@ -4,6 +4,8 @@ import 'package:splach/features/group_chat/models/group_chat.dart';
 import 'package:splach/features/group_chat/models/participant.dart';
 import 'package:splach/features/group_chat/repositories/group_chat_repository.dart';
 import 'package:splach/features/group_chat/repositories/participant_repository.dart';
+import 'package:splach/features/refactor/controllers/report_controller.dart';
+import 'package:splach/features/refactor/models/report.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/features/user/repositories/user_repository.dart';
 import 'package:splach/features/group_chat/models/message.dart';
@@ -117,7 +119,7 @@ class GroupChatController extends GetxController {
     final nicknames = participants.map((participant) => participant.nickname);
     final systemMessage = Message(
       createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
+      // updatedAt: DateTime.now(),
       content:
           '${nicknames.toString()} ${isLeaving ? 'saiu' : 'entrou'} da sala',
       senderId: user.id!,
@@ -157,7 +159,7 @@ class GroupChatController extends GetxController {
       image: image.value,
       senderId: user.id!,
       createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
+      // updatedAt: DateTime.now(),
       replyId: replyMessage.value?.id,
       private: private.value,
       recipients: recipients.isEmpty ? null : recipients,
@@ -177,11 +179,26 @@ class GroupChatController extends GetxController {
       image: user.image,
       status: Status.offline,
       createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
+      // updatedAt: DateTime.now(),
     );
 
     _participantRepository.save(participant, docId: user.id);
     _chatRepository.updateLastActivity(groupChat.id!);
+  }
+
+  void reportMessage(
+    String messageId,
+    String reason,
+    String? comments,
+  ) {
+    final report = ReportController(
+      type: ReportType.message,
+      reportedId: messageId,
+      reason: reason,
+      comments: comments,
+    );
+
+    report.save();
   }
 
   // Future<void> addSystemMessage() async {

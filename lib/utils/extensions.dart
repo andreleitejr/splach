@@ -6,6 +6,7 @@ import 'package:splach/features/group_chat/models/group_chat.dart';
 import 'package:splach/features/group_chat/models/participant.dart';
 import 'package:splach/features/notification/models/notification.dart';
 import 'package:splach/features/group_chat/models/message.dart';
+import 'package:splach/features/refactor/models/report.dart';
 
 extension StringExtensions on String {
   String get clean => removeDiacritics(toLowerCase())
@@ -123,6 +124,21 @@ extension StatusExtension on Status {
         return Status.online;
       default:
         return Status.offline;
+    }
+  }
+}
+
+extension ReportTypeExtension on ReportType {
+  String toStringSimplified() => toString().split('.').last;
+
+  static ReportType fromString(String value) {
+    switch (value) {
+      case 'user':
+        return ReportType.user;
+      case 'chat':
+        return ReportType.chat;
+      default:
+        return ReportType.message;
     }
   }
 }

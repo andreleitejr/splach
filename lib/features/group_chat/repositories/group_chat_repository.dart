@@ -40,7 +40,7 @@ class GroupChatRepository extends FirestoreRepository<GroupChat> {
   @override
   Stream<List<GroupChat>> streamAll({String? userId}) {
     // Defina o tamanho da página para a paginação
-    final int pageSize = 10;
+    final pageSize = 10;
 
     final query = firestore.collection(collectionName);
 
