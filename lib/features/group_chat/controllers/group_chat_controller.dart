@@ -7,8 +7,8 @@ import 'package:splach/features/group_chat/repositories/participant_repository.d
 import 'package:splach/features/refactor/controllers/report_controller.dart';
 import 'package:splach/features/refactor/models/report.dart';
 import 'package:splach/features/user/models/user.dart';
-import 'package:splach/features/user/repositories/user_repository.dart';
 import 'package:splach/features/group_chat/models/message.dart';
+import 'package:splach/features/user/repositories/user_repository.dart';
 import 'package:splach/repositories/firestore_repository.dart';
 import 'package:splach/features/group_chat/repositories/message_repository.dart';
 
@@ -25,6 +25,7 @@ class GroupChatController extends GetxController {
 
   late MessageRepository _messageRepository;
   late ParticipantRepository _participantRepository;
+  final _userRepository = Get.put(UserRepository());
   final GroupChat groupChat;
   final participants = <Participant>[].obs;
   final messages = <Message>[].obs;
@@ -247,6 +248,10 @@ class GroupChatController extends GetxController {
   //   }
   //   return list.obs;
   // }
+
+  Future<User?> getUser(String userId) async {
+    return await _userRepository.get(userId);
+  }
 
   @override
   void onClose() {

@@ -9,10 +9,10 @@ import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/widgets/image_viewer.dart';
 import 'package:splach/widgets/top_navigation_bar.dart';
 
-class ChatGalleryView extends StatelessWidget {
+class ChatInfoView extends StatelessWidget {
   final GroupChat chat;
 
-  const ChatGalleryView({
+  const ChatInfoView({
     super.key,
     required this.chat,
   });
@@ -78,8 +78,7 @@ class ChatGalleryView extends StatelessWidget {
 
   Widget _buildDescriptionText() {
     final description = chat.description;
-    final showAllText = description.length >
-        50; // Exibir "Ver tudo" se a descrição for maior que 50 caracteres
+    final showAllText = description.length > 50;
 
     return RichText(
       text: TextSpan(
@@ -98,10 +97,7 @@ class ChatGalleryView extends StatelessWidget {
               style: ThemeTypography.regular14.apply(
                 color: ThemeColors.primary,
               ),
-              recognizer: TapGestureRecognizer()
-                ..onTap = () {
-                  // Implemente a lógica para mostrar a descrição completa
-                },
+              recognizer: TapGestureRecognizer()..onTap = () {},
             ),
           ],
         ],

@@ -40,7 +40,7 @@ class Message extends BaseModel {
         replyId = document.get('replyId'),
         image = document.get('image'),
         messageType = MessageTypeExtension.fromString(
-          document.get('messageType'),
+          document.get('messageType')
         ),
         private = document.get('private'),
         recipients = List<String>.from(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:splach/features/group_chat/components/chat_gallery_view.dart';
+import 'package:splach/features/group_chat/views/chat_info_view.dart';
 import 'package:splach/features/group_chat/controllers/group_chat_controller.dart';
 import 'package:splach/features/group_chat/views/chat_participants_view.dart';
 
@@ -48,7 +48,7 @@ class ChatTopNavigationBar extends StatelessWidget {
                   .toList();
 
               Get.to(
-                () => ChatGalleryView(
+                () => ChatInfoView(
                   chat: controller.groupChat,
                 ),
               );

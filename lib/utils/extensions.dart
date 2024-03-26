@@ -6,6 +6,7 @@ import 'package:splach/features/group_chat/models/group_chat.dart';
 import 'package:splach/features/group_chat/models/participant.dart';
 import 'package:splach/features/notification/models/notification.dart';
 import 'package:splach/features/group_chat/models/message.dart';
+import 'package:splach/features/rating/models/rating.dart';
 import 'package:splach/features/refactor/models/report.dart';
 
 extension StringExtensions on String {
@@ -111,6 +112,19 @@ extension MessageTypeExtension on MessageType {
         return MessageType.system;
       default:
         return MessageType.user;
+    }
+  }
+}
+
+extension RatingTypeExtension on RatingType {
+  String toStringSimplified() => toString().split('.').last;
+
+  static RatingType fromString(String value) {
+    switch (value) {
+      case 'chat':
+        return RatingType.chat;
+      default:
+        return RatingType.user;
     }
   }
 }

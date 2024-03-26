@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:splach/features/home/views/home_view.dart';
 import 'package:splach/features/notification/controllers/notification_controller.dart';
-import 'package:splach/features/notification/models/notification.dart';
 import 'package:splach/features/notification/views/notification_view.dart';
-import 'package:splach/features/relationship/models/relationship.dart';
-import 'package:splach/features/relationship/repositories/relationship_repository.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/features/user/views/user_profile_view.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
+
 import 'package:splach/widgets/avatar_image.dart';
 import 'package:badges/badges.dart' as badges;
 

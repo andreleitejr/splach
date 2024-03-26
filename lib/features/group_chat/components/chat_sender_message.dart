@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:splach/features/group_chat/components/chat_image.dart';
 import 'package:splach/features/group_chat/models/message.dart';
 import 'package:splach/features/group_chat/widgets/private_message_sign.dart';
+import 'package:splach/features/rating/widgets/rating_bottom_sheet.dart';
 import 'package:splach/features/refactor/models/report_message_topic.dart';
 import 'package:splach/features/refactor/widgets/report_message_bottom_sheet.dart';
 import 'package:splach/features/user/models/user.dart';
@@ -18,6 +19,9 @@ class ChatSenderMessage extends StatelessWidget {
   final VoidCallback? onDoubleTap;
   final VoidCallback? onHorizontalDragEnd;
   final VoidCallback? onButtonTap;
+  final VoidCallback? onAvatarLongPress;
+  final VoidCallback? onAvatarTap;
+  final VoidCallback? onTitleTap;
 
   const ChatSenderMessage({
     super.key,
@@ -25,6 +29,9 @@ class ChatSenderMessage extends StatelessWidget {
     this.onDoubleTap,
     this.onHorizontalDragEnd,
     this.onButtonTap,
+    this.onAvatarLongPress,
+    this.onAvatarTap,
+    this.onTitleTap,
   });
 
   final double _borderRadius = 12;
@@ -51,7 +58,11 @@ class ChatSenderMessage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (message.sender != null) ...[
-            AvatarImage(image: message.sender!.image),
+            GestureDetector(
+              onTap: onAvatarTap,
+              onLongPress: onAvatarLongPress,
+              child: AvatarImage(image: message.sender!.image),
+            ),
             const SizedBox(width: 8),
           ],
           Container(
@@ -77,16 +88,13 @@ class ChatSenderMessage extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    RichText(
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: '@${message.sender?.nickname ?? 'user'}',
-                            style: ThemeTypography.semiBold12.copyWith(
-                              color: ThemeColors.primary,
-                            ),
-                          ),
-                        ],
+                    GestureDetector(
+                      onTap: onTitleTap,
+                      child: Text(
+                        '@${message.sender?.nickname ?? 'user'}',
+                        style: ThemeTypography.semiBold12.copyWith(
+                          color: ThemeColors.primary,
+                        ),
                       ),
                     ),
                     const SizedBox(width: 4),
@@ -97,7 +105,7 @@ class ChatSenderMessage extends StatelessWidget {
                       onPressed: () {
                         onButtonTap?.call();
                       },
-                      icon: Icon(Icons.more_horiz),
+                      icon: const Icon(Icons.more_horiz),
                     )
                   ],
                 ),

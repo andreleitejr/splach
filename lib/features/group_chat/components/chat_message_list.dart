@@ -4,10 +4,14 @@ import 'package:splach/features/group_chat/components/chat_image_input.dart';
 import 'package:splach/features/group_chat/components/chat_user_message.dart';
 import 'package:splach/features/group_chat/controllers/group_chat_controller.dart';
 import 'package:splach/features/group_chat/models/message.dart';
+import 'package:splach/features/rating/widgets/rating_bottom_sheet.dart';
 import 'package:splach/features/refactor/models/report_message_topic.dart';
 import 'package:splach/features/refactor/widgets/report_message_bottom_sheet.dart';
+import 'package:splach/features/user/components/user_profile_header.dart';
 import 'package:splach/features/user/models/user.dart';
+import 'package:splach/features/user/views/user_profile_view.dart';
 import 'package:splach/themes/theme_colors.dart';
+import 'package:splach/widgets/custom_list_tile.dart';
 
 import 'chat_sender_message.dart';
 import 'chat_system_message.dart';
@@ -63,7 +67,10 @@ class ChatMessageList extends StatelessWidget {
                         ChatSenderMessage(
                           message: message,
                           onHorizontalDragEnd: () => _replyMessage(message),
-                          onButtonTap: () => _reportMessage(message.id!),
+                          onButtonTap: () => _showBottomSheet(message),
+                          onAvatarTap: () => _goToUserPage(message),
+                          onAvatarLongPress: () => _showBottomSheet(message),
+                          onTitleTap: () => _goToUserPage(message),
                         ),
                       ],
                       SizedBox(
@@ -137,5 +144,71 @@ class ChatMessageList extends StatelessWidget {
       ),
       enableDrag: true,
     );
+  }
+
+  void _rate(String ratedId, String ratedTitle) {
+    Get.bottomSheet(
+      RatingBottomSheet(
+        ratedId: ratedId,
+        ratedTitle: ratedTitle,
+      ),
+      enableDrag: true,
+    );
+  }
+
+  void _showBottomSheet(Message message) {
+    Get.bottomSheet(
+      Container(
+        color: Colors.white,
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            UserProfileHeader(
+              image: message.sender!.image,
+              title: message.sender!.nickname,
+              description: message.content!,
+            ),
+            CustomListTile(
+              title: 'About this user',
+              leading: const Icon(Icons.person_2_outlined),
+              onTap: () => _goToUserPage(message),
+            ),
+            CustomListTile(
+              title: 'Rate this user',
+              leading: const Icon(Icons.star_outline),
+              onTap: () {
+                Get.back();
+                _rate(
+                  message.senderId,
+                  '@${message.sender?.nickname}',
+                );
+              },
+            ),
+            CustomListTile(
+              title: 'Report message',
+              leading: const Icon(
+                Icons.block,
+                color: Colors.redAccent,
+              ),
+              onTap: () {
+                Get.back();
+                _reportMessage(message.id!);
+              },
+              textColor: Colors.red,
+            ),
+          ],
+        ),
+      ),
+      enableDrag: true,
+    );
+  }
+
+  Future<void> _goToUserPage(Message message) async {
+    final user = await controller.getUser(message.senderId);
+    if (user != null) {
+      Get.to(() => UserProfileView(user: user));
+    }
   }
 }

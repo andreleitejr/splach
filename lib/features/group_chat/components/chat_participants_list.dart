@@ -36,9 +36,12 @@ class ChatParticipantsList extends StatelessWidget {
 
   Widget _buildParticipantAvatar(Participant participant) {
     return GestureDetector(
-      // onTap: () => Get.to(
-      //   () => UserProfileView(user: participant),
-      // ),
+      onTap: () async {
+        final user = await controller.getUser(participant.id!);
+        if (user != null) {
+          Get.to(() => UserProfileView(user: user));
+        }
+      },
       child: Container(
         margin: const EdgeInsets.only(right: 12),
         child: Column(
