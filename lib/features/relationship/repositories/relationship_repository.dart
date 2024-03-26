@@ -21,7 +21,7 @@ class RelationshipRepository extends FirestoreRepository<Relationship> {
 
       final querySnapshot = await query.get();
       final dataList =
-      querySnapshot.docs.map((doc) => fromDocument(doc)).toList();
+          querySnapshot.docs.map((doc) => fromDocument(doc)).toList();
 
       debugPrint(
           'Successful fetch ${dataList.length} documents for $collectionName in Firestore.');

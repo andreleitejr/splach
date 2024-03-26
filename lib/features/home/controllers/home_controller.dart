@@ -16,19 +16,15 @@ import 'package:splach/utils/extensions.dart';
 class HomeController extends GetxController {
   final _user = Get.find<User>();
   final _chatRepository = Get.put(GroupChatRepository());
-  final _relationshipRepository = Get.put(RelationshipRepository());
   final _locationService = Get.put(LocationService());
   final _pushNotificationService = Get.put(PushNotificationService());
 
   final _groupChats = <GroupChat>[].obs;
   final filteredGroupChats = <GroupChat>[].obs;
 
-  final _followers = <Relationship>[].obs;
-
   final _maxDistance = 1000;
   final _currentLocation = Rx<Position?>(null);
 
-  final notifications = <AppNotification>[].obs;
   final category = Rx<ChatCategory>(categories.first);
 
   final loading = false.obs;
@@ -41,7 +37,6 @@ class HomeController extends GetxController {
 
     await _getCurrentLocation();
     _getNearByChats();
-    _listenToRelationshipsStream();
     _listenToCategories();
     _initPushNotifications();
 
@@ -71,10 +66,9 @@ class HomeController extends GetxController {
     _pushNotificationService.listenFCM();
   }
 
-  Future<void> sendPushNotification() async {
-    await  _pushNotificationService.sendNotification('Testing', 'Testing');
-    print(' HASDUHDASUASDHUADHAUSHASUASDHUDUAD SENT HEHEHE');
-  }
+  // Future<void> sendPushNotification() async {
+  //   await  _pushNotificationService.sendNotification('Testing', 'Testing');
+  // }
   // void _checkNewNearbyChat(List<GroupChat> chats) {
   //   for (final chat in chats) {
   //     if (chat.distance! < 500) {
@@ -94,33 +88,6 @@ class HomeController extends GetxController {
   //   notifications.add(notification);
   // }
 
-  void _listenToRelationshipsStream() {
-    _relationshipRepository.streamAll().listen((relationships) {
-      final newFollowers = relationships.where((relationship) {
-        return relationship.follower != _user.id && !relationship.isMutual;
-      }).toList();
-
-      for (final follower in newFollowers) {
-        _createFollowNotification(follower);
-      }
-
-      _followers.value = relationships
-          .where((relationship) =>
-              relationship.follower != _user.id || relationship.isMutual)
-          .toList();
-    });
-  }
-
-  void _createFollowNotification(Relationship follower) {
-    final notification = AppNotification(
-      createdAt: follower.createdAt,
-      content: '${follower.follower} começou a te seguir',
-      relatedId: follower.userIds.firstWhere((id) => id != _user.id),
-      notificationType: AppNotificationType.newFollower,
-    );
-
-    notifications.add(notification);
-  }
 
   Future<void> _updateChatsList(List<GroupChat> chats) async {
     for (final chat in chats) {
@@ -172,7 +139,7 @@ class HomeController extends GetxController {
   // }
 
   Future<void> addParticipantToChat(GroupChat chat) async {
-    final _participantRepository = Get.put(ParticipantRepository(chat.id!));
+    final participantRepository = Get.put(ParticipantRepository(chat.id!));
 
     final createdAt = chat.participants
         .firstWhereOrNull(
@@ -189,7 +156,7 @@ class HomeController extends GetxController {
       // updatedAt: DateTime.now(),
     );
 
-    _participantRepository.save(participant, docId: _user.id);
+    participantRepository.save(participant, docId: _user.id);
     _chatRepository.updateLastActivity(chat.id!);
   }
 

@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:splach/features/home/views/home_view.dart';
+import 'package:splach/features/notification/controllers/notification_controller.dart';
+import 'package:splach/features/notification/models/notification.dart';
+import 'package:splach/features/notification/views/notification_view.dart';
+import 'package:splach/features/relationship/models/relationship.dart';
+import 'package:splach/features/relationship/repositories/relationship_repository.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/features/user/views/user_profile_view.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
+import 'package:splach/widgets/avatar_image.dart';
+import 'package:badges/badges.dart' as badges;
 
 class BaseController extends GetxController {
+  final User user = Get.find();
   var selectedIndex = 0.obs;
+  final NotificationController notificationController = Get.find();
 }
 
 class BaseView extends StatefulWidget {
@@ -24,6 +33,8 @@ class _BaseViewState extends State<BaseView> {
 
   final List<Widget> _pages = [
     HomeView(),
+    Container(),
+    NotificationView(),
     UserProfileView(user: Get.find<User>()),
   ];
 
@@ -64,7 +75,9 @@ class _BaseViewState extends State<BaseView> {
   List<BottomNavigationBarItem> _buildBottomNavBarItems() {
     return [
       _buildNavBarItem('', 'Home'),
-      _buildNavBarItem('', 'Profile'),
+      _buildNavBarItem('', 'History'),
+      _buildNavBarItemWithBadge('Notifications'),
+      _buildNavBarItemWithAvatar(),
     ];
   }
 
@@ -74,9 +87,49 @@ class _BaseViewState extends State<BaseView> {
         padding: EdgeInsets.only(bottom: 4),
         child: Icon(Icons.home),
       ),
-      activeIcon: Padding(
-        padding: const EdgeInsets.only(bottom: 4),
+      activeIcon: const Padding(
+        padding: EdgeInsets.only(bottom: 4),
         child: Icon(Icons.add),
+      ),
+      label: label,
+    );
+  }
+
+  BottomNavigationBarItem _buildNavBarItemWithBadge(String label) {
+    return BottomNavigationBarItem(
+      icon: Center(
+        child: badges.Badge(
+          position: badges.BadgePosition.topEnd(
+            top: -5,
+            end: -5,
+          ),
+          badgeContent: Text(
+            controller.notificationController.notifications.length.toString(),
+            style: ThemeTypography.semiBold12.apply(
+              color: Colors.white,
+            ),
+          ),
+          child: const Icon(
+            Icons.notifications,
+            color: Colors.black,
+          ),
+        ),
+      ),
+      activeIcon: badges.Badge(
+        position: badges.BadgePosition.topEnd(
+          top: 5,
+          end: 5,
+        ),
+        badgeContent: Text(
+          controller.notificationController.notifications.length.toString(),
+          style: ThemeTypography.semiBold12.apply(
+            color: Colors.white,
+          ),
+        ),
+        child: const Icon(
+          Icons.notifications,
+          color: Colors.green,
+        ),
       ),
       label: label,
     );
@@ -84,11 +137,8 @@ class _BaseViewState extends State<BaseView> {
 
   BottomNavigationBarItem _buildNavBarItemWithAvatar() {
     return BottomNavigationBarItem(
-      icon: Container(
-        margin: const EdgeInsets.only(top: 8),
-        height: 38,
-        width: 38,
-        child: Text(''),
+      icon: AvatarImage(
+        image: controller.user.image,
       ),
       activeIcon: Container(
         margin: const EdgeInsets.only(top: 8),

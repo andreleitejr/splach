@@ -10,7 +10,6 @@ import 'package:splach/features/notification/views/notification_view.dart';
 import 'package:splach/models/chat_category.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
-import 'package:badges/badges.dart' as badges;
 
 class HomeView extends StatelessWidget {
   final HomeController controller = Get.put(HomeController());
@@ -43,41 +42,15 @@ class HomeView extends StatelessWidget {
                   ),
                 ),
                 actions: [
-                  Center(
-                    child: badges.Badge(
-                      position: badges.BadgePosition.topEnd(
-                        top: 5,
-                        end: 5,
-                      ),
-                      badgeContent: Text(
-                        controller.notifications.length.toString(),
-                        style: ThemeTypography.semiBold12.apply(
-                          color: Colors.white,
-                        ),
-                      ),
-                      child: IconButton(
-                        onPressed: () => controller.sendPushNotification(),
-                        // onPressed: () => Get.to(
-                        //   () => NotificationView(
-                        //     notifications: controller.notifications,
-                        //   ),
-                        // ),
-                        icon: const Icon(
-                          Icons.notifications,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () => Get.to(
-                      () => GroupChatEditView(),
-                    ),
-                    icon: const Icon(
-                      Icons.add,
-                      color: Colors.black,
-                    ),
-                  ),
+                  // IconButton(
+                  //   onPressed: () => Get.to(
+                  //     () => GroupChatEditView(),
+                  //   ),
+                  //   icon: const Icon(
+                  //     Icons.add,
+                  //     color: Colors.black,
+                  //   ),
+                  // ),
                 ],
               ),
               SliverToBoxAdapter(
