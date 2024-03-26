@@ -10,6 +10,7 @@ import 'package:splach/features/relationship/repositories/relationship_repositor
 import 'package:splach/features/services/location_service.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/models/chat_category.dart';
+import 'package:splach/services/push_notification_service.dart';
 import 'package:splach/utils/extensions.dart';
 
 class HomeController extends GetxController {
@@ -17,6 +18,7 @@ class HomeController extends GetxController {
   final _chatRepository = Get.put(GroupChatRepository());
   final _relationshipRepository = Get.put(RelationshipRepository());
   final _locationService = Get.put(LocationService());
+  final _pushNotificationService = Get.put(PushNotificationService());
 
   final _groupChats = <GroupChat>[].obs;
   final filteredGroupChats = <GroupChat>[].obs;
@@ -41,18 +43,13 @@ class HomeController extends GetxController {
     _getNearByChats();
     _listenToRelationshipsStream();
     _listenToCategories();
+    _initPushNotifications();
 
     loading.value = false;
   }
 
   Future<void> _getCurrentLocation() async {
     _currentLocation.value = await _locationService.getCurrentLocation();
-  }
-
-  void _listenToCategories() {
-    ever(category, (_) {
-      filteredGroupChats(filterChatsByCategory(_groupChats));
-    });
   }
 
   void _getNearByChats() {
@@ -62,6 +59,22 @@ class HomeController extends GetxController {
     // _checkNewNearbyChat(chats);
   }
 
+  void _listenToCategories() {
+    ever(category, (_) {
+      filteredGroupChats(filterChatsByCategory(_groupChats));
+    });
+  }
+
+  void _initPushNotifications() {
+    _pushNotificationService.requestPermission();
+    _pushNotificationService.loadFCM();
+    _pushNotificationService.listenFCM();
+  }
+
+  Future<void> sendPushNotification() async {
+    await  _pushNotificationService.sendNotification('Testing', 'Testing');
+    print(' HASDUHDASUASDHUADHAUSHASUASDHUDUAD SENT HEHEHE');
+  }
   // void _checkNewNearbyChat(List<GroupChat> chats) {
   //   for (final chat in chats) {
   //     if (chat.distance! < 500) {

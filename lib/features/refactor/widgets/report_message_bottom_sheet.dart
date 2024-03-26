@@ -60,12 +60,16 @@ class ReportMessageBottomSheet<T extends SelectableItem>
       },
       child: Container(
         color: Colors.white.withOpacity(0),
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+        ),
         child: Column(
           children: [
             const SizedBox(height: 16),
             Padding(
-              padding: const EdgeInsets.only(left: 16),
+              padding: const EdgeInsets.only(
+                left: 16,
+              ),
               child: Text(
                 item.title,
                 style: ThemeTypography.medium14,

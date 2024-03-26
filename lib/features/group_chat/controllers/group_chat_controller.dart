@@ -21,7 +21,6 @@ class GroupChatController extends GetxController {
   }
 
   final GroupChatRepository _chatRepository = Get.find();
-  final UserRepository _userRepository = Get.find();
   final User user = Get.find();
 
   late MessageRepository _messageRepository;

@@ -39,13 +39,13 @@ dependencies:
 
   firebase_auth: ^4.10.1
   firebase_core: ^2.24.2
-  firebase_messaging: ^14.6.9
+  firebase_messaging: ^14.7.10
   get: ^4.6.6
   geolocator: ^10.1.1
   diacritic: ^0.1.5
   pin_input_text_field: ^4.5.1
   shimmer: ^3.0.0
-  flutter_local_notifications: ^16.3.2
+  flutter_local_notifications: ^17.0.0
   badges: ^3.1.2
   brasil_fields: ^1.14.3
   image_picker: ^1.0.7
@@ -53,6 +53,7 @@ dependencies:
   path_provider: ^2.1.2
   photo_manager: ^3.0.0
   permission_handler: ^11.0.1
+  cloud_functions: ^4.6.0
 
 dev_dependencies:
   flutter_test:

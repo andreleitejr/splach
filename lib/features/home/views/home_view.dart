@@ -56,11 +56,12 @@ class HomeView extends StatelessWidget {
                         ),
                       ),
                       child: IconButton(
-                        onPressed: () => Get.to(
-                          () => NotificationView(
-                            notifications: controller.notifications,
-                          ),
-                        ),
+                        onPressed: () => controller.sendPushNotification(),
+                        // onPressed: () => Get.to(
+                        //   () => NotificationView(
+                        //     notifications: controller.notifications,
+                        //   ),
+                        // ),
                         icon: const Icon(
                           Icons.notifications,
                           color: Colors.black,

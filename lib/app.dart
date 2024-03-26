@@ -13,12 +13,11 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
     ]);
     return GetMaterialApp(
       title: 'Splach',
       theme: ThemeData(
-        primaryColor: ThemeColors.primary,
+        // primaryColor: ThemeColors.primary,
         // primarySwatch: ThemeColors.primary,
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
@@ -30,11 +29,11 @@ class App extends StatelessWidget {
       getPages:  [
         GetPage(
           name: '/auth',
-          page: () => AuthView(),
+          page: () => const AuthView(),
         ),
         GetPage(
           name: '/home',
-          page: () => BaseView(),
+          page: () => const BaseView(),
         ),
       ],
     );
