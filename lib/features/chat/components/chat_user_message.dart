@@ -84,26 +84,40 @@ class ChatUserMessage extends StatelessWidget {
                                   ],
                                 ),
                                 const SizedBox(height: 8),
-                                if (message.replyMessage!.image != null &&
-                                    message
-                                        .replyMessage!.image!.isNotEmpty) ...[
-                                  ChatImage(
-                                      image: message.replyMessage!.image!),
-                                ],
-                                if (message.replyMessage!.content != null) ...[
-                                  ConstrainedBox(
-                                    constraints: BoxConstraints(
-                                      minWidth: 75,
-                                      maxWidth:
-                                          MediaQuery.of(context).size.width *
-                                                  0.65 -
+                                Row(
+                                  children: [
+                                    if (message.replyMessage!.image != null &&
+                                        message.replyMessage!.image!
+                                            .isNotEmpty) ...[
+                                      ChatImage(
+                                        image: message.replyMessage!.image!,
+                                        maxWidth: 64,
+                                        maxHeight: 64,
+                                      ),
+                                      const SizedBox(width: 8),
+                                    ],
+                                    if (message.replyMessage!.content !=
+                                        null) ...[
+                                      ConstrainedBox(
+                                        constraints: BoxConstraints(
+                                          minWidth: 75,
+                                          maxWidth: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  (message.replyMessage!
+                                                              .image !=
+                                                          null
+                                                      ? 0.55
+                                                      : 0.65) -
                                               32,
-                                    ),
-                                    child: HighlightText(
-                                      message.replyMessage!.content!,
-                                    ),
-                                  ),
-                                ],
+                                        ),
+                                        child: HighlightText(
+                                          message.replyMessage!.content!,
+                                        ),
+                                      ),
+                                    ],
+                                  ],
+                                ),
                               ],
                             ),
                           ],

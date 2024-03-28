@@ -48,7 +48,6 @@ class ChatSenderMessage extends StatelessWidget {
 
     final isHighlighted = message.private || isReplied;
 
-    print(' shduasdhuasdhasduhdasudashudsahdu ${isHighlighted}');
     return GestureDetector(
       onDoubleTap: onDoubleTap,
       onHorizontalDragEnd: (_) {
@@ -67,10 +66,7 @@ class ChatSenderMessage extends StatelessWidget {
             const SizedBox(width: 8),
           ],
           Container(
-            padding: const EdgeInsets.symmetric(
-              vertical: 6,
-              horizontal: 8,
-            ),
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: isHighlighted ? ThemeColors.grey1 : Colors.white,
               border: Border.all(
@@ -88,6 +84,7 @@ class ChatSenderMessage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     GestureDetector(
                       onTap: onTitleTap,
@@ -98,16 +95,25 @@ class ChatSenderMessage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 4),
                     if (message.private) ...[
+                      const SizedBox(width: 4),
                       const PrivateMessageSign(),
                     ],
-                    IconButton(
-                      onPressed: () {
+                    GestureDetector(
+                      onTap: () {
                         onButtonTap?.call();
                       },
-                      icon: const Icon(Icons.more_horiz),
-                    )
+                      child: Container(
+                        constraints: const BoxConstraints(
+                          maxHeight: 24,
+                          maxWidth: 24,
+                        ),
+                        child: const Icon(
+                          Icons.more_horiz,
+                          size: 24,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
                 if (message.replyMessage != null) ...[
@@ -141,24 +147,41 @@ class ChatSenderMessage extends StatelessWidget {
                                   color: ThemeColors.primary,
                                 ),
                               ),
-                              if (message.replyMessage!.image != null &&
-                                  message.replyMessage!.image!.isNotEmpty) ...[
-                                ChatImage(image: message.replyMessage!.image!),
-                              ],
-                              if (message.replyMessage!.content != null) ...[
-                                ConstrainedBox(
-                                  constraints: BoxConstraints(
-                                    minWidth: 75,
-                                    maxWidth:
-                                        MediaQuery.of(context).size.width *
-                                                0.65 -
+
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  if (message.replyMessage!.image != null &&
+                                      message
+                                          .replyMessage!.image!.isNotEmpty) ...[
+                                    ChatImage(
+                                      image: message.replyMessage!.image!,
+                                      maxWidth: 64,
+                                      maxHeight: 64,
+                                    ),
+                                    const SizedBox(width: 8),
+                                  ],
+                                  if (message.replyMessage!.content !=
+                                      null) ...[
+                                    ConstrainedBox(
+                                      constraints: BoxConstraints(
+                                        minWidth: 75,
+                                        maxWidth: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                (message.replyMessage!.image !=
+                                                        null
+                                                    ? 0.55
+                                                    : 0.65) -
                                             32,
-                                  ),
-                                  child: HighlightText(
-                                    message.replyMessage!.content!,
-                                  ),
-                                ),
-                              ],
+                                      ),
+                                      child: HighlightText(
+                                        message.replyMessage!.content!,
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
                               // const SizedBox(height: 8),
                               // Text(
                               //   '${replyMessage.createdAt.toTimeString()} ago',
@@ -177,7 +200,7 @@ class ChatSenderMessage extends StatelessWidget {
                 ],
                 if (message.image != null && message.image!.isNotEmpty) ...[
                   ChatImage(image: message.image!),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 4),
                 ],
                 if (message.content != null) ...[
                   ConstrainedBox(
@@ -197,7 +220,7 @@ class ChatSenderMessage extends StatelessWidget {
                     ),
                   ),
                 ],
-                const SizedBox(height: 8),
+                const SizedBox(height: 4),
                 Text(
                   '${message.createdAt.toTimeString()} ago',
                   style: ThemeTypography.regular9.apply(
