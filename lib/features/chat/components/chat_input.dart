@@ -14,17 +14,17 @@ import 'package:splach/features/user/models/user.dart';
 import 'package:splach/repositories/firestore_repository.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
-import 'package:splach/widgets/avatar_image.dart';
-import 'package:splach/widgets/switch_button.dart';
 
 class ChatInput extends StatefulWidget {
   final ChatController controller;
   final FocusNode focus;
+  final bool isImageInput;
 
   const ChatInput({
     super.key,
     required this.controller,
     required this.focus,
+    this.isImageInput = false,
   });
 
   @override
@@ -66,7 +66,7 @@ class _ChatInputState extends State<ChatInput> {
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: widget.isImageInput ? Colors.black : Colors.white,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(hasOtherContent ? 16 : 0),
           topRight: Radius.circular(hasOtherContent ? 16 : 0),
@@ -80,7 +80,6 @@ class _ChatInputState extends State<ChatInput> {
           ),
         ],
       ),
-      // padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
         children: [
           const SizedBox(height: 16),
@@ -134,7 +133,6 @@ class _ChatInputState extends State<ChatInput> {
               focusNode: widget.focus,
               controller: messageController,
               decoration: InputDecoration(
-                // contentPadding: const EdgeInsets.all(12),
                 hintText: 'What\'s in your mind?',
                 hintStyle: ThemeTypography.regular14.apply(
                   color: ThemeColors.grey4,
@@ -160,7 +158,8 @@ class _ChatInputState extends State<ChatInput> {
                         );
                       }),
                       Obx(() {
-                        if (widget.controller.isTyping.isTrue) {
+                        if (widget.controller.isTyping.isTrue ||
+                            widget.isImageInput) {
                           return Container();
                         }
                         return _buildInputButton(
@@ -169,7 +168,9 @@ class _ChatInputState extends State<ChatInput> {
                           onPressed: () async {
                             controller.isCameraOpen.value = true;
                             final image = await Get.to(
-                              () => const CameraGalleryView(),
+                              () => CameraGalleryView(
+                                controller: controller,
+                              ),
                             );
                             if (image != null) {
                               controller.image.value = image;
@@ -190,6 +191,9 @@ class _ChatInputState extends State<ChatInput> {
                             controller.private.value = false;
                             messageController.clear();
                             controller.scrollToBottom();
+                            if (widget.isImageInput) {
+                              Get.back();
+                            }
                           }
                         },
                       ),
@@ -232,9 +236,6 @@ class _ChatInputState extends State<ChatInput> {
     required VoidCallback onPressed,
   }) {
     return Container(
-      // height: 48,
-      // margin: const EdgeInsets.only(right: 6),
-      // width: 36,
       decoration: BoxDecoration(
         color: color,
         shape: BoxShape.circle,

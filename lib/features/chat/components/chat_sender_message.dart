@@ -46,7 +46,7 @@ class ChatSenderMessage extends StatelessWidget {
       return Container();
     }
 
-    final isHighlighted = message.private && isReplied;
+    final isHighlighted = message.private || isReplied;
 
     return GestureDetector(
       onDoubleTap: onDoubleTap,
@@ -110,7 +110,7 @@ class ChatSenderMessage extends StatelessWidget {
                   ],
                 ),
                 if (message.replyMessage != null) ...[
-                  const SizedBox(height: 2),
+                  // const SizedBox(height: 2),
                   if (message.replyMessage!.content != null ||
                       message.replyMessage!.image != null) ...[
                     Container(
@@ -181,10 +181,11 @@ class ChatSenderMessage extends StatelessWidget {
                       ),
                     ),
                   ],
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 8),
                 ],
                 if (message.image != null && message.image!.isNotEmpty) ...[
                   ChatImage(image: message.image!),
+                  const SizedBox(height: 8),
                 ],
                 if (message.content != null) ...[
                   ConstrainedBox(

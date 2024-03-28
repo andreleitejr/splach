@@ -7,7 +7,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:splach/services/image_service.dart';
 
-class CameraGalleryController extends GetxController {
+class ImageController extends GetxController {
   String? image;
 
   final _imageService = CameraService();

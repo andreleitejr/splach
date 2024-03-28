@@ -63,15 +63,24 @@ class ChatReplyMessage extends StatelessWidget {
                       children: [
                         _buildHeader(),
                         // const SizedBox(height: 8),
-                        if (replyMessage.image != null &&
-                            replyMessage.image!.isNotEmpty) ...[
-                          ChatImage(
-                            image: replyMessage.image!,
-                            maxHeight: 200,
-                            maxWidth: double.infinity,
-                          ),
-                        ],
-                        _buildContent(context),
+
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (replyMessage.image != null &&
+                                replyMessage.image!.isNotEmpty) ...[
+                              ChatImage(
+                                image: replyMessage.image!,
+                                maxHeight: 64,
+                                maxWidth: 64,
+                              ),
+                              const SizedBox(width: 8),
+                            ],
+                            Expanded(
+                              child: _buildContent(context),
+                            ),
+                          ],
+                        ),
                         const SizedBox(height: 8),
                       ],
                     ),

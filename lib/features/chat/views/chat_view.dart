@@ -48,51 +48,40 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () {
-        final isCameraOpen = controller.isCameraOpen.isTrue;
-        final isImageSelected = controller.image.value != null;
-
-        if (isCameraOpen && isImageSelected) {
-          return ChatImageInput(controller: controller);
-        }
-
-        return Scaffold(
-          body: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Color(0xFFF8F2FF),
-                  Color(0xFFF3F8FF),
-                  Color(0xFFFFF2FF),
-                ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-            ),
-            child: SafeArea(
-              child: Column(
-                children: [
-                  ChatTopNavigationBar(
-                    controller: controller,
-                  ),
-                  ChatParticipantsList(
-                    controller: controller,
-                  ),
-                  ChatMessageList(
-                    controller: controller,
-                    focus: focus,
-                  ),
-                  ChatInput(
-                    controller: controller,
-                    focus: focus,
-                  ),
-                ],
-              ),
-            ),
+    return Scaffold(
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFFF8F2FF),
+              Color(0xFFF3F8FF),
+              Color(0xFFFFF2FF),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
-        );
-      },
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              ChatTopNavigationBar(
+                controller: controller,
+              ),
+              ChatParticipantsList(
+                controller: controller,
+              ),
+              ChatMessageList(
+                controller: controller,
+                focus: focus,
+              ),
+              ChatInput(
+                controller: controller,
+                focus: focus,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
