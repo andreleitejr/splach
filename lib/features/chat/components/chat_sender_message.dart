@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:splach/features/group_chat/components/chat_image.dart';
-import 'package:splach/features/group_chat/models/message.dart';
-import 'package:splach/features/group_chat/widgets/private_message_sign.dart';
+import 'package:splach/features/chat/components/chat_image.dart';
+import 'package:splach/features/chat/models/message.dart';
+import 'package:splach/features/chat/widgets/private_message_sign.dart';
 import 'package:splach/features/rating/widgets/rating_bottom_sheet.dart';
 import 'package:splach/features/refactor/models/report_message_topic.dart';
 import 'package:splach/features/refactor/widgets/report_message_bottom_sheet.dart';

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:splach/features/group_chat/controllers/group_chat_controller.dart';
-import 'package:splach/features/group_chat/models/participant.dart';
+import 'package:splach/features/chat/controllers/chat_controller.dart';
+import 'package:splach/features/chat/models/participant.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/widgets/avatar_image.dart';
 
 class ChatParticipantMentionList extends StatelessWidget {
-  final GroupChatController controller;
+  final ChatController controller;
   final Function(Participant) onUserSelected;
 
   const ChatParticipantMentionList({

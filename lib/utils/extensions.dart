@@ -2,10 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:diacritic/diacritic.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:splach/features/group_chat/models/group_chat.dart';
-import 'package:splach/features/group_chat/models/participant.dart';
+import 'package:splach/features/chat/models/group_chat.dart';
+import 'package:splach/features/chat/models/participant.dart';
 import 'package:splach/features/notification/models/notification.dart';
-import 'package:splach/features/group_chat/models/message.dart';
+import 'package:splach/features/chat/models/message.dart';
 import 'package:splach/features/rating/models/rating.dart';
 import 'package:splach/features/refactor/models/report.dart';
 

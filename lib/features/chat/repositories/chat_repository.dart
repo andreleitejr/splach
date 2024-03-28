@@ -1,11 +1,11 @@
 import 'package:get/get.dart';
-import 'package:splach/features/group_chat/models/group_chat.dart';
-import 'package:splach/features/group_chat/models/participant.dart';
-import 'package:splach/features/group_chat/repositories/participant_repository.dart';
+import 'package:splach/features/chat/models/group_chat.dart';
+import 'package:splach/features/chat/models/participant.dart';
+import 'package:splach/features/chat/repositories/participant_repository.dart';
 import 'package:splach/repositories/firestore_repository.dart';
 
-class GroupChatRepository extends FirestoreRepository<GroupChat> {
-  GroupChatRepository()
+class ChatRepository extends FirestoreRepository<GroupChat> {
+  ChatRepository()
       : super(
           collectionName: 'chats',
           fromDocument: (document) => GroupChat.fromDocument(document),

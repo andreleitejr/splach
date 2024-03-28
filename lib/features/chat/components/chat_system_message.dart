@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:splach/features/group_chat/models/message.dart';
+import 'package:splach/features/chat/models/message.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
 

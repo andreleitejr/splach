@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:splach/features/group_chat/controllers/group_chat_edit_controller.dart';
-import 'package:splach/models/chat_category.dart';
+import 'package:splach/features/chat/controllers/chat_edit_controller.dart';
+import 'package:splach/features/chat/models/chat_category.dart';
 import 'package:splach/widgets/custom_bottom_sheet.dart';
 import 'package:splach/widgets/input.dart';
-import 'package:splach/widgets/input_button.dart';
 
-class GroupChatEditView extends StatelessWidget {
+class ChatEditView extends StatelessWidget {
   final controller = Get.put(GroupChatEditController());
 
-  GroupChatEditView({super.key});
+  ChatEditView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +56,9 @@ class GroupChatEditView extends StatelessWidget {
   void showCategoryBottomSheet(BuildContext context) {
     final focus = FocusScope.of(context);
 
-    categories.removeWhere((category) => category.category == ChatCategory.all);
+    categories.removeWhere(
+      (category) => category.category == ChatCategory.all,
+    );
 
     Get.bottomSheet(
       CustomBottomSheet<ChatCategory>(

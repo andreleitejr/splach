@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:splach/features/group_chat/models/participant.dart';
+import 'package:splach/features/chat/models/participant.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/models/base_model.dart';
 import 'package:splach/utils/extensions.dart';

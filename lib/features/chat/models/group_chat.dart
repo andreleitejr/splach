@@ -1,10 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:splach/features/group_chat/models/participant.dart';
-import 'package:splach/features/user/models/user.dart';
-import 'package:splach/models/chat.dart';
-import 'package:splach/models/chat_category.dart';
-import 'package:splach/features/group_chat/models/message.dart';
+import 'package:splach/features/chat/models/message.dart';
 import 'package:splach/utils/extensions.dart';
+
+import 'chat.dart';
 
 enum GroupType {
   public,

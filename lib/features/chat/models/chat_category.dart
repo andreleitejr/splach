@@ -1,4 +1,4 @@
-import 'selectable_item.dart';
+import '../../../models/selectable_item.dart';
 
 class ChatCategory extends SelectableItem {
   final String name;

@@ -1,8 +1,8 @@
-import 'package:splach/features/group_chat/models/participant.dart';
+import 'package:splach/features/chat/models/participant.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/models/base_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:splach/features/group_chat/models/message.dart';
+import 'package:splach/features/chat/models/message.dart';
 
 class Chat extends BaseModel {
   // final List<String> participants;

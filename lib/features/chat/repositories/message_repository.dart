@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:splach/features/group_chat/models/message.dart';
+import 'package:splach/features/chat/models/message.dart';
 import 'package:splach/repositories/firestore_repository.dart';
 
 class MessageRepository extends FirestoreRepository<Message> {

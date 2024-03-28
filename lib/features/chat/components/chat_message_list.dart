@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:splach/features/group_chat/components/chat_image_input.dart';
-import 'package:splach/features/group_chat/components/chat_user_message.dart';
-import 'package:splach/features/group_chat/controllers/group_chat_controller.dart';
-import 'package:splach/features/group_chat/models/message.dart';
+import 'package:splach/features/chat/components/chat_image_input.dart';
+import 'package:splach/features/chat/components/chat_user_message.dart';
+import 'package:splach/features/chat/controllers/chat_controller.dart';
+import 'package:splach/features/chat/models/message.dart';
 import 'package:splach/features/rating/widgets/rating_bottom_sheet.dart';
 import 'package:splach/features/refactor/models/report_message_topic.dart';
 import 'package:splach/features/refactor/widgets/report_message_bottom_sheet.dart';
@@ -17,7 +17,7 @@ import 'chat_sender_message.dart';
 import 'chat_system_message.dart';
 
 class ChatMessageList extends StatelessWidget {
-  final GroupChatController controller;
+  final ChatController controller;
   final FocusNode focus;
 
   const ChatMessageList({
@@ -127,6 +127,7 @@ class ChatMessageList extends StatelessWidget {
     focus.requestFocus();
     controller.replyMessage.value = message;
     controller.recipients.add(message.senderId);
+    print(' HUSHAUDHUASDHUASDHUASDHUHUSAD ${controller.recipients}');
   }
 
   void _reportMessage(String messageId) {

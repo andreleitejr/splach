@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:splach/features/group_chat/models/group_chat.dart';
-import 'package:splach/features/group_chat/models/participant.dart';
-import 'package:splach/features/group_chat/repositories/group_chat_repository.dart';
-import 'package:splach/features/group_chat/repositories/participant_repository.dart';
+import 'package:splach/features/chat/models/group_chat.dart';
+import 'package:splach/features/chat/models/participant.dart';
+import 'package:splach/features/chat/repositories/chat_repository.dart';
+import 'package:splach/features/chat/repositories/participant_repository.dart';
 import 'package:splach/features/refactor/controllers/report_controller.dart';
 import 'package:splach/features/refactor/models/report.dart';
 import 'package:splach/features/user/models/user.dart';
-import 'package:splach/features/group_chat/models/message.dart';
+import 'package:splach/features/chat/models/message.dart';
 import 'package:splach/features/user/repositories/user_repository.dart';
 import 'package:splach/repositories/firestore_repository.dart';
-import 'package:splach/features/group_chat/repositories/message_repository.dart';
+import 'package:splach/features/chat/repositories/message_repository.dart';
 
-class GroupChatController extends GetxController {
-  GroupChatController(this.groupChat) {
+class ChatController extends GetxController {
+  ChatController(this.groupChat) {
     debugPrint(
         'Chat Controller | Initializing the group chat for ${groupChat.id}');
     _messageRepository = MessageRepository(groupChat.id!);
     _participantRepository = ParticipantRepository(groupChat.id!);
   }
 
-  final GroupChatRepository _chatRepository = Get.find();
+  final ChatRepository _chatRepository = Get.find();
   final User user = Get.find();
 
   late MessageRepository _messageRepository;
@@ -33,6 +33,7 @@ class GroupChatController extends GetxController {
   final private = false.obs;
   final recipients = <String>[].obs;
   final isCameraOpen = false.obs;
+  final isTyping = false.obs;
 
   // final replyUser = Rx<User?>(null);
 
@@ -40,10 +41,45 @@ class GroupChatController extends GetxController {
   final showButton = false.obs;
   final replyMessage = Rx<Message?>(null);
   final isShowingMentionList = false.obs;
+  final mentions = <String>[];
   final loading = false.obs;
 
   void updateMentionListVisibility(String value) {
     isShowingMentionList.value = value.endsWith('@');
+    update();
+  }
+
+  void updateIfIsMentioning(String value) {
+    final nicknames =
+        participants.map((participant) => '@${participant.nickname}').toList();
+
+    mentions.clear();
+    for (final nickname in nicknames) {
+      if (value.contains(nickname)) {
+        mentions.add(nickname);
+      } else {
+        mentions.remove(nickname);
+      }
+    }
+
+    debugPrint('Updating mention list | Mention list is not empty $mentions');
+
+    debugPrint('Updating mention list |Participants ${participants.length}');
+
+    final mentionedParticipants = participants
+        .where((participant) => mentions.contains('@${participant.nickname}'));
+
+    debugPrint(
+        'Updating mention list | Mentioned Participants ${mentionedParticipants.length}');
+    final mentionedParticipantsIds =
+        mentionedParticipants.map((participant) => participant.id!).toList();
+
+    recipients.addAll(mentionedParticipantsIds);
+
+    recipients.value = recipients.toSet().toList();
+
+    debugPrint('Updating recipient list | Recipients $recipients');
+
     update();
   }
 
@@ -116,12 +152,11 @@ class GroupChatController extends GetxController {
 
   void addSystemMessage(List<Participant> participants,
       {bool isLeaving = false}) {
-    final nicknames = participants.map((participant) => participant.nickname);
+    final nickname =
+        participants.map((participant) => participant.nickname).toList().first;
     final systemMessage = Message(
       createdAt: DateTime.now(),
-      // updatedAt: DateTime.now(),
-      content:
-          '${nicknames.toString()} ${isLeaving ? 'saiu' : 'entrou'} da sala',
+      content: '@$nickname ${isLeaving ? 'saiu' : 'entrou'} da sala',
       senderId: user.id!,
       messageType: MessageType.system,
     );
@@ -183,6 +218,20 @@ class GroupChatController extends GetxController {
     );
 
     _participantRepository.save(participant, docId: user.id);
+    _chatRepository.updateLastActivity(groupChat.id!);
+  }
+
+  Future<void> addParticipantToChat() async {
+    final participant = Participant(
+      id: user.id,
+      nickname: user.nickname,
+      image: user.image,
+      status: Status.online,
+      createdAt: DateTime.now(),
+      // updatedAt: DateTime.now(),
+    );
+
+    _participantRepository.update(participant);
     _chatRepository.updateLastActivity(groupChat.id!);
   }
 
@@ -259,5 +308,11 @@ class GroupChatController extends GetxController {
     scrollController.removeListener(scrollListener);
     scrollController.dispose();
     super.onClose();
+  }
+
+  @override
+  void onReady() {
+    // TODO: implement onReady
+    super.onReady();
   }
 }

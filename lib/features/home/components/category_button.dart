@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:splach/features/home/controllers/home_controller.dart';
-import 'package:splach/models/chat_category.dart';
+import 'package:splach/features/chat/models/chat_category.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/widgets/shimmer_box.dart';

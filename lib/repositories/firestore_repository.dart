@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:splach/models/base_model.dart';
-import 'package:splach/models/chat.dart';
 
 enum SaveResult {
   success,
@@ -45,7 +44,7 @@ class FirestoreRepository<T extends BaseModel> {
     try {
       final document =
           await firestore.collection(collectionName).doc(documentId).get();
-       return fromDocument(document);
+      return fromDocument(document);
     } catch (error) {
       debugPrint(
           'Error getting data from $collectionName in Firestore: $error');

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:splach/features/group_chat/components/group_chat_list_item.dart';
-import 'package:splach/features/group_chat/views/group_chat_edit_view.dart';
-import 'package:splach/features/group_chat/views/group_chat_view.dart';
+import 'package:splach/features/chat/components/group_chat_list_item.dart';
+import 'package:splach/features/chat/views/chat_edit_view.dart';
+import 'package:splach/features/chat/views/chat_view.dart';
 import 'package:splach/features/home/components/category_button.dart';
-import 'package:splach/features/group_chat/components/shimmer_chat_group_list_item.dart';
+import 'package:splach/features/chat/components/shimmer_chat_group_list_item.dart';
 import 'package:splach/features/home/controllers/home_controller.dart';
 import 'package:splach/features/notification/views/notification_view.dart';
-import 'package:splach/models/chat_category.dart';
+import 'package:splach/features/chat/models/chat_category.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
 

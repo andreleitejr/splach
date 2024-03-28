@@ -2,14 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:splach/features/group_chat/models/group_chat.dart';
-import 'package:splach/features/group_chat/repositories/group_chat_repository.dart';
+import 'package:splach/features/chat/models/group_chat.dart';
+import 'package:splach/features/chat/repositories/chat_repository.dart';
 import 'package:splach/features/services/location_service.dart';
-import 'package:splach/models/chat_category.dart';
+import 'package:splach/features/chat/models/chat_category.dart';
 import 'package:splach/repositories/firestore_repository.dart';
 
 class GroupChatEditController extends GetxController {
-  final GroupChatRepository _repository = Get.find();
+  final ChatRepository _repository = Get.find();
   final LocationService _locationService = Get.find();
 
   final groupChat = Rx<GroupChat?>(null);

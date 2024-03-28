@@ -2,13 +2,13 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:splach/features/group_chat/controllers/group_chat_controller.dart';
+import 'package:splach/features/chat/controllers/chat_controller.dart';
 import 'package:splach/repositories/firestore_repository.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
 
 class ChatImageInput extends StatelessWidget {
-  final GroupChatController controller;
+  final ChatController controller;
 
   ChatImageInput({super.key, required this.controller});
 
