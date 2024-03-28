@@ -18,7 +18,7 @@ class Participant extends BaseModel {
     required this.image,
     required this.status,
     required super.createdAt,
-    // required super.updatedAt,
+    required super.updatedAt,
   });
 
   Participant.fromDocument(DocumentSnapshot document)

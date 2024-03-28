@@ -3,8 +3,8 @@ import 'package:splach/features/chat/models/message.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/widgets/avatar_image.dart';
+import 'package:splach/widgets/highlight_text.dart';
 
-import 'chat_highlight_mention.dart';
 import 'chat_image.dart';
 
 class ChatReplyMessage extends StatelessWidget {
@@ -116,16 +116,8 @@ class ChatReplyMessage extends StatelessWidget {
             const SizedBox(width: 4),
           ],
           Expanded(
-            child: RichText(
-              text: TextSpan(
-                style: ThemeTypography.regular14.apply(
-                  color: Colors.black,
-                ),
-                children: highlightMentions(
-                  '$answeringText @${replyMessage.sender!.nickname}',
-                ),
-              ),
-            ),
+            child: HighlightText(
+                '$answeringText @${replyMessage.sender!.nickname}'),
           ),
         ],
         IconButton(

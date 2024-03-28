@@ -49,6 +49,7 @@ class AuthController extends GetxController {
 
       if (user != null) {
         Get.put(user, permanent: true);
+        debugPrint('Successfully logged with id ${user.id!}');
         navigator.home();
         return;
       }

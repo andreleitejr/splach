@@ -15,10 +15,12 @@ class AppNotification {
   final String relatedId;
   final AppNotificationType notificationType;
   final DateTime createdAt;
+  final DateTime updatedAt;
 
   User? sender;
 
   AppNotification({
+    required this.updatedAt,
     required this.createdAt,
     required this.content,
     required this.relatedId,

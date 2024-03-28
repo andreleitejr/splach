@@ -5,14 +5,18 @@ import 'package:splach/features/notification/models/notification.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/features/user/repositories/user_repository.dart';
 import 'package:splach/features/user/views/user_profile_view.dart';
+import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/utils/extensions.dart';
+import 'package:splach/widgets/highlight_text.dart';
 import 'package:splach/widgets/top_navigation_bar.dart';
 
 class NotificationView extends StatelessWidget {
   final controller = Get.put(NotificationController());
+  final bool showLeading;
 
   NotificationView({
     Key? key,
+    this.showLeading = false,
   }) : super(key: key);
 
   final UserRepository _userRepository = Get.find();
@@ -24,7 +28,8 @@ class NotificationView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const TopNavigationBar(
+      appBar: TopNavigationBar(
+        showLeading: showLeading,
         title: 'Notificações',
       ),
       body: ListView.builder(
@@ -62,9 +67,9 @@ class NotificationItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: onNotificationTap,
-      title: Text(notification.content),
+      title: HighlightText(notification.content),
       // subtitle: Text('De: ${notification.senderId}'),
-      trailing: Text(notification.createdAt.toTimeString()),
+      trailing: Text(notification.updatedAt.toTimeString()),
     );
   }
 }

@@ -69,7 +69,7 @@ class UserProfileController extends GetxController {
       ],
       follower: currentUser.id!,
       createdAt: DateTime.now(),
-      // updatedAt: DateTime.now(),
+      updatedAt: DateTime.now(),
     );
 
     final relationshipId =

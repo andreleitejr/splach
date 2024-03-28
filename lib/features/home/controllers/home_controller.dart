@@ -19,7 +19,7 @@ class HomeController extends GetxController {
   final _groupChats = <GroupChat>[].obs;
   final filteredGroupChats = <GroupChat>[].obs;
 
-  final _maxDistance = 1000;
+  final _maxDistance = 1000000;
   final _currentLocation = Rx<Position?>(null);
 
   final category = Rx<ChatCategory>(categories.first);
@@ -107,7 +107,7 @@ class HomeController extends GetxController {
       image: _user.image,
       status: Status.online,
       createdAt: createdAt ?? DateTime.now(),
-      // updatedAt: DateTime.now(),
+      updatedAt: DateTime.now(),
     );
 
     participantRepository.save(participant, docId: _user.id);

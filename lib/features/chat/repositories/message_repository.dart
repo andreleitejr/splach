@@ -31,6 +31,7 @@ class MessageRepository extends FirestoreRepository<Message> {
           return dataList;
         },
       );
+      print('#################################### QUE DOIDERA MANE');
 
       return stream;
     } catch (error) {

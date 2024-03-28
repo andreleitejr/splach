@@ -21,7 +21,7 @@ class User extends BaseModel {
   User({
     required super.id,
     required super.createdAt,
-    // required DateTime updatedAt,
+    required super.updatedAt,
     required this.phone,
     required this.email,
     required this.nickname,

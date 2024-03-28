@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:splach/features/camera/controllers/camera_gallery_controller.dart';
 import 'package:splach/features/chat/models/group_chat.dart';
 import 'package:splach/features/chat/models/participant.dart';
 import 'package:splach/features/chat/repositories/chat_repository.dart';
 import 'package:splach/features/chat/repositories/participant_repository.dart';
+import 'package:splach/features/notification/controllers/notification_controller.dart';
 import 'package:splach/features/refactor/controllers/report_controller.dart';
 import 'package:splach/features/refactor/models/report.dart';
 import 'package:splach/features/user/models/user.dart';
@@ -22,11 +22,14 @@ class ChatController extends GetxController {
   }
 
   final ChatRepository _chatRepository = Get.find();
+  final NotificationController notificationController = Get.find();
+
   final User user = Get.find();
 
   late MessageRepository _messageRepository;
   late ParticipantRepository _participantRepository;
   final _userRepository = Get.put(UserRepository());
+
   final GroupChat groupChat;
   final participants = <Participant>[].obs;
   final messages = <Message>[].obs;
@@ -117,10 +120,17 @@ class ChatController extends GetxController {
     _messageRepository.streamLastMessages().listen((messageData) async {
       messages.assignAll(messageData);
       // _filterPrivateMessages();
-      messages.sort((b, a) => a.createdAt.compareTo(b.createdAt));
-
+      messages.sort((a, b) => b.createdAt.compareTo(a.createdAt));
       updateMessageSenders();
+
+      _verifyMessageAndCreateMentionNotification(messages.first);
     });
+  }
+
+  void _verifyMessageAndCreateMentionNotification(Message message) {
+    if (message.recipients != null && message.recipients!.contains(user.id)) {
+      notificationController.createMentionNotification(message);
+    }
   }
 
   void _listenToParticipants() async {
@@ -156,6 +166,7 @@ class ChatController extends GetxController {
     final nickname =
         participants.map((participant) => participant.nickname).toList().first;
     final systemMessage = Message(
+      updatedAt: DateTime.now(),
       createdAt: DateTime.now(),
       content: '@$nickname ${isLeaving ? 'saiu' : 'entrou'} da sala',
       senderId: user.id!,
@@ -194,6 +205,7 @@ class ChatController extends GetxController {
       content: content,
       image: image.value,
       senderId: user.id!,
+      updatedAt: DateTime.now(),
       createdAt: DateTime.now(),
       // updatedAt: DateTime.now(),
       replyId: replyMessage.value?.id,
@@ -215,7 +227,7 @@ class ChatController extends GetxController {
       image: user.image,
       status: Status.offline,
       createdAt: DateTime.now(),
-      // updatedAt: DateTime.now(),
+      updatedAt: DateTime.now(),
     );
 
     _participantRepository.save(participant, docId: user.id);
@@ -229,7 +241,7 @@ class ChatController extends GetxController {
       image: user.image,
       status: Status.online,
       createdAt: DateTime.now(),
-      // updatedAt: DateTime.now(),
+      updatedAt: DateTime.now(),
     );
 
     _participantRepository.update(participant);

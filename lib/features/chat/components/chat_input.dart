@@ -3,7 +3,6 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:splach/features/camera/views/camera_view.dart';
-import 'package:splach/features/chat/components/chat_highlight_mention.dart';
 import 'package:splach/features/chat/components/chat_image.dart';
 import 'package:splach/features/chat/components/chat_participant_mention_list.dart';
 import 'package:splach/features/chat/components/chat_reply_message.dart';
@@ -14,6 +13,7 @@ import 'package:splach/features/user/models/user.dart';
 import 'package:splach/repositories/firestore_repository.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
+import 'package:splach/widgets/highlight_text.dart';
 
 class ChatInput extends StatefulWidget {
   final ChatController controller;
@@ -34,10 +34,19 @@ class ChatInput extends StatefulWidget {
 class _ChatInputState extends State<ChatInput> {
   final messageController = MentionHighlightingController();
 
+  int _numberOfLines = 1;
+
   @override
   void initState() {
     super.initState();
     messageController.addListener(_onTextChanged);
+  }
+
+  @override
+  void dispose() {
+    messageController.removeListener(_onTextChanged);
+    messageController.dispose();
+    super.dispose();
   }
 
   void _onTextChanged() {
@@ -46,16 +55,30 @@ class _ChatInputState extends State<ChatInput> {
       messageController.text,
     );
     widget.controller.updateIfIsMentioning(messageController.text);
+    _calculateNumberOfLines();
   }
 
   void _addUserToChatInput(Participant participant) {
     final String currentText = messageController.text;
     final String newUserText = participant.nickname;
     final String newText = currentText + newUserText;
-    messageController.text = newText;
+    messageController.text = '$newText ';
     messageController.selection = TextSelection.fromPosition(
-      TextPosition(offset: newText.length),
+      TextPosition(offset: newText.length + 1),
     );
+  }
+
+  void _calculateNumberOfLines() {
+    final textPainter = TextPainter(
+      text: TextSpan(text: messageController.text),
+      maxLines: null,
+      textDirection: TextDirection.ltr,
+    )..layout(maxWidth: MediaQuery.of(context).size.width - 143);
+
+    final numberOfLines = textPainter.computeLineMetrics().length;
+    setState(() {
+      _numberOfLines = numberOfLines;
+    });
   }
 
   @override
@@ -106,6 +129,7 @@ class _ChatInputState extends State<ChatInput> {
             return ChatParticipantMentionList(
               controller: controller,
               onUserSelected: _addUserToChatInput,
+              isImageInput: widget.isImageInput,
             );
           }),
           Obx(() {
@@ -127,26 +151,30 @@ class _ChatInputState extends State<ChatInput> {
             );
           }),
           Container(
-            height: 48,
+            // height: 48,
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: TextField(
+              style: ThemeTypography.regular14.apply(
+                color: widget.isImageInput ? Colors.white : Colors.black,
+              ),
+              maxLines: null,
               focusNode: widget.focus,
               controller: messageController,
               decoration: InputDecoration(
                 hintText: 'What\'s in your mind?',
                 hintStyle: ThemeTypography.regular14.apply(
-                  color: ThemeColors.grey4,
+                  color: widget.isImageInput ? Colors.white : ThemeColors.grey4,
                 ),
                 suffixIcon: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  padding: const EdgeInsets.all(6),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Obx(() {
-                        if (controller.replyMessage.value == null &&
-                            controller.isShowingMentionList.isFalse) {
-                          return Container();
-                        }
+                        // if (controller.replyMessage.value == null &&
+                        //     controller.recipients.isEmpty) {
+                        //   return Container();
+                        // }
                         return _buildInputButton(
                           icon: Icons.lock_outline,
                           color: controller.private.isTrue
@@ -189,6 +217,7 @@ class _ChatInputState extends State<ChatInput> {
                           if (result == SaveResult.success) {
                             controller.replyMessage.value = null;
                             controller.private.value = false;
+                            controller.recipients.clear();
                             messageController.clear();
                             controller.scrollToBottom();
                             if (widget.isImageInput) {
@@ -201,21 +230,27 @@ class _ChatInputState extends State<ChatInput> {
                   ),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(96),
+                  borderRadius: BorderRadius.circular(
+                    _numberOfLines > 1 ? 12 : 48,
+                  ),
                   borderSide: const BorderSide(
                     width: 1,
                     color: ThemeColors.grey2,
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(96),
+                  borderRadius: BorderRadius.circular(
+                    _numberOfLines > 1 ? 12 : 48,
+                  ),
                   borderSide: const BorderSide(
                     width: 1,
                     color: ThemeColors.grey3,
                   ),
                 ),
                 disabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(96),
+                  borderRadius: BorderRadius.circular(
+                    _numberOfLines > 1 ? 12 : 48.0,
+                  ),
                   borderSide: const BorderSide(
                     width: 1,
                     color: ThemeColors.grey2,
@@ -235,17 +270,20 @@ class _ChatInputState extends State<ChatInput> {
     required Color color,
     required VoidCallback onPressed,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
-      ),
-      child: IconButton(
-        icon: Icon(
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        width: 38,
+        height: 38,
+        margin: const EdgeInsets.only(left: 6),
+        decoration: BoxDecoration(
+          color: color,
+          shape: BoxShape.circle,
+        ),
+        child: Icon(
           icon,
           color: Colors.white,
         ),
-        onPressed: onPressed,
       ),
     );
   }

@@ -20,7 +20,7 @@ class Report extends BaseModel {
 
   Report({
     required super.createdAt,
-    // required DateTime updatedAt,
+    required super.updatedAt,
     required this.reason,
     required this.comments,
     required this.reportedId,

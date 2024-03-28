@@ -15,7 +15,7 @@ class Chat extends BaseModel {
 
   Chat({
     required super.createdAt,
-    required DateTime updatedAt,
+    required super.updatedAt,
     // required this.participants,
     required this.participantsLimit,
     required this.messages,

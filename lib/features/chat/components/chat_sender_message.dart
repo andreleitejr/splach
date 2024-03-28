@@ -12,7 +12,7 @@ import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/utils/extensions.dart';
 import 'package:splach/widgets/avatar_image.dart';
 import 'package:splach/widgets/custom_bottom_sheet.dart';
-import 'chat_highlight_mention.dart';
+import 'package:splach/widgets/highlight_text.dart';
 
 class ChatSenderMessage extends StatelessWidget {
   final Message message;
@@ -48,6 +48,7 @@ class ChatSenderMessage extends StatelessWidget {
 
     final isHighlighted = message.private || isReplied;
 
+    print(' shduasdhuasdhasduhdasudashudsahdu ${isHighlighted}');
     return GestureDetector(
       onDoubleTap: onDoubleTap,
       onHorizontalDragEnd: (_) {
@@ -153,17 +154,8 @@ class ChatSenderMessage extends StatelessWidget {
                                                 0.65 -
                                             32,
                                   ),
-                                  child: RichText(
-                                    text: TextSpan(
-                                      style: ThemeTypography.regular14.apply(
-                                        color: Colors.black,
-                                      ),
-                                      children: highlightMentions(
-                                        message.replyMessage!.content!,
-                                      ),
-                                    ),
-                                    maxLines: 3,
-                                    overflow: TextOverflow.ellipsis,
+                                  child: HighlightText(
+                                    message.replyMessage!.content!,
                                   ),
                                 ),
                               ],

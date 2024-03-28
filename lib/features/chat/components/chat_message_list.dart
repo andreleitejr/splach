@@ -124,10 +124,20 @@ class ChatMessageList extends StatelessWidget {
   }
 
   void _replyMessage(Message message) {
-    focus.requestFocus();
-    controller.replyMessage.value = message;
-    controller.recipients.add(message.senderId);
-    print(' HUSHAUDHUASDHUASDHUASDHUHUSAD ${controller.recipients}');
+    if (message.sender != null) {
+      focus.requestFocus();
+      controller.replyMessage.value = message;
+      controller.recipients.add(message.senderId);
+    } else {
+      Get.snackbar(
+        'You can\'t reply',
+        'User is not in the room anymore.',
+        duration: const Duration(seconds: 2),
+        backgroundColor: ThemeColors.primary,
+        colorText: Colors.white,
+        margin: const EdgeInsets.all(16),
+      );
+    }
   }
 
   void _reportMessage(String messageId) {

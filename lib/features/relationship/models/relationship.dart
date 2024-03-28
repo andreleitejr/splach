@@ -9,7 +9,7 @@ class Relationship extends BaseModel {
     required this.userIds,
     required this.follower,
     required super.createdAt,
-    // required super.updatedAt,
+    required super.updatedAt,
   });
 
   Relationship.fromDocument(DocumentSnapshot document)

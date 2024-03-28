@@ -10,6 +10,31 @@ class RatingRepository extends FirestoreRepository<Rating> {
           fromDocument: (document) => Rating.fromDocument(document),
         );
 
+
+  @override
+  Stream<List<Rating>> streamAll({String? userId}) {
+    try {
+      Query query = firestore.collection(collectionName);
+
+      if (userId != null) {
+        query = query.where('ratedId', isEqualTo: userId);
+      }
+
+      final stream = query.snapshots().map(
+            (querySnapshot) {
+          final dataList =
+          querySnapshot.docs.map((doc) => fromDocument(doc)).toList();
+          return dataList;
+        },
+      );
+
+      return stream;
+    } catch (error) {
+      print('Error streaming data from $collectionName in Firestore: $error');
+      return Stream.value([]);
+    }
+  }
+
   @override
   Future<List<Rating>> getAll({String? userId}) async {
     try {

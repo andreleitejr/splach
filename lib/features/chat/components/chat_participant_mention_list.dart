@@ -9,11 +9,13 @@ import 'package:splach/widgets/avatar_image.dart';
 class ChatParticipantMentionList extends StatelessWidget {
   final ChatController controller;
   final Function(Participant) onUserSelected;
+  final bool isImageInput;
 
   const ChatParticipantMentionList({
     Key? key,
     required this.controller,
     required this.onUserSelected,
+    this.isImageInput = false,
   }) : super(key: key);
 
   @override
@@ -50,7 +52,9 @@ class ChatParticipantMentionList extends StatelessWidget {
               ),
               title: Text(
                 '@${participant.nickname}',
-                style: ThemeTypography.regular14,
+                style: ThemeTypography.regular14.apply(
+                  color: isImageInput ? Colors.white : Colors.black,
+                ),
               ),
               onTap: () {
                 onUserSelected(participant);

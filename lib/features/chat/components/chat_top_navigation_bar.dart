@@ -3,6 +3,9 @@ import 'package:get/get.dart';
 import 'package:splach/features/chat/views/chat_info_view.dart';
 import 'package:splach/features/chat/controllers/chat_controller.dart';
 import 'package:splach/features/chat/views/chat_participants_view.dart';
+import 'package:badges/badges.dart' as badges;
+import 'package:splach/features/notification/views/notification_view.dart';
+import 'package:splach/themes/theme_typography.dart';
 
 class ChatTopNavigationBar extends StatelessWidget {
   final ChatController controller;
@@ -55,6 +58,35 @@ class ChatTopNavigationBar extends StatelessWidget {
             },
             icon: const Icon(
               Icons.image_outlined,
+            ),
+          ),
+          Obx(
+            () => GestureDetector(
+              onTap: () => Get.to(
+                () => NotificationView(showLeading: true),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: badges.Badge(
+                  showBadge: controller
+                      .notificationController.notifications.isNotEmpty,
+                  position: badges.BadgePosition.topEnd(
+                    top: -5,
+                    end: -5,
+                  ),
+                  badgeContent: Text(
+                    controller.notificationController.notifications.length
+                        .toString(),
+                    style: ThemeTypography.semiBold12.apply(
+                      color: Colors.white,
+                    ),
+                  ),
+                  child: const Icon(
+                    Icons.notifications,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
             ),
           ),
         ],

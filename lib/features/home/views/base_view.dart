@@ -95,28 +95,11 @@ class _BaseViewState extends State<BaseView> {
 
   BottomNavigationBarItem _buildNavBarItemWithBadge(String label) {
     return BottomNavigationBarItem(
-      icon: Center(
-        child: badges.Badge(
-          position: badges.BadgePosition.topEnd(
-            top: -5,
-            end: -5,
-          ),
-          badgeContent: Text(
-            controller.notificationController.notifications.length.toString(),
-            style: ThemeTypography.semiBold12.apply(
-              color: Colors.white,
-            ),
-          ),
-          child: const Icon(
-            Icons.notifications,
-            color: Colors.black,
-          ),
-        ),
-      ),
-      activeIcon: badges.Badge(
+      icon:  badges.Badge(
+        showBadge: controller.notificationController.notifications.isNotEmpty,
         position: badges.BadgePosition.topEnd(
-          top: 5,
-          end: 5,
+          top: -5,
+          end: -5,
         ),
         badgeContent: Text(
           controller.notificationController.notifications.length.toString(),
@@ -126,7 +109,23 @@ class _BaseViewState extends State<BaseView> {
         ),
         child: const Icon(
           Icons.notifications,
-          color: Colors.green,
+          color: Colors.black,
+        ),
+      ),
+      activeIcon: badges.Badge(
+        position: badges.BadgePosition.topEnd(
+          top: -5,
+          end: -5,
+        ),
+        badgeContent: Text(
+          controller.notificationController.notifications.length.toString(),
+          style: ThemeTypography.semiBold12.apply(
+            color: Colors.white,
+          ),
+        ),
+        child: const Icon(
+          Icons.notifications,
+          color: ThemeColors.primary,
         ),
       ),
       label: label,
@@ -142,7 +141,7 @@ class _BaseViewState extends State<BaseView> {
         margin: const EdgeInsets.only(top: 8),
         height: 38,
         width: 38,
-        child: Icon(Icons.access_alarm),
+        child: const Icon(Icons.access_alarm),
       ),
       label: '',
     );

@@ -28,6 +28,7 @@ class ReportController extends GetxController {
 
     final support = Report(
       createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
       comments: comments,
       reason: reason,
       type: type,

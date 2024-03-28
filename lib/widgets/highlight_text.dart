@@ -2,10 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
 
+class HighlightText extends StatelessWidget {
+  final String text;
+
+  const HighlightText(this.text, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return RichText(
+      text: TextSpan(
+        style: ThemeTypography.regular14.apply(
+          color: Colors.black,
+        ),
+        children: highlightMentions(text),
+      ),
+    );
+  }
+
+
+}
+
+
 List<TextSpan> highlightMentions(
-  String text, {
-  bool isFromUser = false,
-}) {
+    String text, {
+      bool isFromUser = false,
+    }) {
   List<TextSpan> spans = [];
   RegExp mentionRegex = RegExp(r'@(\S+)', caseSensitive: false);
   List<RegExpMatch> matches = mentionRegex.allMatches(text).toList();

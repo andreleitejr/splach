@@ -7,10 +7,7 @@ import 'package:splach/features/chat/widgets/private_message_sign.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/utils/extensions.dart';
-import 'package:splach/widgets/avatar_image.dart';
-import 'package:splach/widgets/image_viewer.dart';
-
-import 'chat_highlight_mention.dart';
+import 'package:splach/widgets/highlight_text.dart';
 
 class ChatUserMessage extends StatelessWidget {
   final Message message;
@@ -102,17 +99,8 @@ class ChatUserMessage extends StatelessWidget {
                                                   0.65 -
                                               32,
                                     ),
-                                    child: RichText(
-                                      text: TextSpan(
-                                        style: ThemeTypography.regular14.apply(
-                                          color: Colors.black,
-                                        ),
-                                        children: highlightMentions(
-                                          message.replyMessage!.content!,
-                                        ),
-                                      ),
-                                      maxLines: 3,
-                                      overflow: TextOverflow.ellipsis,
+                                    child: HighlightText(
+                                      message.replyMessage!.content!,
                                     ),
                                   ),
                                 ],

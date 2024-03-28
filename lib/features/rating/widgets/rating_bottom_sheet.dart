@@ -26,6 +26,7 @@ class RatingController extends GetxController {
 
   Future<void> _fetchUserRatings() async {
     userRatings.value = await _repository.getAll(userId: Get.find<User>().id);
+
     if (alreadyRated) {
       rating.value =
           userRatings.firstWhere((rating) => rating.ratedId == ratedId);
@@ -41,12 +42,14 @@ class RatingController extends GetxController {
   Future<void> rate() async {
     if (alreadyRated) {
       rating.value!.ratingValue = ratingValue.value;
+      print(' HUASDHUDASHAUHUSDAHSDAHAUHDASU ${ rating.value!.ratingValue} ${rating.value?.id}');
       await _repository.update(rating.value!);
     } else {
       final newRating = Rating(
         ratedId: ratedId,
         ratingValue: ratingValue.value,
         createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
       );
       await _repository.save(newRating);
     }
