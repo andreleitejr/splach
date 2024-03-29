@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:splach/features/chat/components/chat_input.dart';
 import 'package:splach/features/chat/models/group_chat.dart';
 import 'package:splach/features/chat/models/participant.dart';
 import 'package:splach/features/chat/repositories/chat_repository.dart';
@@ -28,6 +29,7 @@ class ChatController extends GetxController {
   final NotificationController notificationController = Get.find();
   final _repository = Get.put(RatingRepository());
   final User user = Get.find();
+  final messageController = MentionHighlightingController();
 
   late MessageRepository _messageRepository;
   late ParticipantRepository _participantRepository;
@@ -153,7 +155,12 @@ class ChatController extends GetxController {
     final mentionedParticipantsIds =
         mentionedParticipants.map((participant) => participant.id!).toList();
 
-    recipients.addAll(mentionedParticipantsIds);
+
+    if(replyMessage.value == null){
+      recipients.assignAll(mentionedParticipantsIds);
+    } else{
+      recipients.addAll(mentionedParticipantsIds);
+    }
 
     recipients.value = recipients.toSet().toList();
 

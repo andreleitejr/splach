@@ -29,7 +29,7 @@ class RatingRepository extends FirestoreRepository<Rating> {
 
       return stream;
     } catch (error) {
-      print('Error streaming data from $collectionName in Firestore: $error');
+      debugPrint('Error streaming data from $collectionName in Firestore: $error');
       return Stream.value([]);
     }
   }

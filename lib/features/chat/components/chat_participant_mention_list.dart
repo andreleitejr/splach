@@ -22,48 +22,72 @@ class ChatParticipantMentionList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: const BoxConstraints(
-        maxHeight: 200,
-      ),
-      child: ListView.builder(
-        padding: const EdgeInsets.only(bottom: 16),
-        shrinkWrap: true,
-        itemCount: controller.participants.length,
-        itemBuilder: (context, index) {
-          final participant = controller.participants[index];
+        constraints: const BoxConstraints(
+          maxHeight: 200,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    controller.isShowingMentionList.value = false;
+                    if (controller.recipients.isEmpty) {
+                      controller.private.value = false;
+                    }
+                  },
+                  constraints: const BoxConstraints(
+                    maxHeight: 30,
+                  ),
+                  icon: const Icon(
+                    size: 20,
+                    Icons.close,
+                  ),
+                ),
+              ],
+            ),
+            ListView.builder(
+              padding: const EdgeInsets.only(bottom: 16),
+              shrinkWrap: true,
+              itemCount: controller.participants.length,
+              itemBuilder: (context, index) {
+                final participant = controller.participants[index];
 
-          if (participant.id == controller.user.id) {
-            return Container();
-          }
+                if (participant.id == controller.user.id) {
+                  return Container();
+                }
 
-          return Container(
-            decoration: participant != controller.participants.last
-                ? const BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(
-                        width: 1,
-                        color: ThemeColors.grey2,
+                return Container(
+                  decoration: participant != controller.participants.last
+                      ? const BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              width: 1,
+                              color: ThemeColors.grey2,
+                            ),
+                          ),
+                        )
+                      : null,
+                  child: ListTile(
+                    leading: AvatarImage(
+                      image: participant.image,
+                    ),
+                    title: Text(
+                      participant.nickname.toNickname(),
+                      style: ThemeTypography.regular14.apply(
+                        color: isImageInput ? Colors.white : Colors.black,
                       ),
                     ),
-                  )
-                : null,
-            child: ListTile(
-              leading: AvatarImage(
-                image: participant.image,
-              ),
-              title: Text(
-                participant.nickname.toNickname(),
-                style: ThemeTypography.regular14.apply(
-                  color: isImageInput ? Colors.white : Colors.black,
-                ),
-              ),
-              onTap: () {
-                onUserSelected(participant);
+                    onTap: () {
+                      onUserSelected(participant);
+                    },
+                  ),
+                );
               },
             ),
-          );
-        },
-      ),
-    );
+          ],
+        ));
   }
 }

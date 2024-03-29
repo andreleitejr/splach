@@ -8,6 +8,7 @@ import 'package:splach/features/chat/models/participant.dart';
 import 'package:splach/repositories/firestore_repository.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
+import 'package:splach/utils/extensions.dart';
 import 'package:splach/widgets/highlight_text.dart';
 
 class ChatInput extends StatefulWidget {
@@ -57,9 +58,9 @@ class _ChatInputState extends State<ChatInput> {
     final String currentText = messageController.text;
     final String newUserText = participant.nickname;
     final String newText = currentText + newUserText;
-    messageController.text = '$newText ';
+    messageController.text = newText;
     messageController.selection = TextSelection.fromPosition(
-      TextPosition(offset: newText.length + 1),
+      TextPosition(offset: newText.length),
     );
   }
 
@@ -149,108 +150,117 @@ class _ChatInputState extends State<ChatInput> {
           Container(
             // height: 48,
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: TextField(
-              style: ThemeTypography.regular14.apply(
-                color: widget.isImageInput ? Colors.white : Colors.black,
-              ),
-              maxLines: null,
-              focusNode: widget.focus,
-              controller: messageController,
-              decoration: InputDecoration(
-                hintText: 'What\'s in your mind?',
-                hintStyle: ThemeTypography.regular14.apply(
-                  color: widget.isImageInput ? Colors.white : ThemeColors.grey4,
+            child: Obx(
+              () => TextField(
+                style: ThemeTypography.regular14.apply(
+                  color: widget.isImageInput ? Colors.white : Colors.black,
                 ),
-                suffixIcon: Padding(
-                  padding: const EdgeInsets.all(6),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Obx(() {
-                        // if (controller.replyMessage.value == null &&
-                        //     controller.recipients.isEmpty) {
-                        //   return Container();
-                        // }
-                        return _buildInputButton(
-                          icon: Icons.lock_outline,
-                          color: controller.private.isTrue
-                              ? ThemeColors.tertiary
-                              : ThemeColors.grey3,
-                          onPressed: () => controller.private(
-                            !controller.private.value,
-                          ),
-                        );
-                      }),
-                      Obx(() {
-                        if (widget.controller.isTyping.isTrue ||
-                            widget.isImageInput) {
-                          return Container();
-                        }
-                        return _buildInputButton(
-                          icon: Icons.image_outlined,
-                          color: ThemeColors.secondary,
+                maxLines: null,
+                focusNode: widget.focus,
+                controller: messageController,
+                decoration: InputDecoration(
+                  hintText: widget.controller.private.isTrue
+                      ? 'Say something privately...'
+                      : 'What\'s in your mind?',
+                  hintStyle: ThemeTypography.regular14.apply(
+                    color:
+                        widget.isImageInput ? Colors.white : ThemeColors.grey4,
+                  ),
+                  suffixIcon: Padding(
+                    padding: const EdgeInsets.all(6),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Obx(() {
+                          // if (controller.replyMessage.value == null &&
+                          //     controller.recipients.isEmpty) {
+                          //   return Container();
+                          // }
+                          return _buildInputButton(
+                              icon: Icons.lock_outline,
+                              color: controller.private.isTrue
+                                  ? ThemeColors.tertiary
+                                  : ThemeColors.grey3,
+                              onPressed: () {
+                                if (controller.recipients.isEmpty) return;
+
+                                controller.private(
+                                  !controller.private.value,
+                                );
+                              });
+                        }),
+
+                        Obx(() {
+                          if (widget.controller.isTyping.isTrue ||
+                              widget.isImageInput) {
+                            return Container();
+                          }
+                          return _buildInputButton(
+                            icon: Icons.image_outlined,
+                            color: ThemeColors.secondary,
+                            onPressed: () async {
+                              controller.isCameraOpen.value = true;
+                              final image = await Get.to(
+                                    () => CameraGalleryView(
+                                  controller: controller,
+                                ),
+                              );
+                              if (image != null) {
+                                controller.image.value = image;
+                              }
+                            },
+                          );
+                        }),
+                        _buildInputButton(
+                          icon: Icons.send_outlined,
+                          color: ThemeColors.primary,
                           onPressed: () async {
-                            controller.isCameraOpen.value = true;
-                            final image = await Get.to(
-                              () => CameraGalleryView(
-                                controller: controller,
-                              ),
+                            final result = await controller.sendMessage(
+                              content: messageController.text,
                             );
-                            if (image != null) {
-                              controller.image.value = image;
+
+                            if (result == SaveResult.success) {
+                              controller.replyMessage.value = null;
+                              controller.image.value = null;
+                              controller.recipients.clear();
+                              controller.private.value = false;
+                              messageController.clear();
+                              controller.scrollToBottom();
+                              if (widget.isImageInput) {
+                                Get.back();
+                              }
                             }
                           },
-                        );
-                      }),
-                      _buildInputButton(
-                        icon: Icons.send_outlined,
-                        color: ThemeColors.primary,
-                        onPressed: () async {
-                          final result = await controller.sendMessage(
-                            content: messageController.text,
-                          );
-
-                          if (result == SaveResult.success) {
-                            controller.replyMessage.value = null;
-                            controller.image.value = null;
-                            controller.private.value = false;
-                            controller.recipients.clear();
-                            messageController.clear();
-                            controller.scrollToBottom();
-                            if (widget.isImageInput) {
-                              Get.back();
-                            }
-                          }
-                        },
-                      ),
-                    ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(
-                    _numberOfLines > 1 ? 12 : 48,
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(
+                      _numberOfLines > 1 ? 12 : 48,
+                    ),
+                    borderSide: const BorderSide(
+                      width: 1,
+                      color: ThemeColors.grey2,
+                    ),
                   ),
-                  borderSide: const BorderSide(
-                    width: 1,
-                    color: ThemeColors.grey2,
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(
+                      _numberOfLines > 1 ? 12 : 48,
+                    ),
+                    borderSide: const BorderSide(
+                      width: 1,
+                      color: ThemeColors.grey3,
+                    ),
                   ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(
-                    _numberOfLines > 1 ? 12 : 48,
-                  ),
-                  borderSide: const BorderSide(
-                    width: 1,
-                    color: ThemeColors.grey3,
-                  ),
-                ),
-                disabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(
-                    _numberOfLines > 1 ? 12 : 48.0,
-                  ),
-                  borderSide: const BorderSide(
-                    width: 1,
-                    color: ThemeColors.grey2,
+                  disabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(
+                      _numberOfLines > 1 ? 12 : 48.0,
+                    ),
+                    borderSide: const BorderSide(
+                      width: 1,
+                      color: ThemeColors.grey2,
+                    ),
                   ),
                 ),
               ),
