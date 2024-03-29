@@ -73,7 +73,9 @@ class ChatUserMessage extends StatelessWidget {
                                 Row(
                                   children: [
                                     Text(
-                                      '@${message.replyMessage?.sender?.nickname ?? 'user'}',
+                                      message.replyMessage?.sender?.nickname
+                                              .toNickname() ??
+                                          'user',
                                       style: ThemeTypography.semiBold12.apply(
                                         color: ThemeColors.primary,
                                       ),

@@ -7,6 +7,7 @@ import 'package:splach/features/rating/repositories/rating_repository.dart';
 import 'package:splach/features/relationship/models/relationship.dart';
 import 'package:splach/features/relationship/repositories/relationship_repository.dart';
 import 'package:splach/features/user/models/user.dart';
+import 'package:splach/utils/extensions.dart';
 
 class NotificationController extends GetxController {
   final User user = Get.find();
@@ -64,7 +65,7 @@ class NotificationController extends GetxController {
       createdAt: message.createdAt,
       updatedAt: message.updatedAt,
       content:
-          '@${message.sender?.nickname} ${message.private ? 'privadamente' : ''} te mencionou em uma mensagem: ${message.content}',
+          '${message.sender?.nickname.toNickname()} ${message.private ? 'privadamente' : ''} te mencionou em uma mensagem: ${message.content}',
       relatedId: message.senderId,
       notificationType: AppNotificationType.mention,
     );

@@ -7,6 +7,7 @@ import 'package:splach/features/user/models/user.dart';
 import 'package:splach/features/user/views/user_profile_view.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
+import 'package:splach/utils/extensions.dart';
 import 'package:splach/widgets/top_navigation_bar.dart';
 
 class ChatParticipantsView extends StatelessWidget {
@@ -75,7 +76,7 @@ class ChatParticipantsView extends StatelessWidget {
           //   overflow: TextOverflow.ellipsis,
           // ),
           Text(
-            '@${participant.nickname}',
+            participant.nickname.toNickname(),
             style: ThemeTypography.medium14.apply(
               color: ThemeColors.primary,
             ),

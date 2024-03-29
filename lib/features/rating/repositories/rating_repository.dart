@@ -10,7 +10,6 @@ class RatingRepository extends FirestoreRepository<Rating> {
           fromDocument: (document) => Rating.fromDocument(document),
         );
 
-
   @override
   Stream<List<Rating>> streamAll({String? userId}) {
     try {
@@ -21,9 +20,9 @@ class RatingRepository extends FirestoreRepository<Rating> {
       }
 
       final stream = query.snapshots().map(
-            (querySnapshot) {
+        (querySnapshot) {
           final dataList =
-          querySnapshot.docs.map((doc) => fromDocument(doc)).toList();
+              querySnapshot.docs.map((doc) => fromDocument(doc)).toList();
           return dataList;
         },
       );
@@ -35,19 +34,16 @@ class RatingRepository extends FirestoreRepository<Rating> {
     }
   }
 
-  @override
-  Future<List<Rating>> getAll({String? userId}) async {
+  Future<List<Rating>> getRating(String userId,
+      {bool isUserRatings = false}) async {
     try {
-      Query query = firestore.collection(collectionName);
-
-      if (userId != null) {
-        query = query.where('ratedBy', isEqualTo: userId).orderBy(
-              'createdAt',
-              descending: true,
-            );
-      }
+      final query = firestore.collection(collectionName).where(
+            isUserRatings ? 'ratedBy' : 'ratedId',
+            isEqualTo: userId,
+          );
 
       final querySnapshot = await query.get();
+
       final dataList =
           querySnapshot.docs.map((doc) => fromDocument(doc)).toList();
 

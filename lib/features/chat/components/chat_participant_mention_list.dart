@@ -4,6 +4,7 @@ import 'package:splach/features/chat/models/participant.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
+import 'package:splach/utils/extensions.dart';
 import 'package:splach/widgets/avatar_image.dart';
 
 class ChatParticipantMentionList extends StatelessWidget {
@@ -51,7 +52,7 @@ class ChatParticipantMentionList extends StatelessWidget {
                 image: participant.image,
               ),
               title: Text(
-                '@${participant.nickname}',
+                participant.nickname.toNickname(),
                 style: ThemeTypography.regular14.apply(
                   color: isImageInput ? Colors.white : Colors.black,
                 ),

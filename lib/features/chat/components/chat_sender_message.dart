@@ -3,15 +3,11 @@ import 'package:get/get.dart';
 import 'package:splach/features/chat/components/chat_image.dart';
 import 'package:splach/features/chat/models/message.dart';
 import 'package:splach/features/chat/widgets/private_message_sign.dart';
-import 'package:splach/features/rating/widgets/rating_bottom_sheet.dart';
-import 'package:splach/features/refactor/models/report_message_topic.dart';
-import 'package:splach/features/refactor/widgets/report_message_bottom_sheet.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/utils/extensions.dart';
 import 'package:splach/widgets/avatar_image.dart';
-import 'package:splach/widgets/custom_bottom_sheet.dart';
 import 'package:splach/widgets/highlight_text.dart';
 
 class ChatSenderMessage extends StatelessWidget {
@@ -89,7 +85,7 @@ class ChatSenderMessage extends StatelessWidget {
                     GestureDetector(
                       onTap: onTitleTap,
                       child: Text(
-                        '@${message.sender?.nickname ?? 'user'}',
+                        message.sender?.nickname.toNickname() ?? 'user',
                         style: ThemeTypography.semiBold12.copyWith(
                           color: ThemeColors.primary,
                         ),
@@ -142,12 +138,13 @@ class ChatSenderMessage extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '@${message.replyMessage?.sender?.nickname}',
+                                message.replyMessage?.sender?.nickname
+                                        .toNickname() ??
+                                    '',
                                 style: ThemeTypography.semiBold12.apply(
                                   color: ThemeColors.primary,
                                 ),
                               ),
-
                               const SizedBox(height: 8),
                               Row(
                                 children: [
@@ -182,14 +179,6 @@ class ChatSenderMessage extends StatelessWidget {
                                   ],
                                 ],
                               ),
-                              // const SizedBox(height: 8),
-                              // Text(
-                              //   '${replyMessage.createdAt.toTimeString()} ago',
-                              //   style: ThemeTypography.regular9.apply(
-                              //     color: ThemeColors.grey4,
-                              //   ),
-                              //   textAlign: TextAlign.right,
-                              // ),
                             ],
                           ),
                         ],

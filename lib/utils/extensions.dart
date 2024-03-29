@@ -7,7 +7,7 @@ import 'package:splach/features/chat/models/participant.dart';
 import 'package:splach/features/notification/models/notification.dart';
 import 'package:splach/features/chat/models/message.dart';
 import 'package:splach/features/rating/models/rating.dart';
-import 'package:splach/features/refactor/models/report.dart';
+import 'package:splach/features/report/models/report.dart';
 
 extension StringExtensions on String {
   String get clean => removeDiacritics(toLowerCase())
@@ -21,6 +21,8 @@ extension StringExtensions on String {
   String get removeHyphen => replaceAll('-', '');
 
   String get removeParenthesis => replaceAll(')', '').replaceAll('(', '');
+
+  String toNickname() => '@$this';
 }
 
 extension DoubleExtension on double {

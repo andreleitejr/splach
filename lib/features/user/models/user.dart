@@ -15,8 +15,7 @@ class User extends BaseModel {
   final String state;
   final String country;
 
-  List<Relationship> followers = [];
-  List<Relationship> following = [];
+  int? rating;
 
   User({
     required super.id,

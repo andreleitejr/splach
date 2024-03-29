@@ -1,15 +1,10 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:splach/features/camera/views/camera_view.dart';
-import 'package:splach/features/chat/components/chat_image.dart';
 import 'package:splach/features/chat/components/chat_participant_mention_list.dart';
 import 'package:splach/features/chat/components/chat_reply_message.dart';
 import 'package:splach/features/chat/controllers/chat_controller.dart';
-import 'package:splach/features/chat/models/message.dart';
 import 'package:splach/features/chat/models/participant.dart';
-import 'package:splach/features/user/models/user.dart';
 import 'package:splach/repositories/firestore_repository.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
@@ -117,6 +112,7 @@ class _ChatInputState extends State<ChatInput> {
                 onClose: () {
                   controller.replyMessage.value = null;
                   controller.private.value = false;
+                  controller.recipients.clear();
                 },
                 isPrivate: controller.private.value,
               );
@@ -216,6 +212,7 @@ class _ChatInputState extends State<ChatInput> {
 
                           if (result == SaveResult.success) {
                             controller.replyMessage.value = null;
+                            controller.image.value = null;
                             controller.private.value = false;
                             controller.recipients.clear();
                             messageController.clear();

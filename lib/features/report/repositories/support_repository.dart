@@ -1,5 +1,5 @@
 
-import 'package:splach/features/refactor/models/report.dart';
+import 'package:splach/features/report/models/report.dart';
 import 'package:splach/repositories/firestore_repository.dart';
 class ReportRepository extends FirestoreRepository<Report> {
   ReportRepository()

@@ -5,13 +5,16 @@ import 'package:splach/features/chat/models/participant.dart';
 import 'package:splach/features/chat/repositories/chat_repository.dart';
 import 'package:splach/features/chat/repositories/participant_repository.dart';
 import 'package:splach/features/notification/controllers/notification_controller.dart';
-import 'package:splach/features/refactor/controllers/report_controller.dart';
-import 'package:splach/features/refactor/models/report.dart';
+import 'package:splach/features/rating/models/rating.dart';
+import 'package:splach/features/rating/repositories/rating_repository.dart';
+import 'package:splach/features/report/controllers/report_controller.dart';
+import 'package:splach/features/report/models/report.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/features/chat/models/message.dart';
 import 'package:splach/features/user/repositories/user_repository.dart';
 import 'package:splach/repositories/firestore_repository.dart';
 import 'package:splach/features/chat/repositories/message_repository.dart';
+import 'package:splach/utils/extensions.dart';
 
 class ChatController extends GetxController {
   ChatController(this.groupChat) {
@@ -23,7 +26,7 @@ class ChatController extends GetxController {
 
   final ChatRepository _chatRepository = Get.find();
   final NotificationController notificationController = Get.find();
-
+  final _repository = Get.put(RatingRepository());
   final User user = Get.find();
 
   late MessageRepository _messageRepository;
@@ -44,48 +47,14 @@ class ChatController extends GetxController {
   final scrollController = ScrollController();
   final showButton = false.obs;
   final replyMessage = Rx<Message?>(null);
+
+  final userRatings = <Rating>[].obs;
+  final rating = Rx<Rating?>(null);
+  final ratingValue = 0.obs;
+
   final isShowingMentionList = false.obs;
   final mentions = <String>[];
   final loading = false.obs;
-
-  void updateMentionListVisibility(String value) {
-    isShowingMentionList.value = value.endsWith('@');
-    update();
-  }
-
-  void updateIfIsMentioning(String value) {
-    final nicknames =
-        participants.map((participant) => '@${participant.nickname}').toList();
-
-    mentions.clear();
-    for (final nickname in nicknames) {
-      if (value.contains(nickname)) {
-        mentions.add(nickname);
-      } else {
-        mentions.remove(nickname);
-      }
-    }
-
-    debugPrint('Updating mention list | Mention list is not empty $mentions');
-
-    debugPrint('Updating mention list |Participants ${participants.length}');
-
-    final mentionedParticipants = participants
-        .where((participant) => mentions.contains('@${participant.nickname}'));
-
-    debugPrint(
-        'Updating mention list | Mentioned Participants ${mentionedParticipants.length}');
-    final mentionedParticipantsIds =
-        mentionedParticipants.map((participant) => participant.id!).toList();
-
-    recipients.addAll(mentionedParticipantsIds);
-
-    recipients.value = recipients.toSet().toList();
-
-    debugPrint('Updating recipient list | Recipients $recipients');
-
-    update();
-  }
 
   @override
   Future<void> onInit() async {
@@ -98,6 +67,7 @@ class ChatController extends GetxController {
     _listenToMessageStream();
     scrollController.addListener(scrollListener);
 
+    await _fetchUserRatings();
     // cameraController.value = CameraController(
     //   // Get a specific camera from the list of available cameras.
     //   cameras.first,
@@ -105,32 +75,6 @@ class ChatController extends GetxController {
     //   ResolutionPreset.medium,
     // );
     loading.value = false;
-  }
-
-  // Future<void> _fetchChatUsers() async {
-  //   final chatUsers =
-  //       await _userRepository.getUsersByIds(groupChat.participants);
-  //
-  //   participants.assignAll(chatUsers);
-  //   debugPrint(
-  //       'Chat Group Controller | There is ${participants.length} in chat.');
-  // }
-
-  void _listenToMessageStream() async {
-    _messageRepository.streamLastMessages().listen((messageData) async {
-      messages.assignAll(messageData);
-      // _filterPrivateMessages();
-      messages.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-      updateMessageSenders();
-
-      _verifyMessageAndCreateMentionNotification(messages.first);
-    });
-  }
-
-  void _verifyMessageAndCreateMentionNotification(Message message) {
-    if (message.recipients != null && message.recipients!.contains(user.id)) {
-      notificationController.createMentionNotification(message);
-    }
   }
 
   void _listenToParticipants() async {
@@ -154,11 +98,68 @@ class ChatController extends GetxController {
         }
       }
       participants.assignAll(participantData);
-      // _filterPrivateMessages();
       messages.sort((b, a) => a.createdAt.compareTo(b.createdAt));
-
-      // updateMessageSenders();
     });
+  }
+
+  void _listenToMessageStream() async {
+    _messageRepository.streamLastMessages().listen((messageData) async {
+      messages.assignAll(messageData);
+      // _filterPrivateMessages();
+      messages.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      updateMessageSenders();
+
+      _verifyMessageAndCreateMentionNotification(messages.first);
+    });
+  }
+
+  void _verifyMessageAndCreateMentionNotification(Message message) {
+    if (message.recipients != null && message.recipients!.contains(user.id)) {
+      notificationController.createMentionNotification(message);
+    }
+  }
+
+  void updateMentionListVisibility(String value) {
+    isShowingMentionList.value = value.endsWith('@');
+    update();
+  }
+
+  void updateIfIsMentioning(String value) {
+    final nicknames = participants
+        .map((participant) => participant.nickname.toNickname())
+        .toList();
+
+    mentions.clear();
+    for (final nickname in nicknames) {
+      if (value.contains(nickname)) {
+        mentions.add(nickname);
+      } else {
+        mentions.remove(nickname);
+      }
+    }
+
+    debugPrint('Updating mention list | Mention list is not empty $mentions');
+
+    debugPrint('Updating mention list |Participants ${participants.length}');
+
+    final mentionedParticipants = participants.where(
+      (participant) => mentions.contains(
+        participant.nickname.toNickname(),
+      ),
+    );
+
+    debugPrint(
+        'Updating mention list | Mentioned Participants ${mentionedParticipants.length}');
+    final mentionedParticipantsIds =
+        mentionedParticipants.map((participant) => participant.id!).toList();
+
+    recipients.addAll(mentionedParticipantsIds);
+
+    recipients.value = recipients.toSet().toList();
+
+    debugPrint('Updating recipient list | Recipients $recipients');
+
+    update();
   }
 
   void addSystemMessage(List<Participant> participants,
@@ -168,7 +169,8 @@ class ChatController extends GetxController {
     final systemMessage = Message(
       updatedAt: DateTime.now(),
       createdAt: DateTime.now(),
-      content: '@$nickname ${isLeaving ? 'saiu' : 'entrou'} da sala',
+      content:
+          '${nickname.toNickname()} ${isLeaving ? 'saiu' : 'entrou'} da sala',
       senderId: user.id!,
       messageType: MessageType.system,
     );
@@ -248,6 +250,39 @@ class ChatController extends GetxController {
     _chatRepository.updateLastActivity(groupChat.id!);
   }
 
+  Future<void> _fetchUserRatings() async {
+    userRatings.value =
+        await _repository.getRating(Get.find<User>().id!, isUserRatings: true);
+  }
+
+  void checkRatingValue(String ratedId) {
+    if (alreadyRated(ratedId)) {
+      rating.value =
+          userRatings.firstWhere((rating) => rating.ratedId == ratedId);
+
+      ratingValue.value = rating.value!.ratingValue;
+    }
+  }
+
+  bool alreadyRated(String ratedId) {
+    return userRatings.any((rating) => rating.ratedId == ratedId);
+  }
+
+  Future<void> rate(String ratedId) async {
+    if (alreadyRated(ratedId)) {
+      rating.value!.ratingValue = ratingValue.value;
+      await _repository.update(rating.value!);
+    } else {
+      final newRating = Rating(
+        ratedId: ratedId,
+        ratingValue: ratingValue.value,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+      await _repository.save(newRating);
+    }
+  }
+
   void reportMessage(
     String messageId,
     String reason,
@@ -262,18 +297,6 @@ class ChatController extends GetxController {
 
     report.save();
   }
-
-  // Future<void> addSystemMessage() async {
-  //   final message = Message(
-  //     createdAt: DateTime.now(),
-  //     updatedAt: DateTime.now(),
-  //     content: '${user.nickname} saiu da sala',
-  //     senderId: user.id!,
-  //     messageType: MessageType.system,
-  //   );
-  //
-  //   _messageRepository.save(message);
-  // }
 
   void scrollListener() {
     showButton.value = scrollController.position.pixels >= 500;
@@ -303,7 +326,7 @@ class ChatController extends GetxController {
   //     final message = messages[i];
   //
   //     final userMentioned = message.content != null &&
-  //         message.content!.contains('@${user.nickname.removeAllWhitespace}');
+  //         message.content!.contains(user.nickname.toNickname());
   //
   //     if (userMentioned) {}
   //     list.add(i);

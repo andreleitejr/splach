@@ -1,6 +1,6 @@
 // import 'package:flutter/material.dart';
 // import 'package:get/get.dart';
-// import 'package:splach/features/refactor/controllers/report_controller.dart';
+// import 'package:splach/features/report/controllers/report_controller.dart';
 // import 'package:splach/widgets/top_navigation_bar.dart';
 //
 // class SupportEditView extends StatelessWidget {

@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:splach/features/refactor/models/report.dart';
-import 'package:splach/features/refactor/repositories/support_repository.dart';
+import 'package:splach/features/report/models/report.dart';
+import 'package:splach/features/report/repositories/support_repository.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/repositories/firestore_repository.dart';
 
