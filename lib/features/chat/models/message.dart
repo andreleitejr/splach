@@ -14,7 +14,7 @@ class Message extends BaseModel {
   final String? content;
   final String senderId;
   final String? replyId;
-  final String? image;
+  final String? imageUrl;
   final MessageType messageType;
   final bool private;
   final List<String>? recipients;
@@ -28,7 +28,7 @@ class Message extends BaseModel {
     this.content,
     required this.senderId,
     this.replyId,
-    this.image,
+    this.imageUrl,
     this.messageType = MessageType.user,
     this.private = false,
     this.recipients,
@@ -38,7 +38,7 @@ class Message extends BaseModel {
       : content = document.get('content'),
         senderId = document.get('senderId'),
         replyId = document.get('replyId'),
-        image = document.get('image'),
+        imageUrl = document.get('imageUrl'),
         messageType = MessageTypeExtension.fromString(
           document.get('messageType')
         ),
@@ -54,7 +54,7 @@ class Message extends BaseModel {
       'content': content,
       'senderId': senderId,
       'replyId': replyId,
-      'image': image,
+      'imageUrl': imageUrl,
       'messageType': messageType.toStringSimplified(),
       'private': private,
       'recipients': recipients,

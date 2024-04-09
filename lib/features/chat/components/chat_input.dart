@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:splach/features/camera/views/camera_view.dart';
+import 'package:splach/features/chat/components/chat_image_input.dart';
 import 'package:splach/features/chat/components/chat_participant_mention_list.dart';
 import 'package:splach/features/chat/components/chat_reply_message.dart';
 import 'package:splach/features/chat/controllers/chat_controller.dart';
@@ -41,6 +42,7 @@ class _ChatInputState extends State<ChatInput> {
   @override
   void dispose() {
     messageController.removeListener(_onTextChanged);
+    messageController.clear();
     messageController.dispose();
     super.dispose();
   }
@@ -69,7 +71,9 @@ class _ChatInputState extends State<ChatInput> {
       text: TextSpan(text: messageController.text),
       maxLines: null,
       textDirection: TextDirection.ltr,
-    )..layout(maxWidth: MediaQuery.of(context).size.width - 143);
+    )..layout(
+        maxWidth: MediaQuery.of(context).size.width - 143,
+      );
 
     final numberOfLines = textPainter.computeLineMetrics().length;
     setState(() {
@@ -172,24 +176,20 @@ class _ChatInputState extends State<ChatInput> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Obx(() {
-                          // if (controller.replyMessage.value == null &&
-                          //     controller.recipients.isEmpty) {
-                          //   return Container();
-                          // }
                           return _buildInputButton(
-                              icon: Icons.lock_outline,
-                              color: controller.private.isTrue
-                                  ? ThemeColors.tertiary
-                                  : ThemeColors.grey3,
-                              onPressed: () {
-                                if (controller.recipients.isEmpty) return;
+                            icon: Icons.lock_outline,
+                            color: controller.private.isTrue
+                                ? ThemeColors.tertiary
+                                : ThemeColors.grey3,
+                            onPressed: () {
+                              if (controller.recipients.isEmpty) return;
 
-                                controller.private(
-                                  !controller.private.value,
-                                );
-                              });
+                              controller.private(
+                                !controller.private.value,
+                              );
+                            },
+                          );
                         }),
-
                         Obx(() {
                           if (widget.controller.isTyping.isTrue ||
                               widget.isImageInput) {
@@ -201,12 +201,17 @@ class _ChatInputState extends State<ChatInput> {
                             onPressed: () async {
                               controller.isCameraOpen.value = true;
                               final image = await Get.to(
-                                    () => CameraGalleryView(
-                                  controller: controller,
+                                () => CameraGalleryView(
+                                  image: controller.image.value,
                                 ),
                               );
                               if (image != null) {
                                 controller.image.value = image;
+                                Get.to(
+                                  () => ChatImageInput(
+                                    controller: controller,
+                                  ),
+                                );
                               }
                             },
                           );
@@ -215,20 +220,22 @@ class _ChatInputState extends State<ChatInput> {
                           icon: Icons.send_outlined,
                           color: ThemeColors.primary,
                           onPressed: () async {
-                            final result = await controller.sendMessage(
+                            controller
+                                .sendMessage(
                               content: messageController.text,
-                            );
-
-                            if (result == SaveResult.success) {
-                              controller.replyMessage.value = null;
-                              controller.image.value = null;
-                              controller.recipients.clear();
-                              controller.private.value = false;
-                              messageController.clear();
-                              controller.scrollToBottom();
-                              if (widget.isImageInput) {
-                                Get.back();
+                            )
+                                .then((result) {
+                              if (result == SaveResult.success) {
+                                controller.replyMessage.value = null;
+                                controller.image.value = null;
+                                controller.recipients.clear();
+                                controller.private.value = false;
+                                controller.scrollToBottom();
                               }
+                            });
+
+                            if (widget.isImageInput) {
+                              Get.back();
                             }
                           },
                         ),

@@ -12,6 +12,8 @@ class Rating extends BaseModel {
   int ratingValue;
   final RatingType type;
 
+  User? user;
+
   Rating({
     required super.createdAt,
     required super.updatedAt,

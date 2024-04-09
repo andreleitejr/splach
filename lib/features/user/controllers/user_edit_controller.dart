@@ -1,4 +1,5 @@
 import 'dart:ffi';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,7 +15,8 @@ class UserEditController extends GetxController {
   final _repository = Get.put(UserRepository());
   final _imageService = CameraService();
 
-  final image = RxString('');
+  final image = Rx<File?>(null);
+  String imageUrl = '';
   final name = TextEditingController();
   final description = TextEditingController();
   final email = TextEditingController();
@@ -92,7 +94,7 @@ class UserEditController extends GetxController {
   List<String> _getSecondaryDataErrorMessage() {
     final List<String> requiredFields = [];
 
-    if (image.value.isEmpty) {
+    if (imageUrl.isEmpty) {
       requiredFields.add('Image');
     }
 
@@ -117,10 +119,10 @@ class UserEditController extends GetxController {
   }
 
   Future<void> pickImage(ImageSource source) async {
-    final String? base64Image = await _imageService.takePhoto();
+    final file = await _imageService.takePhoto();
 
-    if (base64Image != null) {
-      image.value = base64Image;
+    if (file != null) {
+      image.value = file;
     } else {
       errorMessage.value =
           'Houve um erro ao carregar a imagem. Tente novamente.';
@@ -130,13 +132,14 @@ class UserEditController extends GetxController {
   Future<SaveResult?> save() async {
     loading.value = true;
 
+    /// UPLOAD DE FOTO AQUI
     final newUser = User(
       id: _authRepository.authUser!.uid,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
       phone: _authRepository.authUser!.phoneNumber!,
       email: email.text,
-      image: image.value,
+      image: imageUrl,
       nickname: nickname.text,
       name: name.text,
       description: description.text,

@@ -164,10 +164,8 @@ extension AppNotificationTypeExtension on AppNotificationType {
 
   static AppNotificationType fromString(String value) {
     switch (value) {
-      case 'followRequest':
-        return AppNotificationType.followRequest;
-      case 'newFollower':
-        return AppNotificationType.newFollower;
+      case 'rating':
+        return AppNotificationType.rating;
       case 'mention':
         return AppNotificationType.mention;
       default:

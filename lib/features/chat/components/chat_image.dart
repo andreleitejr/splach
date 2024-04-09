@@ -35,9 +35,7 @@ class ChatImage extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: MemoryImage(
-              base64Decode(image),
-            ),
+            image: NetworkImage(image),
             fit: BoxFit.cover,
           ),
           borderRadius: BorderRadius.circular(8),

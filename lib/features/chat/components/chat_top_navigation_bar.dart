@@ -44,15 +44,15 @@ class ChatTopNavigationBar extends StatelessWidget {
           ),
           IconButton(
             onPressed: () {
-              controller.groupChat.messages = controller.messages
+              controller.chat.messages = controller.messages
                   .where(
-                    (message) => message.image != null,
+                    (message) => message.imageUrl != null,
                   )
                   .toList();
 
               Get.to(
                 () => ChatInfoView(
-                  chat: controller.groupChat,
+                  chat: controller.chat,
                 ),
               );
             },

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:splach/themes/theme_colors.dart';
@@ -7,7 +8,7 @@ import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/widgets/input.dart';
 
 class AvatarImageInput extends StatelessWidget {
-  final String image;
+  final File? image;
   final VoidCallback onPressed;
 
   const AvatarImageInput({
@@ -18,8 +19,8 @@ class AvatarImageInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final decodedImage = image.isNotEmpty
-        ? DecorationImage(image: MemoryImage(base64Decode(image)))
+    final decodedImage = image != null
+        ? DecorationImage(image: FileImage(image!))
         : const DecorationImage(
             image: AssetImage(ThemeImages.selectImage),
             fit: BoxFit.cover,
@@ -51,7 +52,7 @@ class AvatarImageInput extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            image.isNotEmpty ? 'You look awesome!' : 'Select your best photo',
+            image != null ? 'You look awesome!' : 'Select your best photo',
             style: ThemeTypography.medium14.apply(
               color: ThemeColors.primary,
             ),

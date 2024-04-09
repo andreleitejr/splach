@@ -84,9 +84,7 @@ class ImageViewer extends StatelessWidget {
                   return Container(
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: MemoryImage(
-                          base64Decode(image),
-                        ),
+                        image: NetworkImage(image),
                         fit: BoxFit.cover,
                       ),
                     ),

@@ -7,12 +7,12 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:splach/services/image_service.dart';
 
-class ImageController extends GetxController {
-  String? image;
+class CameraGalleryController extends GetxController {
+  File? image;
 
   final _imageService = CameraService();
   AssetPathEntity? _path;
-  final galleryImages = <String>[].obs;
+  final galleryImages = <File>[].obs;
   final int _sizePerPage = 16;
 
   final FilterOptionGroup _filterOptionGroup = FilterOptionGroup(
@@ -40,35 +40,13 @@ class ImageController extends GetxController {
   }
 
   Future<void> takePhoto() async {
-    final base64Image = await _imageService.takePhoto();
+    final file = await _imageService.takePhoto();
 
-    if (base64Image != null) {
-      image = base64Image;
+    if (file != null) {
+      image = file;
     }
 
     // _imageService.dispose();
-  }
-
-  Future<void> pickImageFromGallery() async {
-    final base64Image = await _imageService.pickImageFromGallery();
-
-    if (base64Image != null) {
-      image = base64Image;
-    }
-  }
-
-  Future<void> toggleCameraLens() async {
-    final lensDirection = cameraController.value!.description.lensDirection;
-    CameraDescription newDescription;
-    if (lensDirection == CameraLensDirection.front) {
-      newDescription = cameras.firstWhere((description) =>
-      description.lensDirection == CameraLensDirection.back);
-    } else {
-      newDescription = cameras.firstWhere((description) =>
-      description.lensDirection == CameraLensDirection.front);
-    }
-
-    await _initCamera(newDescription);
   }
 
   Future<void> _initCamera(CameraDescription description) async {
@@ -82,37 +60,33 @@ class ImageController extends GetxController {
     }
   }
 
+  Future<void> pickImageFromGallery() async {
+    final file = await _imageService.pickImageFromGallery();
+
+    if (file != null) {
+      image = file;
+    }
+  }
+
   Future<void> _requestAssets() async {
-    final PermissionStatus status = await Permission.photos.request();
+    final files = await _imageService.requestAssets();
+    if (files != null) {
+      galleryImages.value = files;
+    }
+  }
 
-    if (status.isDenied) {
-      print('Permission is not accessible. $status');
-      return;
+  Future<void> toggleCameraLens() async {
+    final lensDirection = cameraController.value!.description.lensDirection;
+    CameraDescription newDescription;
+    if (lensDirection == CameraLensDirection.front) {
+      newDescription = cameras.firstWhere((description) =>
+          description.lensDirection == CameraLensDirection.back);
+    } else {
+      newDescription = cameras.firstWhere((description) =>
+          description.lensDirection == CameraLensDirection.front);
     }
 
-    final List<AssetPathEntity> paths = await PhotoManager.getAssetPathList(
-      onlyAll: true,
-      filterOption: _filterOptionGroup,
-    );
-
-    if (paths.isEmpty) {
-      return;
-    }
-
-    _path = paths.first;
-    // _totalEntitiesCount = await _path!.assetCountAsync;
-    final List<AssetEntity> entities = await _path!.getAssetListPaged(
-      page: 0,
-      size: _sizePerPage,
-    );
-
-    final files = <File>[];
-    for (final entity in entities) {
-      final file = await entity.file;
-      files.add(file!);
-    }
-
-    galleryImages.value = await _imageService.filesToBase64(files);
+    await _initCamera(newDescription);
   }
 
   @override

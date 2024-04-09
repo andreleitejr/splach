@@ -48,7 +48,7 @@ class ChatUserMessage extends StatelessWidget {
                 children: [
                   if (message.replyMessage != null) ...[
                     if (message.replyMessage!.content != null ||
-                        message.replyMessage!.image != null) ...[
+                        message.replyMessage!.imageUrl != null) ...[
                       Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
@@ -88,11 +88,11 @@ class ChatUserMessage extends StatelessWidget {
                                 const SizedBox(height: 8),
                                 Row(
                                   children: [
-                                    if (message.replyMessage!.image != null &&
-                                        message.replyMessage!.image!
+                                    if (message.replyMessage!.imageUrl != null &&
+                                        message.replyMessage!.imageUrl!
                                             .isNotEmpty) ...[
                                       ChatImage(
-                                        image: message.replyMessage!.image!,
+                                        image: message.replyMessage!.imageUrl!,
                                         maxWidth: 64,
                                         maxHeight: 64,
                                       ),
@@ -107,7 +107,7 @@ class ChatUserMessage extends StatelessWidget {
                                                       .size
                                                       .width *
                                                   (message.replyMessage!
-                                                              .image !=
+                                                              .imageUrl !=
                                                           null
                                                       ? 0.55
                                                       : 0.65) -
@@ -128,8 +128,8 @@ class ChatUserMessage extends StatelessWidget {
                     ],
                     const SizedBox(height: 16),
                   ],
-                  if (message.image != null && message.image!.isNotEmpty) ...[
-                    ChatImage(image: message.image!),
+                  if (message.imageUrl != null && message.imageUrl!.isNotEmpty) ...[
+                    ChatImage(image: message.imageUrl!),
                     const SizedBox(height: 8),
                   ],
                   if (message.content != null) ...[

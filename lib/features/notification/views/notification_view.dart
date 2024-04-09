@@ -7,6 +7,7 @@ import 'package:splach/features/user/repositories/user_repository.dart';
 import 'package:splach/features/user/views/user_profile_view.dart';
 import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/utils/extensions.dart';
+import 'package:splach/widgets/avatar_image.dart';
 import 'package:splach/widgets/highlight_text.dart';
 import 'package:splach/widgets/top_navigation_bar.dart';
 
@@ -67,6 +68,13 @@ class NotificationItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: onNotificationTap,
+      leading: notification.image != null
+          ? AvatarImage(
+              image: notification.image!,
+              width: 36,
+              height: 36,
+            )
+          : null,
       title: HighlightText(notification.content),
       // subtitle: Text('De: ${notification.senderId}'),
       trailing: Text(notification.updatedAt.toTimeString()),

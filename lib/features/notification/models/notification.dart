@@ -4,29 +4,28 @@ import 'package:splach/models/base_model.dart';
 import 'package:splach/utils/extensions.dart';
 
 enum AppNotificationType {
-  followRequest,
-  newFollower,
+  rating,
   mention,
-  newChat,
 }
 
 class AppNotification {
+  final String id;
   final String content;
   final String relatedId;
   final AppNotificationType notificationType;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final String? image;
 
   User? sender;
 
   AppNotification({
+    required this.id,
     required this.updatedAt,
     required this.createdAt,
     required this.content,
     required this.relatedId,
-    this.notificationType = AppNotificationType.followRequest,
+    this.notificationType = AppNotificationType.rating,
+    this.image,
   });
-
-  bool get isFollowRequest =>
-      notificationType == AppNotificationType.followRequest;
 }

@@ -106,7 +106,7 @@ class ChatInfoView extends StatelessWidget {
   }
 
   Widget _buildMessageGrid() {
-    final chatImages = chat.messages.map((message) => message.image!).toList();
+    final chatImages = chat.messages.map((message) => message.imageUrl!).toList();
     return GridView.builder(
       shrinkWrap: true,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -146,7 +146,7 @@ class ChatInfoView extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.grey[200],
         image: DecorationImage(
-          image: MemoryImage(base64Decode(message.image!)),
+          image: MemoryImage(base64Decode(message.imageUrl!)),
           fit: BoxFit.cover,
         ),
       ),

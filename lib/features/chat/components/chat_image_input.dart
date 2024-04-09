@@ -25,16 +25,15 @@ class ChatImageInput extends StatelessWidget {
           children: [
             Obx(
               () {
+                if (controller.image.value == null) {
+                  return Container();
+                }
                 return Expanded(
                   child: Container(
                     width: MediaQuery.of(context).size.width,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: MemoryImage(
-                          base64Decode(
-                            controller.image.value!,
-                          ),
-                        ),
+                        image: FileImage(controller.image.value!),
                         fit: BoxFit.cover,
                       ),
                     ),

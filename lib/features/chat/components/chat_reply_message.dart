@@ -67,10 +67,10 @@ class ChatReplyMessage extends StatelessWidget {
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            if (replyMessage.image != null &&
-                                replyMessage.image!.isNotEmpty) ...[
+                            if (replyMessage.imageUrl != null &&
+                                replyMessage.imageUrl!.isNotEmpty) ...[
                               ChatImage(
-                                image: replyMessage.image!,
+                                image: replyMessage.imageUrl!,
                                 maxHeight: 64,
                                 maxWidth: 64,
                               ),

@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:splach/features/chat/components/chat_input.dart';
 import 'package:splach/features/chat/models/group_chat.dart';
 import 'package:splach/features/chat/models/participant.dart';
 import 'package:splach/features/chat/repositories/chat_repository.dart';
+import 'package:splach/features/chat/repositories/chat_storage_repository.dart';
 import 'package:splach/features/chat/repositories/participant_repository.dart';
 import 'package:splach/features/notification/controllers/notification_controller.dart';
 import 'package:splach/features/rating/models/rating.dart';
@@ -18,14 +21,16 @@ import 'package:splach/features/chat/repositories/message_repository.dart';
 import 'package:splach/utils/extensions.dart';
 
 class ChatController extends GetxController {
-  ChatController(this.groupChat) {
-    debugPrint(
-        'Chat Controller | Initializing the group chat for ${groupChat.id}');
-    _messageRepository = MessageRepository(groupChat.id!);
-    _participantRepository = ParticipantRepository(groupChat.id!);
+  ChatController(this.chat) {
+    debugPrint('Chat Controller | Initializing the group chat for ${chat.id}');
+    _messageRepository = MessageRepository(chat.id!);
+    _participantRepository = ParticipantRepository(chat.id!);
   }
 
+  final GroupChat chat;
+
   final ChatRepository _chatRepository = Get.find();
+  final _chatStorageRepository = Get.put(ChatStorageRepository());
   final NotificationController notificationController = Get.find();
   final _repository = Get.put(RatingRepository());
   final User user = Get.find();
@@ -35,10 +40,10 @@ class ChatController extends GetxController {
   late ParticipantRepository _participantRepository;
   final _userRepository = Get.put(UserRepository());
 
-  final GroupChat groupChat;
   final participants = <Participant>[].obs;
   final messages = <Message>[].obs;
-  final image = Rx<String?>(null);
+  final image = Rx<File?>(null);
+  String? imageUrl;
   final private = false.obs;
   final recipients = <String>[].obs;
   final isCameraOpen = false.obs;
@@ -62,20 +67,11 @@ class ChatController extends GetxController {
   Future<void> onInit() async {
     super.onInit();
     loading.value = true;
-    // await _fetchChatUsers();
-    // _listenToChatParticipants();
-    // await Future.delayed(const Duration(seconds: 4));
     _listenToParticipants();
     _listenToMessageStream();
     scrollController.addListener(scrollListener);
 
     await _fetchUserRatings();
-    // cameraController.value = CameraController(
-    //   // Get a specific camera from the list of available cameras.
-    //   cameras.first,
-    //   // Define the resolution to use.
-    //   ResolutionPreset.medium,
-    // );
     loading.value = false;
   }
 
@@ -111,7 +107,15 @@ class ChatController extends GetxController {
       messages.sort((a, b) => b.createdAt.compareTo(a.createdAt));
       updateMessageSenders();
 
-      _verifyMessageAndCreateMentionNotification(messages.first);
+      if (messages.isNotEmpty) {
+        messages.first.sender = participants.firstWhereOrNull(
+          (participant) => participant.id == messages.first.senderId,
+        );
+
+        messages.first.sender ??=
+            await _participantRepository.get(messages.first.senderId);
+        _verifyMessageAndCreateMentionNotification(messages.first);
+      }
     });
   }
 
@@ -155,10 +159,9 @@ class ChatController extends GetxController {
     final mentionedParticipantsIds =
         mentionedParticipants.map((participant) => participant.id!).toList();
 
-
-    if(replyMessage.value == null){
+    if (replyMessage.value == null) {
       recipients.assignAll(mentionedParticipantsIds);
-    } else{
+    } else {
       recipients.addAll(mentionedParticipantsIds);
     }
 
@@ -206,27 +209,47 @@ class ChatController extends GetxController {
   // }
 
   Future<SaveResult?> sendMessage({String? content}) async {
-    if (loading.isTrue || content == null || content.isEmpty) return null;
+    if (_shouldNotSendMessage(content)) {
+      return null;
+    }
 
     loading.value = true;
 
-    final newMessage = Message(
-      content: content,
-      image: image.value,
-      senderId: user.id!,
-      updatedAt: DateTime.now(),
-      createdAt: DateTime.now(),
-      // updatedAt: DateTime.now(),
-      replyId: replyMessage.value?.id,
-      private: private.value,
-      recipients: recipients.isEmpty ? null : recipients,
-    );
+    final imageUrl = await _uploadImageIfRequired();
 
-    final result = await _messageRepository.save(newMessage);
+    final newMessage = _createMessage(content, imageUrl);
+    final result = await _saveMessage(newMessage);
 
     loading.value = false;
 
     return result;
+  }
+
+  bool _shouldNotSendMessage(String? content) {
+    return loading.isTrue ||
+        (content == null || content.isEmpty) && image.value == null;
+  }
+
+  Future<String?> _uploadImageIfRequired() async {
+    if (image.value == null) return null;
+    return await _chatStorageRepository.upload(image.value!);
+  }
+
+  Message _createMessage(String? content, String? imageUrl) {
+    return Message(
+      content: content,
+      imageUrl: imageUrl,
+      senderId: user.id!,
+      updatedAt: DateTime.now(),
+      createdAt: DateTime.now(),
+      replyId: replyMessage.value?.id,
+      private: private.value,
+      recipients: recipients.isEmpty ? null : recipients,
+    );
+  }
+
+  Future<SaveResult?> _saveMessage(Message message) async {
+    return await _messageRepository.save(message);
   }
 
   Future<void> removeChatParticipant() async {
@@ -240,7 +263,7 @@ class ChatController extends GetxController {
     );
 
     _participantRepository.save(participant, docId: user.id);
-    _chatRepository.updateLastActivity(groupChat.id!);
+    _chatRepository.updateLastActivity(chat.id!);
   }
 
   Future<void> addParticipantToChat() async {
@@ -254,7 +277,7 @@ class ChatController extends GetxController {
     );
 
     _participantRepository.update(participant);
-    _chatRepository.updateLastActivity(groupChat.id!);
+    _chatRepository.updateLastActivity(chat.id!);
   }
 
   Future<void> _fetchUserRatings() async {
