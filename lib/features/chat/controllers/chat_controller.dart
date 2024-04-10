@@ -108,9 +108,9 @@ class ChatController extends GetxController {
       updateMessageSenders();
 
       if (messages.isNotEmpty) {
-        messages.first.sender = participants.firstWhereOrNull(
-          (participant) => participant.id == messages.first.senderId,
-        );
+        // messages.first.sender = participants.firstWhereOrNull(
+        //   (participant) => participant.id == messages.first.senderId,
+        // );
 
         messages.first.sender ??=
             await _participantRepository.get(messages.first.senderId);
@@ -136,6 +136,7 @@ class ChatController extends GetxController {
         .toList();
 
     mentions.clear();
+
     for (final nickname in nicknames) {
       if (value.contains(nickname)) {
         mentions.add(nickname);
@@ -156,6 +157,7 @@ class ChatController extends GetxController {
 
     debugPrint(
         'Updating mention list | Mentioned Participants ${mentionedParticipants.length}');
+
     final mentionedParticipantsIds =
         mentionedParticipants.map((participant) => participant.id!).toList();
 
@@ -176,6 +178,7 @@ class ChatController extends GetxController {
       {bool isLeaving = false}) {
     final nickname =
         participants.map((participant) => participant.nickname).toList().first;
+
     final systemMessage = Message(
       updatedAt: DateTime.now(),
       createdAt: DateTime.now(),
@@ -208,6 +211,18 @@ class ChatController extends GetxController {
   //   }).toList();
   // }
 
+  void sendTemporaryMessage({String? content}) {
+    final temporaryMessageList = <Message>[];
+    temporaryMessageList.assignAll(messages);
+    final temporaryMessage = _createMessage(content, '');
+    temporaryMessageList.add(temporaryMessage);
+
+    messages.assignAll(temporaryMessageList);
+
+    messages.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    updateMessageSenders();
+  }
+
   Future<SaveResult?> sendMessage({String? content}) async {
     if (_shouldNotSendMessage(content)) {
       return null;
@@ -218,6 +233,17 @@ class ChatController extends GetxController {
     final imageUrl = await _uploadImageIfRequired();
 
     final newMessage = _createMessage(content, imageUrl);
+
+    newMessage.temporaryImage = null;
+
+    final index = messages.indexWhere(
+      (message) => message.id == newMessage.id,
+    );
+
+    if (index != -1) {
+      messages.replaceRange(index, index + 1, [newMessage]);
+    }
+
     final result = await _saveMessage(newMessage);
 
     loading.value = false;
@@ -245,6 +271,7 @@ class ChatController extends GetxController {
       replyId: replyMessage.value?.id,
       private: private.value,
       recipients: recipients.isEmpty ? null : recipients,
+      temporaryImage: image.value,
     );
   }
 

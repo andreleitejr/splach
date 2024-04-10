@@ -149,8 +149,8 @@ class ChatSenderMessage extends StatelessWidget {
                               Row(
                                 children: [
                                   if (message.replyMessage!.imageUrl != null &&
-                                      message
-                                          .replyMessage!.imageUrl!.isNotEmpty) ...[
+                                      message.replyMessage!.imageUrl!
+                                          .isNotEmpty) ...[
                                     ChatImage(
                                       image: message.replyMessage!.imageUrl!,
                                       maxWidth: 64,
@@ -163,14 +163,14 @@ class ChatSenderMessage extends StatelessWidget {
                                     ConstrainedBox(
                                       constraints: BoxConstraints(
                                         minWidth: 75,
-                                        maxWidth: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                (message.replyMessage!.imageUrl !=
-                                                        null
-                                                    ? 0.55
-                                                    : 0.65) -
-                                            32,
+                                        maxWidth:
+                                            MediaQuery.of(context).size.width *
+                                                    (message.replyMessage!
+                                                                .imageUrl !=
+                                                            null
+                                                        ? 0.55
+                                                        : 0.65) -
+                                                32,
                                       ),
                                       child: HighlightText(
                                         message.replyMessage!.content!,
@@ -187,8 +187,13 @@ class ChatSenderMessage extends StatelessWidget {
                   ],
                   const SizedBox(height: 8),
                 ],
-                if (message.imageUrl != null && message.imageUrl!.isNotEmpty) ...[
-                  ChatImage(image: message.imageUrl!),
+                if ((message.imageUrl != null &&
+                        message.imageUrl!.isNotEmpty) ||
+                    message.temporaryImage != null) ...[
+                  ChatImage(
+                    image: message.imageUrl!,
+                    temporaryImage: message.temporaryImage,
+                  ),
                   const SizedBox(height: 4),
                 ],
                 if (message.content != null) ...[

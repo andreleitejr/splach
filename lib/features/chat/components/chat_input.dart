@@ -9,7 +9,6 @@ import 'package:splach/features/chat/models/participant.dart';
 import 'package:splach/repositories/firestore_repository.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
-import 'package:splach/utils/extensions.dart';
 import 'package:splach/widgets/highlight_text.dart';
 
 class ChatInput extends StatefulWidget {
@@ -220,6 +219,9 @@ class _ChatInputState extends State<ChatInput> {
                           icon: Icons.send_outlined,
                           color: ThemeColors.primary,
                           onPressed: () async {
+                            controller.sendTemporaryMessage(
+                                content: messageController.text);
+
                             controller
                                 .sendMessage(
                               content: messageController.text,

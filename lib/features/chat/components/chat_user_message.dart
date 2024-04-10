@@ -88,7 +88,8 @@ class ChatUserMessage extends StatelessWidget {
                                 const SizedBox(height: 8),
                                 Row(
                                   children: [
-                                    if (message.replyMessage!.imageUrl != null &&
+                                    if (message.replyMessage!.imageUrl !=
+                                            null &&
                                         message.replyMessage!.imageUrl!
                                             .isNotEmpty) ...[
                                       ChatImage(
@@ -128,8 +129,13 @@ class ChatUserMessage extends StatelessWidget {
                     ],
                     const SizedBox(height: 16),
                   ],
-                  if (message.imageUrl != null && message.imageUrl!.isNotEmpty) ...[
-                    ChatImage(image: message.imageUrl!),
+                  if ((message.imageUrl != null &&
+                          message.imageUrl!.isNotEmpty) ||
+                      message.temporaryImage != null) ...[
+                    ChatImage(
+                      image: message.imageUrl!,
+                      temporaryImage: message.temporaryImage,
+                    ),
                     const SizedBox(height: 8),
                   ],
                   if (message.content != null) ...[

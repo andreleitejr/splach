@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:splach/features/chat/models/participant.dart';
@@ -19,6 +21,8 @@ class Message extends BaseModel {
   final bool private;
   final List<String>? recipients;
 
+  File? temporaryImage;
+
   Participant? sender;
   Message? replyMessage;
 
@@ -32,6 +36,7 @@ class Message extends BaseModel {
     this.messageType = MessageType.user,
     this.private = false,
     this.recipients,
+    this.temporaryImage,
   });
 
   Message.fromDocument(DocumentSnapshot document)
@@ -39,9 +44,8 @@ class Message extends BaseModel {
         senderId = document.get('senderId'),
         replyId = document.get('replyId'),
         imageUrl = document.get('imageUrl'),
-        messageType = MessageTypeExtension.fromString(
-          document.get('messageType')
-        ),
+        messageType =
+            MessageTypeExtension.fromString(document.get('messageType')),
         private = document.get('private'),
         recipients = List<String>.from(
           document.get('recipients') ?? [],

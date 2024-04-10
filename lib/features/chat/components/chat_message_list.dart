@@ -6,16 +6,12 @@ import 'package:splach/features/chat/components/chat_image_input.dart';
 import 'package:splach/features/chat/components/chat_user_message.dart';
 import 'package:splach/features/chat/controllers/chat_controller.dart';
 import 'package:splach/features/chat/models/message.dart';
-import 'package:splach/features/rating/widgets/rating_bottom_sheet.dart';
 import 'package:splach/features/report/models/report_message_topic.dart';
 import 'package:splach/features/report/widgets/report_message_bottom_sheet.dart';
-import 'package:splach/features/user/components/user_profile_header.dart';
-import 'package:splach/features/user/models/user.dart';
 import 'package:splach/features/user/views/user_profile_view.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/utils/extensions.dart';
-import 'package:splach/widgets/custom_list_tile.dart';
 import 'package:splach/widgets/flat_button.dart';
 
 import 'chat_sender_message.dart';
@@ -35,6 +31,7 @@ class ChatMessageList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       final messages = controller.messages;
+
       return Expanded(
         child: Stack(
           children: [
@@ -58,6 +55,7 @@ class ChatMessageList extends StatelessWidget {
                       },
                     );
                   }
+
                   return Column(
                     children: [
                       if (message.isFromSystem) ...[
