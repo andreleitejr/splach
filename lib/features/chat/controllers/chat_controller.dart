@@ -57,7 +57,7 @@ class ChatController extends GetxController {
 
   final userRatings = <Rating>[].obs;
   final rating = Rx<Rating?>(null);
-  final ratingValue = 0.obs;
+  final score = 0.obs;
 
   final isShowingMentionList = false.obs;
   final mentions = <String>[];
@@ -236,6 +236,53 @@ class ChatController extends GetxController {
 
     newMessage.temporaryImage = null;
 
+    _updateMessageList(newMessage);
+
+    await Future.delayed(const Duration(seconds: 3));
+    final result = SaveResult.failed;
+
+    if (result == SaveResult.success) {
+      newMessage.status = MessageStatus.sent;
+    } else {
+      newMessage.status = MessageStatus.error;
+    }
+
+    _updateMessageList(newMessage);
+
+    loading.value = false;
+
+    return result;
+  }
+
+  Future<SaveResult?> retryMessage(Message message) async {
+    if (loading.isTrue) {
+      return null;
+    }
+
+    loading.value = true;
+
+    // final imageUrl = await _uploadImageIfRequired();
+    //
+    // final newMessage = _createMessage(content, imageUrl);
+
+    // newMessage.temporaryImage = null;
+
+    // _updateMessageList(message);
+
+    final result = await _saveMessage(message);
+
+    if (result == SaveResult.success) {
+      message.status = MessageStatus.sent;
+    }
+
+    _updateMessageList(message);
+
+    loading.value = false;
+
+    return result;
+  }
+
+  void _updateMessageList(Message newMessage) {
     final index = messages.indexWhere(
       (message) => message.id == newMessage.id,
     );
@@ -243,12 +290,6 @@ class ChatController extends GetxController {
     if (index != -1) {
       messages.replaceRange(index, index + 1, [newMessage]);
     }
-
-    final result = await _saveMessage(newMessage);
-
-    loading.value = false;
-
-    return result;
   }
 
   bool _shouldNotSendMessage(String? content) {
@@ -317,7 +358,7 @@ class ChatController extends GetxController {
       rating.value =
           userRatings.firstWhere((rating) => rating.ratedId == ratedId);
 
-      ratingValue.value = rating.value!.ratingValue;
+      score.value = rating.value!.score;
     }
   }
 
@@ -327,12 +368,12 @@ class ChatController extends GetxController {
 
   Future<void> rate(String ratedId) async {
     if (alreadyRated(ratedId)) {
-      rating.value!.ratingValue = ratingValue.value;
+      rating.value!.score = score.value;
       await _repository.update(rating.value!);
     } else {
       final newRating = Rating(
         ratedId: ratedId,
-        ratingValue: ratingValue.value,
+        score: score.value,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );

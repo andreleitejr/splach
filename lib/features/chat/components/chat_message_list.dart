@@ -65,6 +65,7 @@ class ChatMessageList extends StatelessWidget {
                       ] else if (message.isFromUser) ...[
                         ChatUserMessage(
                           message: message,
+                          onMessageFailed: () => _retryMessage(message),
                         ),
                       ] else ...[
                         ChatSenderMessage(
@@ -158,6 +159,10 @@ class ChatMessageList extends StatelessWidget {
       ),
       enableDrag: true,
     );
+  }
+
+  Future<void> _retryMessage(Message message) async {
+    await controller.retryMessage(message);
   }
 
   // void _rate(String ratedId, String? ratedTitle) {
@@ -349,12 +354,10 @@ class ChatMessageList extends StatelessWidget {
           5,
           (index) => IconButton(
             onPressed: () {
-              controller.ratingValue.value = index + 1;
+              controller.score.value = index + 1;
             },
             icon: Icon(
-              index < controller.ratingValue.value
-                  ? Icons.star
-                  : Icons.star_border,
+              index < controller.score.value ? Icons.star : Icons.star_border,
               color: Colors.orange,
               size: 36,
             ),

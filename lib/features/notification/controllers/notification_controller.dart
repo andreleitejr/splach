@@ -70,7 +70,7 @@ class NotificationController extends GetxController {
       updatedAt: rating.updatedAt,
       createdAt: rating.createdAt,
       content:
-          '${rating.user?.nickname.toNickname()} rated you with ${rating.ratingValue} ${rating.ratingValue > 1 ? 'stars' : 'star'}',
+          '${rating.user?.nickname.toNickname()} rated you with ${rating.score} ${rating.score > 1 ? 'stars' : 'star'}',
       relatedId: rating.ratedBy!,
       notificationType: AppNotificationType.rating,
       image: rating.user?.image,

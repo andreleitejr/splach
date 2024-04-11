@@ -9,7 +9,7 @@ enum RatingType { user, chat }
 class Rating extends BaseModel {
   final String? ratedBy;
   final String ratedId;
-  int ratingValue;
+  int score;
   final RatingType type;
 
   User? user;
@@ -19,14 +19,14 @@ class Rating extends BaseModel {
     required super.updatedAt,
     this.ratedBy,
     required this.ratedId,
-    required this.ratingValue,
+    required this.score,
     this.type = RatingType.user,
   });
 
   Rating.fromDocument(DocumentSnapshot document)
       : ratedBy = document.get('ratedBy'),
         ratedId = document.get('ratedId'),
-        ratingValue = document.get('ratingValue'),
+        score = document.get('ratingValue'),
         type = RatingTypeExtension.fromString(document.get('type')),
         super.fromDocument(document);
 
@@ -35,7 +35,7 @@ class Rating extends BaseModel {
     return {
       'ratedBy': Get.find<User>().id,
       'ratedId': ratedId,
-      'ratingValue': ratingValue,
+      'ratingValue': score,
       'type': type.toStringSimplified(),
       ...super.toMap(),
     };

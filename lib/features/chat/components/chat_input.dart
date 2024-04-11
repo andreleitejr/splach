@@ -218,28 +218,7 @@ class _ChatInputState extends State<ChatInput> {
                         _buildInputButton(
                           icon: Icons.send_outlined,
                           color: ThemeColors.primary,
-                          onPressed: () async {
-                            controller.sendTemporaryMessage(
-                                content: messageController.text);
-
-                            controller
-                                .sendMessage(
-                              content: messageController.text,
-                            )
-                                .then((result) {
-                              if (result == SaveResult.success) {
-                                controller.replyMessage.value = null;
-                                controller.image.value = null;
-                                controller.recipients.clear();
-                                controller.private.value = false;
-                                controller.scrollToBottom();
-                              }
-                            });
-
-                            if (widget.isImageInput) {
-                              Get.back();
-                            }
-                          },
+                          onPressed: () => _sendMessage(),
                         ),
                       ],
                     ),
@@ -279,6 +258,30 @@ class _ChatInputState extends State<ChatInput> {
         ],
       ),
     );
+  }
+
+  Future<void> _sendMessage() async {
+    final controller = widget.controller;
+    controller.sendTemporaryMessage(content: messageController.text);
+
+    final content = messageController.text;
+    messageController.clear();
+
+    if (widget.isImageInput) {
+      Get.back();
+    }
+
+    final result = await controller.sendMessage(
+      content: content,
+    );
+
+    if (result == SaveResult.success) {
+      controller.replyMessage.value = null;
+      controller.image.value = null;
+      controller.recipients.clear();
+      controller.private.value = false;
+      controller.scrollToBottom();
+    }
   }
 
   Widget _buildInputButton({

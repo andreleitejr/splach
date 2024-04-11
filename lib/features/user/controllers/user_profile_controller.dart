@@ -25,8 +25,8 @@ class UserProfileController extends GetxController {
       var numberOfRatings = 0;
 
       for (final rating in ratings) {
-        if (rating.ratingValue >= 0 && rating.ratingValue <= 5) {
-          totalRatingValue += rating.ratingValue;
+        if (rating.score >= 0 && rating.score <= 5) {
+          totalRatingValue += rating.score;
           numberOfRatings++;
         }
       }

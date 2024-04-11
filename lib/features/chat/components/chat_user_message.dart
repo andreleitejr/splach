@@ -11,10 +11,12 @@ import 'package:splach/widgets/highlight_text.dart';
 
 class ChatUserMessage extends StatelessWidget {
   final Message message;
+  final VoidCallback onMessageFailed;
 
   const ChatUserMessage({
     super.key,
     required this.message,
+    required this.onMessageFailed,
   });
 
   final double _borderRadius = 12;
@@ -158,18 +160,59 @@ class ChatUserMessage extends StatelessWidget {
                     ),
                   ],
                   const SizedBox(height: 8),
-                  Text(
-                    '${message.createdAt.toTimeString()} ago',
-                    style: ThemeTypography.regular9.apply(
-                      color: ThemeColors.light,
-                    ),
-                    textAlign: TextAlign.right,
-                  ),
+                  Row(
+                    children: [
+                      Text(
+                        '${message.createdAt.toTimeString()} ago',
+                        style: ThemeTypography.regular9.apply(
+                          color: ThemeColors.light,
+                        ),
+                        textAlign: TextAlign.right,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        '${message.status}',
+                        style: ThemeTypography.regular9.apply(
+                          color: ThemeColors.light,
+                        ),
+                        textAlign: TextAlign.right,
+                      ),
+                    ],
+                  )
                 ],
               ),
             ),
+            if (message.status == MessageStatus.error) ...[
+              const SizedBox(height: 16),
+              GestureDetector(
+                onTap: onMessageFailed,
+                child: Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(64),
+                    color: Colors.white,
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.error_outline,
+                        color: Colors.redAccent,
+                        size: 16,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Failed to send message. Tap here to try again.',
+                        style: ThemeTypography.regular12.apply(
+                          color: Colors.redAccent,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            ],
           ],
-        )
+        ),
       ],
     );
   }

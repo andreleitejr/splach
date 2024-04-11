@@ -12,6 +12,12 @@ enum MessageType {
   user,
 }
 
+enum MessageStatus {
+  pending,
+  sent,
+  error,
+}
+
 class Message extends BaseModel {
   final String? content;
   final String senderId;
@@ -21,6 +27,7 @@ class Message extends BaseModel {
   final bool private;
   final List<String>? recipients;
 
+  late MessageStatus status;
   File? temporaryImage;
 
   Participant? sender;
@@ -37,6 +44,7 @@ class Message extends BaseModel {
     this.private = false,
     this.recipients,
     this.temporaryImage,
+    this.status = MessageStatus.pending,
   });
 
   Message.fromDocument(DocumentSnapshot document)
@@ -50,6 +58,7 @@ class Message extends BaseModel {
         recipients = List<String>.from(
           document.get('recipients') ?? [],
         ),
+        status = MessageStatus.sent,
         super.fromDocument(document);
 
   @override
