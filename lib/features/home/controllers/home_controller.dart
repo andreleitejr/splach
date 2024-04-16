@@ -104,7 +104,7 @@ class HomeController extends GetxController {
     final participant = Participant(
       id: _user.id,
       nickname: _user.nickname,
-      image: _user.image,
+      image: _user.image!,
       status: Status.online,
       createdAt: createdAt ?? DateTime.now(),
       updatedAt: DateTime.now(),

@@ -6,7 +6,6 @@ import 'package:splach/features/chat/views/chat_view.dart';
 import 'package:splach/features/home/components/category_button.dart';
 import 'package:splach/features/chat/components/shimmer_chat_group_list_item.dart';
 import 'package:splach/features/home/controllers/home_controller.dart';
-import 'package:splach/features/notification/views/notification_view.dart';
 import 'package:splach/features/chat/models/chat_category.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
@@ -42,15 +41,15 @@ class HomeView extends StatelessWidget {
                   ),
                 ),
                 actions: [
-                  // IconButton(
-                  //   onPressed: () => Get.to(
-                  //     () => GroupChatEditView(),
-                  //   ),
-                  //   icon: const Icon(
-                  //     Icons.add,
-                  //     color: Colors.black,
-                  //   ),
-                  // ),
+                  IconButton(
+                    onPressed: () => Get.to(
+                      () => ChatEditView(),
+                    ),
+                    icon: const Icon(
+                      Icons.add,
+                      color: Colors.black,
+                    ),
+                  ),
                 ],
               ),
               SliverToBoxAdapter(

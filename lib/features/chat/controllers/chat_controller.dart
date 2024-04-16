@@ -6,7 +6,7 @@ import 'package:splach/features/chat/components/chat_input.dart';
 import 'package:splach/features/chat/models/group_chat.dart';
 import 'package:splach/features/chat/models/participant.dart';
 import 'package:splach/features/chat/repositories/chat_repository.dart';
-import 'package:splach/features/chat/repositories/chat_storage_repository.dart';
+import 'package:splach/features/chat/repositories/message_storage_repository.dart';
 import 'package:splach/features/chat/repositories/participant_repository.dart';
 import 'package:splach/features/notification/controllers/notification_controller.dart';
 import 'package:splach/features/rating/models/rating.dart';
@@ -30,7 +30,7 @@ class ChatController extends GetxController {
   final GroupChat chat;
 
   final ChatRepository _chatRepository = Get.find();
-  final _chatStorageRepository = Get.put(ChatStorageRepository());
+  final _messageStorageRepository = Get.put(MessageStorageRepository());
   final NotificationController notificationController = Get.find();
   final _repository = Get.put(RatingRepository());
   final User user = Get.find();
@@ -191,17 +191,6 @@ class ChatController extends GetxController {
     messages.add(systemMessage);
   }
 
-  void updateMessageSenders() {
-    messages.value = messages.map((message) {
-      Participant? sender = participants.firstWhereOrNull(
-        (participant) => participant.id == message.senderId,
-      );
-
-      message.sender = sender;
-      return message;
-    }).toList();
-  }
-
   // void _filterPrivateMessages() {
   //   messages.value = messages.where((message) {
   //     if (message.private && message.replyId != user.id) {
@@ -220,6 +209,7 @@ class ChatController extends GetxController {
     messages.assignAll(temporaryMessageList);
 
     messages.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
     updateMessageSenders();
   }
 
@@ -229,7 +219,6 @@ class ChatController extends GetxController {
     }
 
     loading.value = true;
-
     final imageUrl = await _uploadImageIfRequired();
 
     final newMessage = _createMessage(content, imageUrl);
@@ -238,8 +227,7 @@ class ChatController extends GetxController {
 
     _updateMessageList(newMessage);
 
-    await Future.delayed(const Duration(seconds: 3));
-    final result = SaveResult.failed;
+    final result = await _saveMessage(newMessage);
 
     if (result == SaveResult.success) {
       newMessage.status = MessageStatus.sent;
@@ -282,6 +270,17 @@ class ChatController extends GetxController {
     return result;
   }
 
+  void updateMessageSenders() {
+    messages.value = messages.map((message) {
+      Participant? sender = participants.firstWhereOrNull(
+        (participant) => participant.id == message.senderId,
+      );
+
+      message.sender = sender;
+      return message;
+    }).toList();
+  }
+
   void _updateMessageList(Message newMessage) {
     final index = messages.indexWhere(
       (message) => message.id == newMessage.id,
@@ -299,7 +298,7 @@ class ChatController extends GetxController {
 
   Future<String?> _uploadImageIfRequired() async {
     if (image.value == null) return null;
-    return await _chatStorageRepository.upload(image.value!);
+    return await _messageStorageRepository.upload(image.value!);
   }
 
   Message _createMessage(String? content, String? imageUrl) {
@@ -324,7 +323,7 @@ class ChatController extends GetxController {
     final participant = Participant(
       id: user.id,
       nickname: user.nickname,
-      image: user.image,
+      image: user.image!,
       status: Status.offline,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
@@ -338,7 +337,7 @@ class ChatController extends GetxController {
     final participant = Participant(
       id: user.id,
       nickname: user.nickname,
-      image: user.image,
+      image: user.image!,
       status: Status.online,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),

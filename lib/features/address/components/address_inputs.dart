@@ -10,7 +10,8 @@ class AddressInputs extends StatelessWidget {
   final TextEditingController countryController;
   final TextEditingController complementController;
 
-  AddressInputs({
+  const AddressInputs({
+    super.key,
     required this.postalCodeController,
     required this.streetController,
     required this.numberController,

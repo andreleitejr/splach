@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:splach/features/camera/views/camera_view.dart';
 import 'package:splach/features/chat/components/chat_image_input.dart';
 import 'package:splach/features/chat/components/chat_participant_mention_list.dart';
@@ -171,56 +172,67 @@ class _ChatInputState extends State<ChatInput> {
                   ),
                   suffixIcon: Padding(
                     padding: const EdgeInsets.all(6),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Obx(() {
-                          return _buildInputButton(
-                            icon: Icons.lock_outline,
-                            color: controller.private.isTrue
-                                ? ThemeColors.tertiary
-                                : ThemeColors.grey3,
-                            onPressed: () {
-                              if (controller.recipients.isEmpty) return;
+                    child: ConnectionStatus(
+                      connected: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Obx(() {
+                            return _buildInputButton(
+                              icon: Icons.lock_outline,
+                              color: controller.private.isTrue
+                                  ? ThemeColors.tertiary
+                                  : ThemeColors.grey3,
+                              onPressed: () {
+                                if (controller.recipients.isEmpty) return;
 
-                              controller.private(
-                                !controller.private.value,
-                              );
-                            },
-                          );
-                        }),
-                        Obx(() {
-                          if (widget.controller.isTyping.isTrue ||
-                              widget.isImageInput) {
-                            return Container();
-                          }
-                          return _buildInputButton(
-                            icon: Icons.image_outlined,
-                            color: ThemeColors.secondary,
-                            onPressed: () async {
-                              controller.isCameraOpen.value = true;
-                              final image = await Get.to(
-                                () => CameraGalleryView(
-                                  image: controller.image.value,
-                                ),
-                              );
-                              if (image != null) {
-                                controller.image.value = image;
-                                Get.to(
-                                  () => ChatImageInput(
-                                    controller: controller,
+                                controller.private(
+                                  !controller.private.value,
+                                );
+                              },
+                            );
+                          }),
+                          Obx(() {
+                            if (widget.controller.isTyping.isTrue ||
+                                widget.isImageInput) {
+                              return Container();
+                            }
+                            return _buildInputButton(
+                              icon: Icons.image_outlined,
+                              color: ThemeColors.secondary,
+                              onPressed: () async {
+                                controller.isCameraOpen.value = true;
+                                final image = await Get.to(
+                                  () => CameraGalleryView(
+                                    image: controller.image.value,
                                   ),
                                 );
-                              }
-                            },
-                          );
-                        }),
-                        _buildInputButton(
+                                if (image != null) {
+                                  controller.image.value = image;
+                                  Get.to(
+                                    () => ChatImageInput(
+                                      controller: controller,
+                                    ),
+                                  );
+                                }
+                              },
+                            );
+                          }),
+                          _buildInputButton(
+                            icon: Icons.send_outlined,
+                            color: ThemeColors.primary,
+                            onPressed: () => _sendMessage(),
+                          ),
+                        ],
+                      ),
+                      disconnected: _buildInputButton(
                           icon: Icons.send_outlined,
-                          color: ThemeColors.primary,
-                          onPressed: () => _sendMessage(),
-                        ),
-                      ],
+                          color: ThemeColors.grey2,
+                          onPressed: () {
+                            Get.snackbar(
+                              'You are offline',
+                              'Connect to internet and try again',
+                            );
+                          }),
                     ),
                   ),
                   enabledBorder: OutlineInputBorder(
@@ -331,6 +343,46 @@ class MentionHighlightingController extends TextEditingController {
     return TextSpan(
       style: style,
       children: spans,
+    );
+  }
+}
+
+class ConnectionStatus extends StatelessWidget {
+  ConnectionStatus({
+    super.key,
+    required this.connected,
+    required this.disconnected,
+  });
+
+  final Widget connected;
+  final Widget disconnected;
+
+  final _connectionChecker = InternetConnectionChecker();
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<InternetConnectionStatus>(
+      future: _connectionChecker.connectionStatus,
+      builder: (_, snapshot) {
+        if (!snapshot.hasData) {
+          return Container();
+        }
+        return StreamBuilder<InternetConnectionStatus>(
+          initialData: snapshot.data,
+          stream: _connectionChecker.onStatusChange,
+          builder: (_, snapshot) {
+            if (!snapshot.hasData) {
+              return Container();
+            }
+            final con = snapshot.data == InternetConnectionStatus.connected;
+            if (con) {
+              return connected;
+            } else {
+              return disconnected;
+            }
+          },
+        );
+      },
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:splach/features/address/models/brazilian_states.dart';
+import 'package:splach/features/camera/views/camera_view.dart';
 import 'package:splach/features/home/views/base_view.dart';
 import 'package:splach/features/user/controllers/user_edit_controller.dart';
 import 'package:splach/features/user/models/gender.dart';
@@ -66,7 +67,7 @@ class _UserEditViewState extends State<UserEditView> {
       appBar: TopNavigationBar(
         showLeading: _currentPage == 1,
         onLeadingPressed:
-        _currentPage == 1 ? () => _navigateToPreviousPage() : null,
+            _currentPage == 1 ? () => _navigateToPreviousPage() : null,
         title: 'Personal data',
       ),
       body: SafeArea(
@@ -262,10 +263,18 @@ class _UserEditViewState extends State<UserEditView> {
   }
 
   Future<void> _getImage(BuildContext context) async {
-    final source = await showImageSourceBottomSheet(context);
-
-    if (source != null) {
-      await controller.pickImage(source);
+    final image = await Get.to(
+      () => CameraGalleryView(
+        image: controller.image.value,
+      ),
+    );
+    if (image != null) {
+      controller.image.value = image;
+      // Get.to(
+      //       () => ChatImageInput(
+      //     controller: controller,
+      //   ),
+      // );
     }
   }
 

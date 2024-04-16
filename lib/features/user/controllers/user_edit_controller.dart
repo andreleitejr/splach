@@ -7,12 +7,14 @@ import 'package:image_picker/image_picker.dart';
 import 'package:splach/features/auth/repositories/auth_repository.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/features/user/repositories/user_repository.dart';
+import 'package:splach/features/user/repositories/user_storage_repository.dart';
 import 'package:splach/repositories/firestore_repository.dart';
 import 'package:splach/services/image_service.dart';
 
 class UserEditController extends GetxController {
   final _authRepository = Get.find<AuthRepository>();
   final _repository = Get.put(UserRepository());
+  final _storageRepository = Get.put(UserStorageRepository());
   final _imageService = CameraService();
 
   final image = Rx<File?>(null);
@@ -93,8 +95,7 @@ class UserEditController extends GetxController {
 
   List<String> _getSecondaryDataErrorMessage() {
     final List<String> requiredFields = [];
-
-    if (imageUrl.isEmpty) {
+    if (image.value == null) {
       requiredFields.add('Image');
     }
 
@@ -132,6 +133,8 @@ class UserEditController extends GetxController {
   Future<SaveResult?> save() async {
     loading.value = true;
 
+    final imageUrl = await _uploadImageIfRequired();
+
     /// UPLOAD DE FOTO AQUI
     final newUser = User(
       id: _authRepository.authUser!.uid,
@@ -157,5 +160,10 @@ class UserEditController extends GetxController {
 
     loading.value = false;
     return result;
+  }
+
+  Future<String?> _uploadImageIfRequired() async {
+    if (image.value == null) return null;
+    return await _storageRepository.upload(image.value!);
   }
 }

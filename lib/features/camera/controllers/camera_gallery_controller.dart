@@ -11,15 +11,15 @@ class CameraGalleryController extends GetxController {
   File? image;
 
   final _imageService = CameraService();
-  AssetPathEntity? _path;
+  // AssetPathEntity? _path;
   final galleryImages = <File>[].obs;
-  final int _sizePerPage = 16;
+  // final int _sizePerPage = 16;
 
-  final FilterOptionGroup _filterOptionGroup = FilterOptionGroup(
-    imageOption: const FilterOption(
-      sizeConstraint: SizeConstraint(ignoreSize: true),
-    ),
-  );
+  // final FilterOptionGroup _filterOptionGroup = FilterOptionGroup(
+  //   imageOption: const FilterOption(
+  //     sizeConstraint: SizeConstraint(ignoreSize: true),
+  //   ),
+  // );
 
   final loading = false.obs;
 

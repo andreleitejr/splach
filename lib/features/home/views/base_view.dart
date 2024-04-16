@@ -135,7 +135,7 @@ class _BaseViewState extends State<BaseView> {
   BottomNavigationBarItem _buildNavBarItemWithAvatar() {
     return BottomNavigationBarItem(
       icon: AvatarImage(
-        image: controller.user.image,
+        image: controller.user.image!,
       ),
       activeIcon: Container(
         margin: const EdgeInsets.only(top: 8),

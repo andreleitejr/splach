@@ -24,9 +24,7 @@ class AvatarImage extends StatelessWidget {
         shape: BoxShape.circle,
         color: ThemeColors.grey3,
         image: DecorationImage(
-          image: MemoryImage(
-            base64Decode(image),
-          ),
+          image: NetworkImage(image),
         ),
         border: Border.all(
           color: Colors.white,

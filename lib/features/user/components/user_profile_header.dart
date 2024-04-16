@@ -22,31 +22,30 @@ class UserProfileHeader extends StatelessWidget {
         children: [
           Column(
             children: [
-              GestureDetector(
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return ImageViewer(
-                        images: [user.image],
-                      );
-                    },
-                  );
-                },
-                child: Container(
-                  height: 64,
-                  width: 64,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                      image: MemoryImage(
-                        base64Decode(user.image),
+              if (user.image != null)
+                GestureDetector(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return ImageViewer(
+                          images: [user.image!],
+                        );
+                      },
+                    );
+                  },
+                  child: Container(
+                    height: 64,
+                    width: 64,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        image: NetworkImage(user.image!),
+                        fit: BoxFit.cover,
                       ),
-                      fit: BoxFit.cover,
                     ),
                   ),
                 ),
-              ),
               if (user.rating != null)
                 Row(
                   children: [

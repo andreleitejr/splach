@@ -56,6 +56,8 @@ dependencies:
   cloud_functions: ^4.6.0
   firebase_storage: ^11.6.0
   uuid: ^4.2.2
+  geocoding: ^3.0.0
+  internet_connection_checker: ^1.0.0+1
 
 dev_dependencies:
   flutter_test:
