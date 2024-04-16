@@ -8,10 +8,10 @@ class TermsAndConditions extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Termos e Condições'),
+        title: const Text('Termos e Condições'),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -37,7 +37,7 @@ class TermsAndConditions extends StatelessWidget {
             RichText(
               text: TextSpan(
                 text: '3. Reservas e Pagamentos\n',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
                 children: [
                   textSpan(
                     text:
@@ -61,7 +61,7 @@ class TermsAndConditions extends StatelessWidget {
             RichText(
               text: TextSpan(
                 text: '4. Responsabilidades do Locador\n',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
                 children: [
                   textSpan(
                     text:
@@ -85,7 +85,7 @@ class TermsAndConditions extends StatelessWidget {
             RichText(
               text: TextSpan(
                 text: '5. Responsabilidades do Locatário\n',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
                 children: [
                   textSpan(
                     text:
@@ -109,7 +109,7 @@ class TermsAndConditions extends StatelessWidget {
             RichText(
               text: TextSpan(
                 text: '6. Conflitos e Resolução\n',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
                 children: [
                   textSpan(
                     text:
@@ -125,7 +125,7 @@ class TermsAndConditions extends StatelessWidget {
             RichText(
               text: TextSpan(
                 text: '7. Segurança e Privacidade\n',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
                 children: [
                   textSpan(
                     text:
@@ -145,7 +145,7 @@ class TermsAndConditions extends StatelessWidget {
             RichText(
               text: TextSpan(
                 text: '8. Reembolso\n',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
                 children: [
                   textSpan(
                     text:
@@ -161,7 +161,7 @@ class TermsAndConditions extends StatelessWidget {
             RichText(
               text: TextSpan(
                 text: '9. Taxa de Reserva\n',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
                 children: [
                   textSpan(
                     text:
@@ -173,7 +173,7 @@ class TermsAndConditions extends StatelessWidget {
             RichText(
               text: TextSpan(
                 text: '10. Limitação de Responsabilidade\n',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
                 children: [
                   textSpan(
                     text:
@@ -189,7 +189,7 @@ class TermsAndConditions extends StatelessWidget {
             RichText(
               text: TextSpan(
                 text: '11. Alterações nos Termos e Condições\n',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
                 children: [
                   textSpan(
                     text:

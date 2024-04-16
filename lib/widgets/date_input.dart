@@ -30,6 +30,7 @@ Future<DateTime?> selectDateTime(BuildContext context,
     },
   );
   if (pickedDateTime != null && showTime) {
+    // ignore: use_build_context_synchronously
     final TimeOfDay? pickedTime = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.fromDateTime(currentDate),
@@ -90,6 +91,7 @@ class DateInput extends StatelessWidget {
       controller.text = date!.toMonthlyAndYearFormattedString();
     }
 
+    final focus = FocusScope.of(context);
     return InputButton(
       controller: controller,
       enabled: enabled,
@@ -104,7 +106,7 @@ class DateInput extends StatelessWidget {
 
         if (date != null) onDateSelected(date);
 
-        FocusScope.of(context).requestFocus(FocusNode());
+        focus.requestFocus(FocusNode());
       },
     );
   }

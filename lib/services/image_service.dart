@@ -1,7 +1,6 @@
-import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:camera/camera.dart';
+import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -33,7 +32,7 @@ class CameraService {
       await _controller.initialize();
       _isInitialized = true;
     } catch (e) {
-      print("Erro ao inicializar a câmera: $e");
+      debugPrint("Erro ao inicializar a câmera: $e");
     }
   }
 
@@ -54,7 +53,7 @@ class CameraService {
 
       return File(picture.path);
     } catch (e) {
-      print("Erro ao capturar a imagem: $e");
+      debugPrint("Erro ao capturar a imagem: $e");
       return null;
     }
   }
@@ -72,7 +71,7 @@ class CameraService {
 
       return File(pickedFile.path);
     } catch (e) {
-      print("Erro ao selecionar a imagem da galeria: $e");
+      debugPrint("Erro ao selecionar a imagem da galeria: $e");
       return null;
     }
   }
@@ -81,7 +80,7 @@ class CameraService {
     final status = await Permission.photos.request();
 
     if (status.isDenied) {
-      print('Permission is not accessible. $status');
+      debugPrint('Permission is not accessible. $status');
       return null;
     }
 
@@ -110,15 +109,6 @@ class CameraService {
     return files;
   }
 
-  // Future<List<String>> filesToBase64(List<File> files) async {
-  //   List<String> base64Images = [];
-  //   for (var file in files) {
-  //     final bytes = await file.readAsBytes();
-  //     final String base64Image = base64Encode(Uint8List.fromList(bytes));
-  //     base64Images.add(base64Image);
-  //   }
-  //   return base64Images;
-  // }
   CameraController getController() {
     return _controller;
   }

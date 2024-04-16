@@ -1,10 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:splach/features/chat/models/participant.dart';
-import 'package:splach/features/user/models/user.dart';
-import 'package:splach/features/user/views/user_profile_view.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/utils/extensions.dart';

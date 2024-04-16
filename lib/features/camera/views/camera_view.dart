@@ -1,12 +1,9 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:splach/features/camera/controllers/camera_gallery_controller.dart';
-import 'package:splach/features/chat/components/chat_image_input.dart';
-import 'package:splach/features/chat/controllers/chat_controller.dart';
 
 class CameraGalleryView extends StatefulWidget {
   final File? image;

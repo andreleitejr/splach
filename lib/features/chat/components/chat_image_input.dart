@@ -1,12 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:splach/features/chat/components/chat_input.dart';
 import 'package:splach/features/chat/controllers/chat_controller.dart';
-import 'package:splach/repositories/firestore_repository.dart';
-import 'package:splach/themes/theme_colors.dart';
-import 'package:splach/themes/theme_typography.dart';
 
 class ChatImageInput extends StatelessWidget {
   final ChatController controller;

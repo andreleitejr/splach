@@ -1,13 +1,11 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:splach/features/auth/controllers/auth_controller.dart';
 import 'package:splach/features/auth/controllers/login_controller.dart';
 import 'package:splach/features/legal/terms_and_conditions.dart';
 import 'package:splach/features/user/views/user_edit_view.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
-import 'package:splach/widgets/code_widget.dart';
 import 'package:splach/widgets/flat_button.dart';
 import 'package:splach/widgets/phone_input.dart';
 
@@ -80,14 +78,10 @@ class _LoginViewState extends State<LoginView> implements LoginNavigator {
                     if (controller.isLoginValid.isTrue) {
                       await controller.sendVerificationCode();
                     } else {
-                      // snackBar(
-                      //   'Erro de autenticação',
-                      //   controller.inputError,
-                      //   icon: Coolicon(
-                      //     icon: Coolicons.squareWarning,
-                      //     color: Colors.white,
-                      //   ),
-                      // );
+                      Get.snackbar(
+                        'Erro de autenticação',
+                        controller.inputError,
+                      );
                     }
                   },
                   isValid: controller.isLoginValid.value,

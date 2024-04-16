@@ -8,6 +8,7 @@ import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/utils/extensions.dart';
 import 'package:splach/widgets/avatar_image.dart';
+import 'package:splach/widgets/highlight_mention.dart';
 import 'package:splach/widgets/highlight_text.dart';
 
 class ChatSenderMessage extends StatelessWidget {
@@ -207,7 +208,7 @@ class ChatSenderMessage extends StatelessWidget {
                         style: ThemeTypography.regular14.apply(
                           color: Colors.black,
                         ),
-                        children: highlightMentions(
+                        children: highlightMention(
                           message.content!,
                         ),
                       ),

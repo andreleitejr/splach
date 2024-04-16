@@ -19,24 +19,12 @@ class TopNavigationBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final showLeadingButton = showLeading || onLeadingPressed != null;
+
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
-      leading: showLeading || onLeadingPressed != null
-          ? IconButton(
-              onPressed: () {
-                if (onLeadingPressed != null) {
-                  onLeadingPressed!();
-                } else {
-                  Get.back();
-                }
-              },
-              icon: const Icon(
-                Icons.arrow_back,
-                color: ThemeColors.grey5,
-              ),
-            )
-          : null,
+      leading: showLeadingButton ? _leadingButton() : null,
       title: Text(
         title,
         style: ThemeTypography.medium16.apply(
@@ -45,6 +33,22 @@ class TopNavigationBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       centerTitle: true,
       actions: actions,
+    );
+  }
+
+  Widget _leadingButton() {
+    return IconButton(
+      onPressed: () {
+        if (onLeadingPressed != null) {
+          onLeadingPressed!();
+        } else {
+          Get.back();
+        }
+      },
+      icon: const Icon(
+        Icons.arrow_back,
+        color: ThemeColors.grey5,
+      ),
     );
   }
 

@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:geocoding/geocoding.dart';
+// ignore: depend_on_referenced_packages
 import 'package:http/http.dart';
 import 'package:splach/features/address/models/address.dart';
 
@@ -28,7 +30,7 @@ class AddressService {
         return GeoPoint(location.latitude, location.longitude);
       }
     } catch (e) {
-      print('Erro na obtenção de coordenadas a partir do endereço: $e');
+      debugPrint('Erro na obtenção de coordenadas a partir do endereço: $e');
     }
     return null;
   }

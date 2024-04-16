@@ -6,13 +6,12 @@ import 'package:splach/themes/theme_typography.dart';
 class PinInput extends StatelessWidget {
   final TextEditingController controller;
   final FocusNode focusNode;
-  // final Function(String) onChanged;
   final Function(String) onSubmit;
 
-  PinInput({
+  const PinInput({
+    super.key,
     required this.controller,
     required this.focusNode,
-    // required this.onChanged,
     required this.onSubmit,
   });
 
@@ -22,8 +21,9 @@ class PinInput extends StatelessWidget {
       pinLength: 6,
       keyboardType: TextInputType.number,
       decoration: BoxLooseDecoration(
-
-        textStyle: ThemeTypography.medium22.apply(color: ThemeColors.primary),
+        textStyle: ThemeTypography.medium22.apply(
+          color: ThemeColors.primary,
+        ),
         strokeColorBuilder: PinListenColorBuilder(
           ThemeColors.grey2,
           Colors.grey,

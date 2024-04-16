@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -26,9 +25,7 @@ class ChatImage extends StatelessWidget {
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              return ImageViewer(
-                images: [image!],
-              );
+              return ImageViewer(images: [image!]);
             },
           );
         }
@@ -45,7 +42,9 @@ class ChatImage extends StatelessWidget {
                   fit: BoxFit.cover,
                 )
               : DecorationImage(
-                  image: FileImage(temporaryImage!),
+                  image: FileImage(
+                    temporaryImage!,
+                  ),
                   fit: BoxFit.cover,
                 ),
           borderRadius: BorderRadius.circular(8),

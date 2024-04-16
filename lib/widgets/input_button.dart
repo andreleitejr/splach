@@ -14,9 +14,7 @@ class InputButton extends StatelessWidget {
   final int maxLines;
   final bool enabled;
 
-  // final Function(String) onChanged;
-
-  InputButton({
+  const InputButton({
     super.key,
     required this.controller,
     this.keyboardType = TextInputType.text,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:splach/features/chat/components/chat_image_input.dart';
 import 'package:splach/features/chat/components/chat_input.dart';
 import 'package:splach/features/chat/components/chat_message_list.dart';
 import 'package:splach/features/chat/components/chat_participants_list.dart';

@@ -3,23 +3,13 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:photo_manager/photo_manager.dart';
 import 'package:splach/services/image_service.dart';
 
 class CameraGalleryController extends GetxController {
   File? image;
 
   final _imageService = CameraService();
-  // AssetPathEntity? _path;
   final galleryImages = <File>[].obs;
-  // final int _sizePerPage = 16;
-
-  // final FilterOptionGroup _filterOptionGroup = FilterOptionGroup(
-  //   imageOption: const FilterOption(
-  //     sizeConstraint: SizeConstraint(ignoreSize: true),
-  //   ),
-  // );
 
   final loading = false.obs;
 
@@ -45,8 +35,6 @@ class CameraGalleryController extends GetxController {
     if (file != null) {
       image = file;
     }
-
-    // _imageService.dispose();
   }
 
   Future<void> _initCamera(CameraDescription description) async {
@@ -77,7 +65,9 @@ class CameraGalleryController extends GetxController {
 
   Future<void> toggleCameraLens() async {
     final lensDirection = cameraController.value!.description.lensDirection;
+
     CameraDescription newDescription;
+
     if (lensDirection == CameraLensDirection.front) {
       newDescription = cameras.firstWhere((description) =>
           description.lensDirection == CameraLensDirection.back);

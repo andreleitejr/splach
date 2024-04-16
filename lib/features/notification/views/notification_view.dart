@@ -5,7 +5,6 @@ import 'package:splach/features/notification/models/notification.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/features/user/repositories/user_repository.dart';
 import 'package:splach/features/user/views/user_profile_view.dart';
-import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/utils/extensions.dart';
 import 'package:splach/widgets/avatar_image.dart';
 import 'package:splach/widgets/highlight_text.dart';

@@ -4,11 +4,13 @@ import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/widgets/top_navigation_bar.dart';
 
 class LanguageSelection extends StatelessWidget {
+  const LanguageSelection({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: TopNavigationBar(
-        title: 'Selecione um idioma',
+      appBar: const TopNavigationBar(
+        title: 'Select your language',
       ),
       body: _buildLanguageOptions(),
     );

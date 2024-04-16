@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:splach/features/chat/components/chat_image_input.dart';
 import 'package:splach/features/chat/components/chat_user_message.dart';
 import 'package:splach/features/chat/controllers/chat_controller.dart';
 import 'package:splach/features/chat/models/message.dart';

@@ -12,7 +12,6 @@ import 'package:splach/widgets/avatar_image_input.dart';
 import 'package:splach/widgets/custom_bottom_sheet.dart';
 import 'package:splach/widgets/date_input.dart';
 import 'package:splach/widgets/flat_button.dart';
-import 'package:splach/widgets/image_picker_bottom_sheet.dart';
 import 'package:splach/widgets/input.dart';
 import 'package:splach/widgets/input_button.dart';
 import 'package:splach/widgets/text_area.dart';

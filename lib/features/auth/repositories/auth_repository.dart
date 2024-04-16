@@ -1,17 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/cupertino.dart';
-import 'package:get/get.dart';
-
-// import 'package:google_sign_in/google_sign_in.dart';
-// import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-//
-// enum AuthStatus {
-//   authenticated,
-//   unauthenticated,
-//   verifying,
-//   unregistered,
-//   failed,
-// }
 
 class AuthRepository {
   AuthRepository();
@@ -48,13 +36,13 @@ class AuthRepository {
           _verificationId = verificationId;
 
           debugPrint(
-              "Auth Repository | Send Verification Code | Code sent: ${verificationId}");
+              "Auth Repository | Send Verification Code | Code sent: $verificationId");
         },
         codeAutoRetrievalTimeout: (String verificationId) {
           _verificationId = verificationId;
 
           debugPrint(
-              "Auth Repository | Auto Retrieval TimeOut Code | Code sent: ${verificationId}");
+              "Auth Repository | Auto Retrieval TimeOut Code | Code sent: $verificationId");
         },
         timeout: const Duration(seconds: 60),
       );

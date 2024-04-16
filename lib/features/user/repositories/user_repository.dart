@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/repositories/firestore_repository.dart';
 

@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:splach/features/auth/repositories/auth_repository.dart';
 import 'package:splach/features/auth/views/auth_view.dart';
 import 'package:splach/features/user/repositories/user_repository.dart';
-import 'package:splach/utils/extensions.dart';
 
 class AuthController extends GetxController {
   AuthController(this.navigator);
@@ -25,7 +24,6 @@ class AuthController extends GetxController {
     loading(true);
 
     _authRepository.getCurrentUser();
-
 
     await checkCurrentUser();
 

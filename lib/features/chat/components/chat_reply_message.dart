@@ -3,6 +3,7 @@ import 'package:splach/features/chat/models/message.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/widgets/avatar_image.dart';
+import 'package:splach/widgets/highlight_mention.dart';
 import 'package:splach/widgets/highlight_text.dart';
 
 import 'chat_image.dart';
@@ -145,7 +146,7 @@ class ChatReplyMessage extends StatelessWidget {
           style: ThemeTypography.regular14.apply(
             color: Colors.black,
           ),
-          children: highlightMentions(
+          children: highlightMention(
             replyMessage.content!,
           ),
         ),

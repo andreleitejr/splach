@@ -1,11 +1,9 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_images.dart';
 import 'package:splach/themes/theme_typography.dart';
-import 'package:splach/widgets/input.dart';
 
 class AvatarImageInput extends StatelessWidget {
   final File? image;

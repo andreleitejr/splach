@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:splach/features/auth/views/auth_view.dart';
 import 'package:splach/features/home/views/base_view.dart';
-import 'package:splach/features/home/views/home_view.dart';
 import 'package:splach/themes/theme_colors.dart';
 
 class App extends StatelessWidget {
@@ -17,8 +16,6 @@ class App extends StatelessWidget {
     return GetMaterialApp(
       title: 'Splach',
       theme: ThemeData(
-        // primaryColor: ThemeColors.primary,
-        // primarySwatch: ThemeColors.primary,
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
             foregroundColor: ThemeColors.primary,
@@ -26,7 +23,7 @@ class App extends StatelessWidget {
         ),
       ),
       initialRoute: '/auth',
-      getPages:  [
+      getPages: [
         GetPage(
           name: '/auth',
           page: () => const AuthView(),

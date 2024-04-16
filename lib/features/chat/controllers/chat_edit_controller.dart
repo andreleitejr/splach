@@ -6,7 +6,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:splach/features/address/controllers/address_edit_controller.dart';
-import 'package:splach/features/address/models/address.dart';
 import 'package:splach/features/chat/models/group_chat.dart';
 import 'package:splach/features/chat/repositories/chat_repository.dart';
 import 'package:splach/features/chat/repositories/chat_storage_repository.dart';

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:splach/features/chat/controllers/chat_controller.dart';
 import 'package:splach/features/chat/models/participant.dart';
-import 'package:splach/features/user/models/user.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/utils/extensions.dart';

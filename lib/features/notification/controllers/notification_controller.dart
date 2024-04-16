@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:splach/features/chat/models/message.dart';
 import 'package:splach/features/notification/models/notification.dart';

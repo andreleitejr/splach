@@ -23,7 +23,7 @@ class BaseView extends StatefulWidget {
   const BaseView({super.key, this.selectedIndex = 0});
 
   @override
-  _BaseViewState createState() => _BaseViewState();
+  State<BaseView> createState() => _BaseViewState();
 }
 
 class _BaseViewState extends State<BaseView> {
@@ -95,7 +95,7 @@ class _BaseViewState extends State<BaseView> {
 
   BottomNavigationBarItem _buildNavBarItemWithBadge(String label) {
     return BottomNavigationBarItem(
-      icon:  badges.Badge(
+      icon: badges.Badge(
         showBadge: controller.notificationController.notifications.isNotEmpty,
         position: badges.BadgePosition.topEnd(
           top: -5,

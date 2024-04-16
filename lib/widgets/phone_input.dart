@@ -7,31 +7,22 @@ import 'package:splach/themes/theme_typography.dart';
 
 class PhoneInput extends StatelessWidget {
   final TextEditingController controller;
-
-  // final String value;
   final String? error;
   final bool required;
   final VoidCallback? onSubmit;
-
-  // final Function(String) onChanged;
   final FocusNode? focus;
 
-  PhoneInput({
+  const PhoneInput({
+    super.key,
     required this.controller,
-    // required this.value,
     this.error,
     this.required = false,
     this.onSubmit,
-    // required this.onChanged,
     this.focus,
   });
 
-  // final controller = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
-    // controller.text = value;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -40,17 +31,19 @@ class PhoneInput extends StatelessWidget {
           keyboardType: TextInputType.phone,
           focusNode: focus,
           onEditingComplete: onSubmit,
-          style: ThemeTypography.medium14.apply(color: ThemeColors.primary),
+          style: ThemeTypography.medium14.apply(
+            color: ThemeColors.primary,
+          ),
           inputFormatters: [
-            // obrigatório
             FilteringTextInputFormatter.digitsOnly,
             TelefoneInputFormatter(),
           ],
           decoration: InputDecoration(
             contentPadding: EdgeInsets.zero,
             hintText: '(11) 99000-0000',
-            hintStyle:
-                ThemeTypography.regular14.apply(color: ThemeColors.grey5),
+            hintStyle: ThemeTypography.regular14.apply(
+              color: ThemeColors.grey5,
+            ),
             prefixIcon: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -64,7 +57,7 @@ class PhoneInput extends StatelessWidget {
                 const SizedBox(
                   width: 8,
                 ),
-                Icon(
+                const Icon(
                   Icons.keyboard_arrow_down,
                   color: Colors.black26,
                 ),
@@ -72,14 +65,14 @@ class PhoneInput extends StatelessWidget {
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(
+              borderSide: const BorderSide(
                 color: ThemeColors.grey2,
                 width: 1,
               ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(
+              borderSide: const BorderSide(
                 color: ThemeColors.grey2,
                 width: 1,
               ),
@@ -92,7 +85,7 @@ class PhoneInput extends StatelessWidget {
         if (error != null && error!.isNotEmpty) ...[
           Text(
             error!,
-            style: TextStyle(color: Colors.red),
+            style: const TextStyle(color: Colors.red),
           ),
         ],
       ],

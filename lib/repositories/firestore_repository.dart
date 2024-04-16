@@ -22,7 +22,7 @@ class FirestoreRepository<T extends BaseModel> {
       await firestore.collection(collectionName).doc(docId).set(data.toMap());
       return SaveResult.success;
     } catch (error) {
-      print('Error saving data to Firestore: $error');
+      debugPrint('Error saving data to Firestore: $error');
       return SaveResult.failed;
     }
   }
@@ -99,8 +99,7 @@ class FirestoreRepository<T extends BaseModel> {
 
       return SaveResult.success;
     } catch (error) {
-      print('Error updating document in Firestore: $error');
-      // Tratar o erro de maneira adequada
+      debugPrint('Error updating document in Firestore: $error');
 
       return SaveResult.failed;
     }
@@ -110,8 +109,7 @@ class FirestoreRepository<T extends BaseModel> {
     try {
       await firestore.collection(collectionName).doc(documentId).delete();
     } catch (error) {
-      print('Error deleting document from Firestore: $error');
-      // Tratar o erro de maneira adequada
+      debugPrint('Error deleting document from Firestore: $error');
     }
   }
 
@@ -125,7 +123,7 @@ class FirestoreRepository<T extends BaseModel> {
 
       return stream;
     } catch (error) {
-      print('Error streaming data from $collectionName in Firestore: $error');
+      debugPrint('Error streaming data from $collectionName in Firestore: $error');
       return Stream.error(error);
     }
   }
@@ -148,7 +146,7 @@ class FirestoreRepository<T extends BaseModel> {
 
       return stream;
     } catch (error) {
-      print('Error streaming data from $collectionName in Firestore: $error');
+      debugPrint('Error streaming data from $collectionName in Firestore: $error');
       return Stream.value([]);
     }
   }

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:splach/features/chat/components/chat_image.dart';
 import 'package:splach/features/chat/models/message.dart';
@@ -7,6 +5,7 @@ import 'package:splach/features/chat/widgets/private_message_sign.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/utils/extensions.dart';
+import 'package:splach/widgets/highlight_mention.dart';
 import 'package:splach/widgets/highlight_text.dart';
 
 class ChatUserMessage extends StatelessWidget {
@@ -151,7 +150,7 @@ class ChatUserMessage extends StatelessWidget {
                           style: ThemeTypography.regular14.apply(
                             color: Colors.white,
                           ),
-                          children: highlightMentions(
+                          children: highlightMention(
                             message.content!,
                             isFromUser: true,
                           ),

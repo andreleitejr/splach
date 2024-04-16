@@ -11,7 +11,7 @@ class CodeWidget extends StatelessWidget {
   // final Function(String) onChanged;
   final FocusNode focusNode;
 
-  CodeWidget({
+  const CodeWidget({
     super.key,
     required this.controller,
     required this.onSubmit,

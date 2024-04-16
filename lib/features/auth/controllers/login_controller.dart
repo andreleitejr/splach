@@ -33,11 +33,9 @@ class LoginController extends GetxController {
     super.onInit();
 
     phoneController.addListener(() {
-      print('My phone number is changing...');
       isLoginValid.value = isPhoneValid && termsAndConditions.isTrue;
     });
     smsController.addListener(() {
-      print('My phone number is changing...');
       isValid.value = isPhoneValid && termsAndConditions.isTrue && isSmsValid;
     });
     ever(
@@ -55,7 +53,7 @@ class LoginController extends GetxController {
       navigator.verification();
       startCountdown();
     } catch (e) {
-      debugPrint('Verification code: $error');
+      debugPrint('Sending verification code: $error');
       error(e.toString());
     }
   }
@@ -71,7 +69,6 @@ class LoginController extends GetxController {
         await _checkUserInDatabase(_authRepository.authUser!.uid);
       } else {
         loading.value = false;
-        print('Auth SMS Code failed');
       }
     } catch (e) {
       error(e.toString());

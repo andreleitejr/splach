@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:splach/features/address/models/address.dart';
-import 'package:splach/features/relationship/models/relationship.dart';
 import 'package:splach/models/base_model.dart';
 
 class User extends BaseModel {

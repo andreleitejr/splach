@@ -10,7 +10,7 @@ import 'package:splach/features/chat/models/participant.dart';
 import 'package:splach/repositories/firestore_repository.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
-import 'package:splach/widgets/highlight_text.dart';
+import 'package:splach/widgets/highlight_mention.dart';
 
 class ChatInput extends StatefulWidget {
   final ChatController controller;
@@ -225,14 +225,15 @@ class _ChatInputState extends State<ChatInput> {
                         ],
                       ),
                       disconnected: _buildInputButton(
-                          icon: Icons.send_outlined,
-                          color: ThemeColors.grey2,
-                          onPressed: () {
-                            Get.snackbar(
-                              'You are offline',
-                              'Connect to internet and try again',
-                            );
-                          }),
+                        icon: Icons.send_outlined,
+                        color: ThemeColors.grey2,
+                        onPressed: () {
+                          Get.snackbar(
+                            'You are offline',
+                            'Connect to internet and try again',
+                          );
+                        },
+                      ),
                     ),
                   ),
                   enabledBorder: OutlineInputBorder(
@@ -338,7 +339,7 @@ class MentionHighlightingController extends TextEditingController {
       TextStyle? style,
       required bool withComposing}) {
     final text = value.text;
-    final spans = highlightMentions(text);
+    final spans = highlightMention(text);
 
     return TextSpan(
       style: style,
