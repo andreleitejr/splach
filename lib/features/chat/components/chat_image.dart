@@ -19,24 +19,16 @@ class ChatImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final showImage = image != null && image!.isNotEmpty;
     return GestureDetector(
-      onTap: () {
-        if (image != null) {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return ImageViewer(images: [image!]);
-            },
-          );
-        }
-      },
+      onTap: () => _showImageViewer(context),
       child: Container(
         constraints: BoxConstraints(
           maxHeight: maxHeight,
           maxWidth: maxWidth,
         ),
         decoration: BoxDecoration(
-          image: image != null && image!.isNotEmpty
+          image: showImage
               ? DecorationImage(
                   image: NetworkImage(image!),
                   fit: BoxFit.cover,
@@ -51,5 +43,18 @@ class ChatImage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _showImageViewer(BuildContext context) {
+    if (image != null) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return ImageViewer(
+            images: [image!],
+          );
+        },
+      );
+    }
   }
 }

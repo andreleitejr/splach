@@ -21,26 +21,7 @@ class ChatImageInput extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Obx(
-              () {
-                if (controller.image.value == null) {
-                  return Container();
-                }
-                return Expanded(
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: FileImage(
-                          controller.image.value!,
-                        ),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
+            _imagePreview(context),
             ChatInput(
               controller: controller,
               focus: FocusNode(),
@@ -49,6 +30,29 @@ class ChatImageInput extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _imagePreview(BuildContext context) {
+    return Obx(
+      () {
+        if (controller.image.value == null) {
+          return Container();
+        }
+        return Expanded(
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: FileImage(
+                  controller.image.value!,
+                ),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
