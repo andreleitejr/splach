@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:splach/controllers/mention_highlight_controller.dart';
 import 'package:splach/features/camera/views/camera_view.dart';
 import 'package:splach/features/chat/components/chat_image_input.dart';
 import 'package:splach/features/chat/components/chat_participant_mention_list.dart';
@@ -10,7 +11,7 @@ import 'package:splach/features/chat/models/participant.dart';
 import 'package:splach/repositories/firestore_repository.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
-import 'package:splach/widgets/highlight_mention.dart';
+import 'package:splach/widgets/connection_status.dart';
 
 class ChatInput extends StatefulWidget {
   final ChatController controller;
@@ -87,12 +88,14 @@ class _ChatInputState extends State<ChatInput> {
     final hasOtherContent = controller.replyMessage.value != null ||
         controller.isShowingMentionList.isTrue;
 
+    final borderRadius = (hasOtherContent ? 16 : 0).toDouble();
+
     return Container(
       decoration: BoxDecoration(
         color: widget.isImageInput ? Colors.black : Colors.white,
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(hasOtherContent ? 16 : 0),
-          topRight: Radius.circular(hasOtherContent ? 16 : 0),
+          topLeft: Radius.circular(borderRadius),
+          topRight: Radius.circular(borderRadius),
         ),
         boxShadow: [
           BoxShadow(
@@ -275,7 +278,9 @@ class _ChatInputState extends State<ChatInput> {
 
   Future<void> _sendMessage() async {
     final controller = widget.controller;
-    controller.sendTemporaryMessage(content: messageController.text);
+    controller.sendTemporaryMessage(
+      content: messageController.text,
+    );
 
     final content = messageController.text;
     messageController.clear();
@@ -317,73 +322,6 @@ class _ChatInputState extends State<ChatInput> {
           color: Colors.white,
         ),
       ),
-    );
-  }
-}
-
-class MentionHighlightingController extends TextEditingController {
-  MentionHighlightingController({String? text}) : super(text: text);
-
-  @override
-  set text(String newText) {
-    value = TextEditingValue(
-      text: newText,
-      selection: selection,
-      composing: TextRange.empty,
-    );
-  }
-
-  @override
-  TextSpan buildTextSpan(
-      {required BuildContext context,
-      TextStyle? style,
-      required bool withComposing}) {
-    final text = value.text;
-    final spans = highlightMention(text);
-
-    return TextSpan(
-      style: style,
-      children: spans,
-    );
-  }
-}
-
-class ConnectionStatus extends StatelessWidget {
-  ConnectionStatus({
-    super.key,
-    required this.connected,
-    required this.disconnected,
-  });
-
-  final Widget connected;
-  final Widget disconnected;
-
-  final _connectionChecker = InternetConnectionChecker();
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<InternetConnectionStatus>(
-      future: _connectionChecker.connectionStatus,
-      builder: (_, snapshot) {
-        if (!snapshot.hasData) {
-          return Container();
-        }
-        return StreamBuilder<InternetConnectionStatus>(
-          initialData: snapshot.data,
-          stream: _connectionChecker.onStatusChange,
-          builder: (_, snapshot) {
-            if (!snapshot.hasData) {
-              return Container();
-            }
-            final con = snapshot.data == InternetConnectionStatus.connected;
-            if (con) {
-              return connected;
-            } else {
-              return disconnected;
-            }
-          },
-        );
-      },
     );
   }
 }

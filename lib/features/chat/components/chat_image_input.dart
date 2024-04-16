@@ -6,7 +6,10 @@ import 'package:splach/features/chat/controllers/chat_controller.dart';
 class ChatImageInput extends StatelessWidget {
   final ChatController controller;
 
-  ChatImageInput({super.key, required this.controller});
+  ChatImageInput({
+    super.key,
+    required this.controller,
+  });
 
   final messageController = TextEditingController();
 
@@ -28,7 +31,9 @@ class ChatImageInput extends StatelessWidget {
                     width: MediaQuery.of(context).size.width,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: FileImage(controller.image.value!),
+                        image: FileImage(
+                          controller.image.value!,
+                        ),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -36,13 +41,11 @@ class ChatImageInput extends StatelessWidget {
                 );
               },
             ),
-            // const SizedBox(height: 16),
             ChatInput(
               controller: controller,
               focus: FocusNode(),
               isImageInput: true,
             ),
-            // const SizedBox(height: 16),
           ],
         ),
       ),

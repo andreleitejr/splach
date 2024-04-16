@@ -85,6 +85,12 @@ class ChatEditView extends StatelessWidget {
               controller: controller.addressController.complementController,
               hintText: 'Complemento',
             ),
+            Obx(
+              () => Text(
+                '${controller.addressController.coordinates.value?.latitude},'
+                ' ${controller.addressController.coordinates.value?.longitude}',
+              ),
+            ),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {

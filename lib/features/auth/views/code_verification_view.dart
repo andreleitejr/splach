@@ -16,6 +16,12 @@ class CodeVerificationView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _pinFocus.requestFocus();
+
+    final countdownText = controller.isCountdownFinished.isTrue
+        ? 'Resend code '
+            '(${controller.minutes.value.toString().padLeft(2, '0')}'
+            ':${controller.seconds.value.toString().padLeft(2, '0')})'
+        : '';
     return Scaffold(
       body: Center(
         child: Padding(
@@ -23,7 +29,6 @@ class CodeVerificationView extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              // const Expanded(child: Center()),
               CodeWidget(
                 controller: controller.smsController,
                 onSubmit: () => controller.verifySmsCode(),
@@ -35,8 +40,8 @@ class CodeVerificationView extends StatelessWidget {
                 () {
                   return FlatButton(
                     actionText: controller.loading.isTrue
-                        ? 'Verificando os dados...'
-                        : 'Verificar código',
+                        ? 'Verifying your data...'
+                        : 'Verify code',
                     onPressed: () async {
                       await controller.verifySmsCode();
 
@@ -49,33 +54,31 @@ class CodeVerificationView extends StatelessWidget {
                   );
                 },
               ),
-              Obx(() => Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      const SizedBox(height: 8),
-                      TextButton(
-                        onPressed: () async {
-                          if (controller.isCountdownFinished.isTrue) {
-                            await controller.sendVerificationCode();
-                          }
-                        },
-                        child: Text(
-                          controller.isCountdownFinished.isTrue
-                              ? 'Reenviar código '
-                                  '(${controller.minutes.value.toString().padLeft(2, '0')}'
-                                  ':${controller.seconds.value.toString().padLeft(2, '0')})'
-                              : '',
-                          style: controller.isCountdownFinished.isTrue
-                              ? ThemeTypography.semiBold14.apply(
-                                  color: ThemeColors.primary,
-                                )
-                              : ThemeTypography.regular14.apply(
-                                  color: ThemeColors.grey5,
-                                ),
-                        ),
+              Obx(
+                () => Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    const SizedBox(height: 8),
+                    TextButton(
+                      onPressed: () async {
+                        if (controller.isCountdownFinished.isTrue) {
+                          await controller.sendVerificationCode();
+                        }
+                      },
+                      child: Text(
+                        countdownText,
+                        style: controller.isCountdownFinished.isTrue
+                            ? ThemeTypography.semiBold14.apply(
+                                color: ThemeColors.primary,
+                              )
+                            : ThemeTypography.regular14.apply(
+                                color: ThemeColors.grey5,
+                              ),
                       ),
-                    ],
-                  )),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),

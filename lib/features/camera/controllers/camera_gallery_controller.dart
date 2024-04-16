@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,10 +10,10 @@ class CameraGalleryController extends GetxController {
   final _imageService = CameraService();
   final galleryImages = <File>[].obs;
 
-  final loading = false.obs;
-
   final cameraController = Rx<CameraController?>(null);
   var cameras = <CameraDescription>[];
+
+  final loading = false.obs;
 
   @override
   Future<void> onInit() async {
@@ -64,17 +63,17 @@ class CameraGalleryController extends GetxController {
   }
 
   Future<void> toggleCameraLens() async {
-    final lensDirection = cameraController.value!.description.lensDirection;
+    final currentLensDirection =
+        cameraController.value!.description.lensDirection;
 
-    CameraDescription newDescription;
+    final newLensDirection = currentLensDirection == CameraLensDirection.front
+        ? CameraLensDirection.back
+        : CameraLensDirection.front;
 
-    if (lensDirection == CameraLensDirection.front) {
-      newDescription = cameras.firstWhere((description) =>
-          description.lensDirection == CameraLensDirection.back);
-    } else {
-      newDescription = cameras.firstWhere((description) =>
-          description.lensDirection == CameraLensDirection.front);
-    }
+    final newDescription = cameras.firstWhere(
+      (description) => description.lensDirection == newLensDirection,
+      orElse: () => cameras.first,
+    );
 
     await _initCamera(newDescription);
   }

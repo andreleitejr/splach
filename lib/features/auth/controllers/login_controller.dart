@@ -23,10 +23,12 @@ class LoginController extends GetxController {
   final seconds = 0.obs;
   final isCountdownFinished = false.obs;
 
-  final loading = false.obs;
-
   final isLoginValid = false.obs;
+  final isValid = false.obs;
+
   final error = ''.obs;
+
+  final loading = false.obs;
 
   @override
   void onInit() {
@@ -44,11 +46,22 @@ class LoginController extends GetxController {
     );
   }
 
+  bool get isPhoneValid {
+    final cleanPhone = phoneController.text.clean;
+
+    return cleanPhone.length == 11;
+  }
+
+  bool get isSmsValid =>
+      smsController.text.isNotEmpty && smsController.text.length == 6;
+
   Future<void> sendVerificationCode() async {
     try {
       final phoneNumber = '+55${phoneController.text}';
 
-      await _authRepository.sendVerificationCode(phoneNumber);
+      await _authRepository.sendVerificationCode(
+        phoneNumber,
+      );
 
       navigator.verification();
       startCountdown();
@@ -66,7 +79,9 @@ class LoginController extends GetxController {
       );
 
       if (_authRepository.authUser != null) {
-        await _checkUserInDatabase(_authRepository.authUser!.uid);
+        await _checkUserInDatabase(
+          _authRepository.authUser!.uid,
+        );
       } else {
         loading.value = false;
       }
@@ -110,20 +125,9 @@ class LoginController extends GetxController {
     });
   }
 
-  final isValid = false.obs;
-
-  bool get isPhoneValid {
-    final cleanPhone = phoneController.text.clean;
-
-    return cleanPhone.length == 11;
-  }
-
-  bool get isSmsValid =>
-      smsController.text.isNotEmpty && smsController.text.length == 6;
-
   String get inputError {
     if (isPhoneValid) {
-      return 'Insira um telefone válido';
+      return 'Insert a valid phone number';
     } else if (termsAndConditions.isFalse) {
       return 'Para utilizar nossa plataforma, é preciso aceitar nossos Termos e Condições.';
     } else if (isSmsValid) {

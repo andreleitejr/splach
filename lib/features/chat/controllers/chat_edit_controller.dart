@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -55,6 +53,9 @@ class GroupChatEditController extends GetxController {
 
   Future<SaveResult?> save() async {
     final imageUrl = await _uploadImageIfRequired();
+    final coordinates = addressController.coordinates.value;
+
+    if (coordinates == null) return null;
 
     final newGroupChat = GroupChat(
       createdAt: DateTime.now(),
@@ -63,10 +64,7 @@ class GroupChatEditController extends GetxController {
       participantsLimit: 35,
       messages: [],
       images: [imageUrl!],
-      location: GeoPoint(
-        currentLocation.value!.latitude,
-        currentLocation.value!.longitude,
-      ),
+      location: coordinates,
       address: addressController.address,
       title: titleController.text,
       description: descriptionController.text,

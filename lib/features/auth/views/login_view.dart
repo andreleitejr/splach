@@ -79,7 +79,7 @@ class _LoginViewState extends State<LoginView> implements LoginNavigator {
                       await controller.sendVerificationCode();
                     } else {
                       Get.snackbar(
-                        'Erro de autenticação',
+                        'Authentication error',
                         controller.inputError,
                       );
                     }

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:splach/features/address/models/address.dart';
@@ -10,6 +11,15 @@ class AddressEditController extends GetxController {
       fetchAddressDetails();
       update();
     });
+    numberController.addListener(() async {
+      if (streetController.text.isNotEmpty &&
+          cityController.text.isNotEmpty &&
+          stateController.text.isNotEmpty) {
+        coordinates.value =
+            await _addressService.getCoordinatesFromAddress(address);
+        update();
+      }
+    });
     super.onInit();
   }
 
@@ -21,6 +31,7 @@ class AddressEditController extends GetxController {
 
   final showErrors = RxBool(false);
 
+  final coordinates = Rx<GeoPoint?>(null);
   final postalCodeController = TextEditingController();
   final streetController = TextEditingController();
   final numberController = TextEditingController();
@@ -54,6 +65,8 @@ class AddressEditController extends GetxController {
         cityController.text = addressDetails['localidade'] ?? '';
         stateController.text = addressDetails['uf'] ?? '';
         countryController.text = 'Brasil';
+        coordinates.value =
+            await _addressService.getCoordinatesFromAddress(address);
       }
 
       isPostalCodeLoading.value = false;

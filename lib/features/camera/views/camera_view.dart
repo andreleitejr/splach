@@ -96,11 +96,6 @@ class _CameraGalleryViewState extends State<CameraGalleryView> {
                           onPressed: () async {
                             await cameraController.pickImageFromGallery();
                             if (cameraController.image != null) {
-                              // Get.back(result: cameraController.image!);
-
-                              // controller.image.value =
-                              //     cameraController.image!;
-
                               Get.back(result: cameraController.image!);
                             }
                           },
@@ -125,11 +120,6 @@ class _CameraGalleryViewState extends State<CameraGalleryView> {
                         onPressed: () async {
                           await cameraController.takePhoto();
                           if (cameraController.image != null) {
-                            // Get.back(result: cameraController.image!);
-
-                            // controller.image.value =
-                            //     cameraController.image!;
-
                             Get.back(result: cameraController.image!);
                           }
                         },
