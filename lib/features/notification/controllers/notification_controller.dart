@@ -64,12 +64,13 @@ class NotificationController extends GetxController {
   }
 
   void _createRatingNotification(Rating rating) async {
+    final nickname = rating.user?.nickname.toNickname();
+    final starsText = rating.score > 1 ? 'stars' : 'star';
     final notification = AppNotification(
       id: rating.id!,
       updatedAt: rating.updatedAt,
       createdAt: rating.createdAt,
-      content:
-          '${rating.user?.nickname.toNickname()} rated you with ${rating.score} ${rating.score > 1 ? 'stars' : 'star'}',
+      content: '$nickname rated you with ${rating.score} $starsText',
       relatedId: rating.ratedBy!,
       notificationType: AppNotificationType.rating,
       image: rating.user?.image,
@@ -79,18 +80,21 @@ class NotificationController extends GetxController {
   }
 
   void createMentionNotification(Message message) {
+    final nickname = message.sender?.nickname.toNickname() ?? 'Somebody';
+    final privateText = message.private ? 'privately' : '';
     final notification = AppNotification(
       id: message.id!,
       createdAt: message.createdAt,
       updatedAt: message.updatedAt,
-      content:
-          '${message.sender?.nickname.toNickname() ?? 'Somebody'} ${message.private ? 'privately' : ''} mentioned you: ${message.content}',
+      content: '$nickname $privateText mentioned you: ${message.content}',
       relatedId: message.senderId,
       notificationType: AppNotificationType.mention,
       image: message.sender?.image,
     );
 
-    final hasNotification = notifications.any((n) => n.id == notification.id);
+    final hasNotification = notifications.any(
+      (n) => n.id == notification.id,
+    );
     if (!hasNotification) {
       _addNotification(notification);
     }

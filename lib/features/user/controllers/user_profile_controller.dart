@@ -1,14 +1,28 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:splach/features/rating/repositories/rating_repository.dart';
+import 'package:splach/features/user/models/gallery.dart';
 import 'package:splach/features/user/models/user.dart';
+import 'package:splach/features/user/repositories/gallery_repository.dart';
+import 'package:splach/features/user/repositories/gallery_storage_repository.dart';
+import 'package:splach/repositories/firestore_repository.dart';
 
 class UserProfileController extends GetxController {
   UserProfileController(this.user);
 
   final RatingRepository _ratingRepository = Get.find();
+  final _galleryStorageRepository = Get.put(GalleryStorageRepository());
+  final _galleryRepository = Get.put(GalleryRepository());
 
   final User user;
   final User currentUser = Get.find();
+  final image = Rx<File?>(null);
+  final galleryImages = <Gallery>[].obs;
+  final description = TextEditingController();
+
+  final loading = false.obs;
 
   bool get isCurrentUser => user.id == currentUser.id;
 
@@ -16,6 +30,13 @@ class UserProfileController extends GetxController {
   Future<void> onInit() async {
     super.onInit();
     await getTotalRatings();
+    _listenToGalleryImages();
+  }
+
+  void _listenToGalleryImages() async {
+    _galleryRepository.streamAll().listen((galleryImageData) async {
+      galleryImages.assignAll(galleryImageData);
+    });
   }
 
   Future<void> getTotalRatings() async {
@@ -34,7 +55,32 @@ class UserProfileController extends GetxController {
       if (numberOfRatings > 0) {
         final averageRating = totalRatingValue / numberOfRatings;
         user.rating = averageRating.round();
+        update();
       }
     }
+  }
+
+  Future<SaveResult?> save() async {
+    loading.value = true;
+
+    final imageUrl = await _uploadImageIfRequired();
+
+    /// UPLOAD DE FOTO AQUI
+    final galleryImage = Gallery(
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      image: imageUrl!,
+      description: description.text,
+    );
+
+    final result = await _galleryRepository.save(galleryImage);
+
+    loading.value = false;
+    return result;
+  }
+
+  Future<String?> _uploadImageIfRequired() async {
+    if (image.value == null) return null;
+    return await _galleryStorageRepository.upload(image.value!);
   }
 }

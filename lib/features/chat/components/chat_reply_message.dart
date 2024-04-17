@@ -63,8 +63,6 @@ class ChatReplyMessage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _buildHeader(),
-                        // const SizedBox(height: 8),
-
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [

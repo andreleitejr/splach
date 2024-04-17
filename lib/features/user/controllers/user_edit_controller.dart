@@ -2,19 +2,16 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:splach/features/auth/repositories/auth_repository.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/features/user/repositories/user_repository.dart';
 import 'package:splach/features/user/repositories/user_storage_repository.dart';
 import 'package:splach/repositories/firestore_repository.dart';
-import 'package:splach/services/image_service.dart';
 
 class UserEditController extends GetxController {
   final _authRepository = Get.find<AuthRepository>();
   final _repository = Get.put(UserRepository());
   final _storageRepository = Get.put(UserStorageRepository());
-  final _imageService = CameraService();
 
   final image = Rx<File?>(null);
   String imageUrl = '';
@@ -116,17 +113,6 @@ class UserEditController extends GetxController {
       errorMessage.value = 'Mandatory fields: ${requiredFields.join(', ')}';
     }
     return requiredFields;
-  }
-
-  Future<void> pickImage(ImageSource source) async {
-    final file = await _imageService.takePhoto();
-
-    if (file != null) {
-      image.value = file;
-    } else {
-      errorMessage.value =
-          'Houve um erro ao carregar a imagem. Tente novamente.';
-    }
   }
 
   Future<SaveResult?> save() async {

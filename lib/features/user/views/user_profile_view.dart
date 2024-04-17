@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:splach/features/camera/views/camera_view.dart';
 import 'package:splach/features/user/components/user_profile_header.dart';
 import 'package:splach/features/user/controllers/user_profile_controller.dart';
 import 'package:splach/features/user/models/user.dart';
+import 'package:splach/features/user/views/gallery_edit_view.dart';
 import 'package:splach/widgets/top_navigation_bar.dart';
 
 class UserProfileView extends StatefulWidget {
@@ -37,9 +39,39 @@ class _UserProfileViewState extends State<UserProfileView> {
           children: [
             UserProfileHeader(user: controller.user),
             const SizedBox(height: 16),
+            Obx(
+              () => Expanded(
+                child: ListView.builder(
+                  itemCount: controller.galleryImages.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final galleryImage = controller.galleryImages[index];
+                    return Image.network(galleryImage.image);
+                  },
+                ),
+              ),
+            ),
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _getImage(context),
+      ),
     );
+  }
+
+  Future<void> _getImage(BuildContext context) async {
+    final image = await Get.to(
+      () => CameraGalleryView(
+        image: controller.image.value,
+      ),
+    );
+    if (image != null) {
+      controller.image.value = image;
+      Get.to(
+        () => GalleryEditView(
+          controller: controller,
+        ),
+      );
+    }
   }
 }

@@ -142,7 +142,7 @@ class ChatLargeListItem extends StatelessWidget {
           ),
         ),
         child: Text(
-          '+9000',
+          '+${chat.participants.length - 3}',
           style: ThemeTypography.semiBold12.apply(
             color: Colors.white,
           ),
