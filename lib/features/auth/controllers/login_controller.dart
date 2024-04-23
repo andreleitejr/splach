@@ -17,10 +17,11 @@ class LoginController extends GetxController {
 
   final phoneController = TextEditingController();
   final smsController = TextEditingController();
-
   final termsAndConditions = false.obs;
+
   final minutes = 5.obs;
   final seconds = 0.obs;
+
   final isCountdownFinished = false.obs;
 
   final isLoginValid = false.obs;
@@ -129,11 +130,15 @@ class LoginController extends GetxController {
     if (isPhoneValid) {
       return 'Insert a valid phone number';
     } else if (termsAndConditions.isFalse) {
-      return 'Para utilizar nossa plataforma, é preciso aceitar nossos Termos e Condições.';
+      return 'You must agree with out Terms and Conditions to use our platform.';
     } else if (isSmsValid) {
-      return 'SMS inválido';
+      return 'You entered an invalid code. Try again.';
     } else {
-      return 'Algum campo necessita de atenção';
+      return 'Some field needs attention.';
     }
   }
+
+  String get countdownText => 'Send code again '
+      '(${minutes.value.toString().padLeft(2, '0')}'
+      ':${seconds.value.toString().padLeft(2, '0')})';
 }

@@ -17,6 +17,10 @@ import 'package:splach/widgets/input_button.dart';
 import 'package:splach/widgets/text_area.dart';
 import 'package:splach/widgets/top_navigation_bar.dart';
 
+abstract class UserEditNavigator {
+  void home();
+}
+
 class UserEditView extends StatefulWidget {
   const UserEditView({super.key});
 
@@ -24,8 +28,15 @@ class UserEditView extends StatefulWidget {
   State<UserEditView> createState() => _UserEditViewState();
 }
 
-class _UserEditViewState extends State<UserEditView> {
-  final controller = Get.put(UserEditController());
+class _UserEditViewState extends State<UserEditView>
+    implements UserEditNavigator {
+  late UserEditController controller;
+
+  @override
+  void initState() {
+    controller = Get.put(UserEditController(this));
+    super.initState();
+  }
 
   final emailFocus = FocusNode();
   final genderFocus = FocusNode();
@@ -51,6 +62,8 @@ class _UserEditViewState extends State<UserEditView> {
   }
 
   void _navigateToPreviousPage() {
+    if (_currentPage == 1) return;
+
     _pageController.previousPage(
       duration: const Duration(milliseconds: 500),
       curve: Curves.easeInOut,
@@ -62,36 +75,41 @@ class _UserEditViewState extends State<UserEditView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: TopNavigationBar(
-        showLeading: _currentPage == 1,
-        onLeadingPressed:
-            _currentPage == 1 ? () => _navigateToPreviousPage() : null,
-        title: 'Personal data',
-      ),
-      body: SafeArea(
-        child: Obx(() {
-          if (controller.loading.isTrue) {
-            return const CircularProgressIndicator(
-              color: ThemeColors.primary,
+    return Obx(
+      () => Scaffold(
+        appBar: controller.loading.isFalse
+            ? TopNavigationBar(
+                showLeading: _currentPage == 1,
+                onLeadingPressed: () => _navigateToPreviousPage(),
+                title: 'Personal data',
+              )
+            : null,
+        body: SafeArea(
+          child: Obx(() {
+            if (controller.loading.isTrue) {
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: ThemeColors.primary,
+                ),
+              );
+            }
+            return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: PageView(
+                controller: _pageController,
+                onPageChanged: (index) {
+                  setState(() {
+                    _currentPage = index;
+                  });
+                },
+                children: [
+                  primaryUserData(context),
+                  secondaryUserData(context),
+                ],
+              ),
             );
-          }
-          return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: PageView(
-              controller: _pageController,
-              onPageChanged: (index) {
-                setState(() {
-                  _currentPage = index;
-                });
-              },
-              children: [
-                primaryUserData(context),
-                secondaryUserData(context),
-              ],
-            ),
-          );
-        }),
+          }),
+        ),
       ),
     );
   }
@@ -134,7 +152,11 @@ class _UserEditViewState extends State<UserEditView> {
                 await Future.delayed(
                   const Duration(milliseconds: 500),
                 ).then(
-                  (_) => _showStateBottomSheet(context),
+                  (_) {
+                    if (controller.state.text.isEmpty) {
+                      _showStateBottomSheet(context);
+                    }
+                  },
                 );
               },
             ),
@@ -187,50 +209,51 @@ class _UserEditViewState extends State<UserEditView> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-            child: ListView(
-          shrinkWrap: true,
-          children: [
-            Obx(
-              () => Center(
-                child: AvatarImageInput(
-                  image: controller.image.value,
-                  onPressed: () async {
-                    focus.unfocus();
-                    await _getImage(context);
-                    focus.requestFocus(nameFocus);
-                  },
+          child: ListView(
+            shrinkWrap: true,
+            children: [
+              Obx(
+                () => Center(
+                  child: AvatarImageInput(
+                    image: controller.image.value,
+                    onPressed: () async {
+                      focus.unfocus();
+                      await _getImage(context);
+                      focus.requestFocus(nameFocus);
+                    },
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
-            Input(
-              controller: controller.name,
-              hintText: 'Name',
-              keyboardType: TextInputType.name,
-              currentFocus: nameFocus,
-              nextFocus: nickNameFocus,
-            ),
-            const SizedBox(height: 16),
-            Input(
-              controller: controller.nickname,
-              hintText: 'Nickname',
-              currentFocus: nickNameFocus,
-              nextFocus: descriptionFocus,
-            ),
-            const SizedBox(height: 16),
-            TextArea(
-              controller: controller.description,
-              hintText: 'Description',
-              currentFocus: descriptionFocus,
-              onSubmit: () => focus.unfocus(),
-            ),
-            const SizedBox(height: 16),
-          ],
-        )),
+              const SizedBox(height: 16),
+              Input(
+                controller: controller.name,
+                hintText: 'Name',
+                keyboardType: TextInputType.name,
+                currentFocus: nameFocus,
+                nextFocus: nickNameFocus,
+              ),
+              const SizedBox(height: 16),
+              Input(
+                controller: controller.nickname,
+                hintText: 'Nickname',
+                currentFocus: nickNameFocus,
+                nextFocus: descriptionFocus,
+              ),
+              const SizedBox(height: 16),
+              TextArea(
+                controller: controller.description,
+                hintText: 'Description',
+                currentFocus: descriptionFocus,
+                onSubmit: () => focus.unfocus(),
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
+        ),
         FlatButton(
-          onPressed: () {
+          onPressed: () async {
             if (controller.isValid.isTrue) {
-              _createAccount();
+              await controller.save();
             } else {
               controller.showErrorMessage(true);
             }
@@ -269,11 +292,6 @@ class _UserEditViewState extends State<UserEditView> {
     );
     if (image != null) {
       controller.image.value = image;
-      // Get.to(
-      //       () => ChatImageInput(
-      //     controller: controller,
-      //   ),
-      // );
     }
   }
 
@@ -286,6 +304,7 @@ class _UserEditViewState extends State<UserEditView> {
         title: 'Tell us your gender',
         onItemSelected: (selectedItem) async {
           controller.gender.text = selectedItem.title;
+
           focus.unfocus();
 
           await Future.delayed(
@@ -297,6 +316,12 @@ class _UserEditViewState extends State<UserEditView> {
             );
             if (birthday != null) {
               controller.birthday.value = birthday;
+
+              if (!mounted) return;
+
+              if (controller.state.text.isEmpty) {
+                _showStateBottomSheet(context);
+              }
             }
           });
         },
@@ -321,10 +346,8 @@ class _UserEditViewState extends State<UserEditView> {
     );
   }
 
-  Future<void> _createAccount() async {
-    final result = await controller.save();
-    if (result == SaveResult.success) {
-      Get.off(() => const BaseView());
-    }
+  @override
+  void home() {
+    Get.off(() => const BaseView());
   }
 }

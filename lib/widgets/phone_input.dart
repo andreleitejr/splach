@@ -42,7 +42,7 @@ class PhoneInput extends StatelessWidget {
             contentPadding: EdgeInsets.zero,
             hintText: '(11) 99000-0000',
             hintStyle: ThemeTypography.regular14.apply(
-              color: ThemeColors.grey5,
+              color: ThemeColors.grey3,
             ),
             prefixIcon: Row(
               mainAxisSize: MainAxisSize.min,
@@ -55,11 +55,23 @@ class PhoneInput extends StatelessWidget {
                   width: 24,
                 ),
                 const SizedBox(
-                  width: 8,
+                  width: 4,
                 ),
                 const Icon(
                   Icons.keyboard_arrow_down,
                   color: Colors.black26,
+                  size: 16,
+                ),
+                const SizedBox(
+                  width: 4,
+                ),
+                Container(
+                  height: 20,
+                  color: ThemeColors.grey2,
+                  width: 1,
+                ),
+                const SizedBox(
+                  width: 8,
                 ),
               ],
             ),

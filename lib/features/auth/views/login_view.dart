@@ -51,8 +51,8 @@ class _LoginViewState extends State<LoginView> implements LoginNavigator {
                 child: Center(),
               ),
               Text(
-                'Welcome to Splach,',
-                style: ThemeTypography.semiBold16.apply(
+                'splach',
+                style: ThemeTypography.logotype.apply(
                   color: ThemeColors.primary,
                 ),
               ),
@@ -73,7 +73,7 @@ class _LoginViewState extends State<LoginView> implements LoginNavigator {
               const SizedBox(height: 16),
               Obx(
                 () => FlatButton(
-                  actionText: 'Enter',
+                  actionText: 'Get code',
                   onPressed: () async {
                     if (controller.isLoginValid.isTrue) {
                       await controller.sendVerificationCode();
@@ -87,45 +87,48 @@ class _LoginViewState extends State<LoginView> implements LoginNavigator {
                   isValid: controller.isLoginValid.value,
                 ),
               ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Obx(
-                    () => Checkbox(
-                      activeColor: ThemeColors.primary,
-                      value: controller.termsAndConditions.value,
-                      onChanged: controller.termsAndConditions,
-                    ),
-                  ),
-                  Expanded(
-                    child: RichText(
-                      text: TextSpan(
-                        text:
-                            'Ao clicar em enviar, você concorda com os nossos ',
-                        style: ThemeTypography.regular12.apply(
-                          color: ThemeColors.grey5,
-                        ),
-                        children: [
-                          TextSpan(
-                            text: 'Termos e Condições',
-                            style: ThemeTypography.semiBold12.apply(
-                              color: ThemeColors.primary,
-                            ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () => Get.to(
-                                    () => const TermsAndConditions(),
-                                  ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              const SizedBox(height: 8),
+              _termsAndConditions(),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _termsAndConditions() {
+    return Row(
+      children: [
+        Obx(
+          () => Checkbox(
+            activeColor: ThemeColors.primary,
+            value: controller.termsAndConditions.value,
+            onChanged: controller.termsAndConditions,
+          ),
+        ),
+        Expanded(
+          child: RichText(
+            text: TextSpan(
+              text: 'By checking this box, you are agreeing to our ',
+              style: ThemeTypography.regular12.apply(
+                color: ThemeColors.grey5,
+              ),
+              children: [
+                TextSpan(
+                  text: 'Terms and Conditions',
+                  style: ThemeTypography.semiBold12.apply(
+                    color: ThemeColors.primary,
+                  ),
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () => Get.to(
+                          () => const TermsAndConditions(),
+                        ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 

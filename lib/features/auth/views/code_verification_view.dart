@@ -17,11 +17,6 @@ class CodeVerificationView extends StatelessWidget {
   Widget build(BuildContext context) {
     _pinFocus.requestFocus();
 
-    final countdownText = controller.isCountdownFinished.isTrue
-        ? 'Resend code '
-            '(${controller.minutes.value.toString().padLeft(2, '0')}'
-            ':${controller.seconds.value.toString().padLeft(2, '0')})'
-        : '';
     return Scaffold(
       body: Center(
         child: Padding(
@@ -66,13 +61,13 @@ class CodeVerificationView extends StatelessWidget {
                         }
                       },
                       child: Text(
-                        countdownText,
+                        controller.countdownText,
                         style: controller.isCountdownFinished.isTrue
                             ? ThemeTypography.semiBold14.apply(
                                 color: ThemeColors.primary,
                               )
                             : ThemeTypography.regular14.apply(
-                                color: ThemeColors.grey5,
+                                color: ThemeColors.grey3,
                               ),
                       ),
                     ),

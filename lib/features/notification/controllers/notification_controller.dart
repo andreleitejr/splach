@@ -47,18 +47,18 @@ class NotificationController extends GetxController {
 
       if (ratings.isNotEmpty) {
         ratings.first.user = ratingUsers.firstWhereOrNull(
-          (user) => user.id == ratings.first.ratedBy,
+          (user) => user.id == ratings.first.userId,
         );
 
         ratings.first.user ??=
-            await _userRepository.get(ratings.first.ratedBy!);
+            await _userRepository.get(ratings.first.userId!);
         _createRatingNotification(ratings.first);
       }
     });
   }
 
   Future<void> _getRatingUsers() async {
-    final ratingUserIds = ratings.map((rating) => rating.ratedBy!).toList();
+    final ratingUserIds = ratings.map((rating) => rating.userId!).toList();
 
     ratingUsers.value = await _userRepository.getUsersByIds(ratingUserIds);
   }
@@ -71,7 +71,7 @@ class NotificationController extends GetxController {
       updatedAt: rating.updatedAt,
       createdAt: rating.createdAt,
       content: '$nickname rated you with ${rating.score} $starsText',
-      relatedId: rating.ratedBy!,
+      relatedId: rating.userId!,
       notificationType: AppNotificationType.rating,
       image: rating.user?.image,
     );

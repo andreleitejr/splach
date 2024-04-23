@@ -8,7 +8,6 @@ class CodeWidget extends StatelessWidget {
   final TextEditingController controller;
   final VoidCallback onSubmit;
   final String phoneNumber;
-  // final Function(String) onChanged;
   final FocusNode focusNode;
 
   const CodeWidget({
@@ -16,7 +15,6 @@ class CodeWidget extends StatelessWidget {
     required this.controller,
     required this.onSubmit,
     required this.phoneNumber,
-    // required this.onChanged,
     required this.focusNode,
   });
 
@@ -26,9 +24,10 @@ class CodeWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Verificação',
-          style: ThemeTypography.regular14
-              .apply(color: const Color(0xFF666666), fontFamily: 'Poppins'),
+          'Verification',
+          style: ThemeTypography.semiBold24.apply(
+            color: ThemeColors.primary,
+          ),
         ),
         const SizedBox(height: 4),
         const Text(

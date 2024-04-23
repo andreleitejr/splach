@@ -30,17 +30,17 @@ class _UserProfileViewState extends State<UserProfileView> {
     return Scaffold(
       appBar: TopNavigationBar(
         showLeading: false,
-        title: controller.isCurrentUser ? 'Perfil' : controller.user.name,
+        title: controller.isCurrentUser ? 'Profile' : controller.user.name,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            UserProfileHeader(user: controller.user),
-            const SizedBox(height: 16),
-            Obx(
-              () => Expanded(
+        child: Obx(
+          () => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              UserProfileHeader(user: controller.user),
+              const SizedBox(height: 16),
+              Expanded(
                 child: ListView.builder(
                   itemCount: controller.galleryImages.length,
                   itemBuilder: (BuildContext context, int index) {
@@ -49,8 +49,8 @@ class _UserProfileViewState extends State<UserProfileView> {
                   },
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(

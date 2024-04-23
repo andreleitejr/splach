@@ -31,7 +31,7 @@ class _BaseViewState extends State<BaseView> {
 
   final List<Widget> _pages = [
     HomeView(),
-    Container(),
+    // Container(),
     NotificationView(),
     UserProfileView(user: Get.find<User>()),
   ];
@@ -73,7 +73,7 @@ class _BaseViewState extends State<BaseView> {
   List<BottomNavigationBarItem> _buildBottomNavBarItems() {
     return [
       _buildNavBarItem('', 'Home'),
-      _buildNavBarItem('', 'History'),
+      // _buildNavBarItem('', 'History'),
       _buildNavBarItemWithBadge('Notifications'),
       _buildNavBarItemWithAvatar(),
     ];

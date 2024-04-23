@@ -6,9 +6,14 @@ import 'package:splach/features/auth/repositories/auth_repository.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/features/user/repositories/user_repository.dart';
 import 'package:splach/features/user/repositories/user_storage_repository.dart';
+import 'package:splach/features/user/views/user_edit_view.dart';
 import 'package:splach/repositories/firestore_repository.dart';
 
 class UserEditController extends GetxController {
+  UserEditController(this.navigator);
+
+  final UserEditNavigator navigator;
+
   final _authRepository = Get.find<AuthRepository>();
   final _repository = Get.put(UserRepository());
   final _storageRepository = Get.put(UserStorageRepository());
@@ -141,7 +146,12 @@ class UserEditController extends GetxController {
 
     if (result == SaveResult.success) {
       Get.put(newUser, permanent: true);
+      navigator.home();
+    } else {
+      showErrorMessage.value = true;
     }
+
+    await Future.delayed(const Duration(milliseconds: 500));
 
     loading.value = false;
     return result;

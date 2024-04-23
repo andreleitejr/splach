@@ -19,12 +19,10 @@ class TopNavigationBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final showLeadingButton = showLeading || onLeadingPressed != null;
-
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
-      leading: showLeadingButton ? _leadingButton() : null,
+      leading: showLeading ? _leadingButton() : null,
       title: Text(
         title,
         style: ThemeTypography.medium16.apply(

@@ -371,6 +371,8 @@ class ChatController extends GetxController {
       await _repository.update(rating.value!);
     } else {
       final newRating = Rating(
+        userId: user.id!,
+        userNickname: user.nickname,
         ratedId: ratedId,
         score: score.value,
         createdAt: DateTime.now(),

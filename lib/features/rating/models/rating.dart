@@ -7,7 +7,8 @@ import 'package:splach/utils/extensions.dart';
 enum RatingType { user, chat }
 
 class Rating extends BaseModel {
-  final String? ratedBy;
+  final String userId;
+  final String userNickname;
   final String ratedId;
   int score;
   final RatingType type;
@@ -17,14 +18,16 @@ class Rating extends BaseModel {
   Rating({
     required super.createdAt,
     required super.updatedAt,
-    this.ratedBy,
+    required this.userId,
+    required this.userNickname,
     required this.ratedId,
     required this.score,
     this.type = RatingType.user,
   });
 
   Rating.fromDocument(DocumentSnapshot document)
-      : ratedBy = document.get('ratedBy'),
+      : userId = document.get('userId'),
+        userNickname = document.get('userNickname'),
         ratedId = document.get('ratedId'),
         score = document.get('ratingValue'),
         type = RatingTypeExtension.fromString(document.get('type')),

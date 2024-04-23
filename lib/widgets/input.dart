@@ -72,7 +72,7 @@ class Input extends StatelessWidget {
         }
       },
       inputFormatters: inputFormatters,
-      keyboardType: TextInputType.text,
+      keyboardType: keyboardType,
     );
   }
 }

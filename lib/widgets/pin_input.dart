@@ -25,8 +25,8 @@ class PinInput extends StatelessWidget {
           color: ThemeColors.primary,
         ),
         strokeColorBuilder: PinListenColorBuilder(
+          ThemeColors.grey4,
           ThemeColors.grey2,
-          Colors.grey,
         ),
         bgColorBuilder: PinListenColorBuilder(
           ThemeColors.grey1,
@@ -35,7 +35,6 @@ class PinInput extends StatelessWidget {
       ),
       controller: controller,
       focusNode: focusNode,
-      // onChanged: onChanged,
       textInputAction: TextInputAction.done,
       onSubmit: onSubmit,
     );
