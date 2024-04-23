@@ -5,7 +5,6 @@ import 'package:splach/features/camera/views/camera_view.dart';
 import 'package:splach/features/home/views/base_view.dart';
 import 'package:splach/features/user/controllers/user_edit_controller.dart';
 import 'package:splach/features/user/models/gender.dart';
-import 'package:splach/repositories/firestore_repository.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/widgets/avatar_image_input.dart';

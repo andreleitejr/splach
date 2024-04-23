@@ -1,7 +1,7 @@
-import 'package:splach/features/chat/models/participant.dart';
-import 'package:splach/models/base_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:splach/features/chat/models/message.dart';
+import 'package:splach/features/chat/models/participant.dart';
+import 'package:splach/models/base_model.dart';
 
 class Chat extends BaseModel {
   final int participantsLimit;

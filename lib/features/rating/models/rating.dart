@@ -36,7 +36,8 @@ class Rating extends BaseModel {
   @override
   Map<String, dynamic> toMap() {
     return {
-      'ratedBy': Get.find<User>().id,
+      'userId': Get.find<User>().id,
+      'userNickname': Get.find<User>().nickname,
       'ratedId': ratedId,
       'ratingValue': score,
       'type': type.toStringSimplified(),

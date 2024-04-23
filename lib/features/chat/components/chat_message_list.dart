@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:splach/features/chat/components/chat_user_message.dart';
@@ -70,7 +68,7 @@ class ChatMessageList extends StatelessWidget {
                         ChatSenderMessage(
                           message: message,
                           onHorizontalDragEnd: () => _replyMessage(message),
-                          onButtonTap: () => _showBottomSheet(message),
+                          onMoreButtonTap: () => _showBottomSheet(message),
                           onAvatarTap: () => _goToUserPage(message),
                           onAvatarLongPress: () => _showBottomSheet(message),
                           onTitleTap: () => _goToUserPage(message),
@@ -174,15 +172,18 @@ class ChatMessageList extends StatelessWidget {
   //   );
   // }
 
-  void _showBottomSheet(Message message) {
-    controller.checkRatingValue(message.senderId);
+  void _showBottomSheet(Message message) async {
+    await controller.checkRatingValue(message.senderId);
+
+    const double borderRadius = 16;
+
     Get.bottomSheet(
       Container(
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(16),
-            topRight: Radius.circular(16),
+            topLeft: Radius.circular(borderRadius),
+            topRight: Radius.circular(borderRadius),
           ),
           boxShadow: [
             BoxShadow(
@@ -222,9 +223,7 @@ class ChatMessageList extends StatelessWidget {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               image: DecorationImage(
-                                image: MemoryImage(
-                                  base64Decode(message.sender!.image),
-                                ),
+                                image: NetworkImage(message.sender!.image),
                                 fit: BoxFit.cover,
                               ),
                             ),

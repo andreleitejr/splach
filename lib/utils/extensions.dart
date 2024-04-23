@@ -3,9 +3,9 @@ import 'package:diacritic/diacritic.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:splach/features/chat/models/group_chat.dart';
+import 'package:splach/features/chat/models/message.dart';
 import 'package:splach/features/chat/models/participant.dart';
 import 'package:splach/features/notification/models/notification.dart';
-import 'package:splach/features/chat/models/message.dart';
 import 'package:splach/features/rating/models/rating.dart';
 import 'package:splach/features/report/models/report.dart';
 
@@ -46,16 +46,16 @@ extension DateTimeExtensions on DateTime {
   String toTimeString() {
     final timeDifference = DateTime.now().difference(this).inSeconds;
     if (timeDifference < 60) {
-      return '${timeDifference.toStringAsFixed(0)}s';
+      return '${timeDifference.toStringAsFixed(0)}s ago';
     } else if (timeDifference < 3600) {
       final minutes = timeDifference / 60.toInt();
-      return '${minutes.toStringAsFixed(0)}m';
+      return '${minutes.toStringAsFixed(0)}m ago';
     } else if (timeDifference < 86400) {
       final hours = timeDifference / 3600.toInt();
-      return '${hours.toStringAsFixed(0)}h';
+      return '${hours.toStringAsFixed(0)}h ago';
     } else {
       final days = timeDifference / 86400.toInt();
-      return '${days.toStringAsFixed(0)}d';
+      return '${days.toStringAsFixed(0)}d ago';
     }
   }
 

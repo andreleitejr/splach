@@ -1,12 +1,12 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:splach/features/chat/models/chat_category.dart';
 import 'package:splach/features/chat/models/group_chat.dart';
 import 'package:splach/features/chat/models/participant.dart';
 import 'package:splach/features/chat/repositories/chat_repository.dart';
 import 'package:splach/features/chat/repositories/participant_repository.dart';
 import 'package:splach/features/services/location_service.dart';
 import 'package:splach/features/user/models/user.dart';
-import 'package:splach/features/chat/models/chat_category.dart';
 import 'package:splach/services/push_notification_service.dart';
 import 'package:splach/utils/extensions.dart';
 

@@ -15,7 +15,7 @@ class ChatSenderMessage extends StatelessWidget {
   final Message message;
   final VoidCallback? onDoubleTap;
   final VoidCallback? onHorizontalDragEnd;
-  final VoidCallback? onButtonTap;
+  final VoidCallback? onMoreButtonTap;
   final VoidCallback? onAvatarLongPress;
   final VoidCallback? onAvatarTap;
   final VoidCallback? onTitleTap;
@@ -25,7 +25,7 @@ class ChatSenderMessage extends StatelessWidget {
     required this.message,
     this.onDoubleTap,
     this.onHorizontalDragEnd,
-    this.onButtonTap,
+    this.onMoreButtonTap,
     this.onAvatarLongPress,
     this.onAvatarTap,
     this.onTitleTap,
@@ -98,7 +98,7 @@ class ChatSenderMessage extends StatelessWidget {
                     ],
                     GestureDetector(
                       onTap: () {
-                        onButtonTap?.call();
+                        onMoreButtonTap?.call();
                       },
                       child: Container(
                         constraints: const BoxConstraints(

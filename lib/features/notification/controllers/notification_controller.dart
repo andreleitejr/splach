@@ -50,15 +50,14 @@ class NotificationController extends GetxController {
           (user) => user.id == ratings.first.userId,
         );
 
-        ratings.first.user ??=
-            await _userRepository.get(ratings.first.userId!);
+        ratings.first.user ??= await _userRepository.get(ratings.first.userId);
         _createRatingNotification(ratings.first);
       }
     });
   }
 
   Future<void> _getRatingUsers() async {
-    final ratingUserIds = ratings.map((rating) => rating.userId!).toList();
+    final ratingUserIds = ratings.map((rating) => rating.userId).toList();
 
     ratingUsers.value = await _userRepository.getUsersByIds(ratingUserIds);
   }
@@ -70,8 +69,9 @@ class NotificationController extends GetxController {
       id: rating.id!,
       updatedAt: rating.updatedAt,
       createdAt: rating.createdAt,
-      content: '$nickname rated you with ${rating.score} $starsText',
-      relatedId: rating.userId!,
+      content:
+          '$nickname rated you with ${rating.score} $starsText ${_getEmoji(rating.score)}',
+      relatedId: rating.userId,
       notificationType: AppNotificationType.rating,
       image: rating.user?.image,
     );
@@ -104,5 +104,20 @@ class NotificationController extends GetxController {
     notifications.add(notification);
     notifications.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
     notifications.toSet().toList();
+  }
+
+  String _getEmoji(int value) {
+    switch (value) {
+      case 1:
+        return '🙁';
+      case 2:
+        return '😣';
+      case 3:
+        return '😐';
+      case 4:
+        return '🙂‍';
+      default:
+        return '😍';
+    }
   }
 }

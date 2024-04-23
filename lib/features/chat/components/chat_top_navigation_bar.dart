@@ -1,9 +1,9 @@
+import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:splach/features/chat/views/chat_info_view.dart';
 import 'package:splach/features/chat/controllers/chat_controller.dart';
+import 'package:splach/features/chat/views/chat_info_view.dart';
 import 'package:splach/features/chat/views/chat_participants_view.dart';
-import 'package:badges/badges.dart' as badges;
 import 'package:splach/features/notification/views/notification_view.dart';
 import 'package:splach/themes/theme_typography.dart';
 

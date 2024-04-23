@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:splach/features/rating/models/rating.dart';
+import 'package:splach/features/user/models/user.dart';
 import 'package:splach/repositories/firestore_repository.dart';
 
 class RatingRepository extends FirestoreRepository<Rating> {
@@ -29,7 +31,8 @@ class RatingRepository extends FirestoreRepository<Rating> {
 
       return stream;
     } catch (error) {
-      debugPrint('Error streaming data from $collectionName in Firestore: $error');
+      debugPrint(
+          'Error streaming data from $collectionName in Firestore: $error');
       return Stream.value([]);
     }
   }
@@ -38,7 +41,7 @@ class RatingRepository extends FirestoreRepository<Rating> {
       {bool isUserRatings = false}) async {
     try {
       final query = firestore.collection(collectionName).where(
-            isUserRatings ? 'ratedBy' : 'ratedId',
+            isUserRatings ? 'userId' : 'ratedId',
             isEqualTo: userId,
           );
 
@@ -49,11 +52,27 @@ class RatingRepository extends FirestoreRepository<Rating> {
 
       debugPrint(
           'Successful fetch ${dataList.length} documents for $collectionName in Firestore.');
+
       return dataList;
     } catch (error) {
       debugPrint(
           'Error fetching all data from $collectionName in Firestore: $error');
       return [];
+    }
+  }
+
+  Future<Rating?> checkRatingExists(String ratedId) async {
+    try {
+      QuerySnapshot querySnapshot = await firestore
+          .collection(collectionName)
+          .where('userId', isEqualTo: Get.find<User>().id)
+          .where('ratedId', isEqualTo: ratedId)
+          .get();
+
+      return fromDocument(querySnapshot.docs.last);
+    } catch (e) {
+      debugPrint('Erro ao verificar a existência de rating: $e');
+      return null;
     }
   }
 }

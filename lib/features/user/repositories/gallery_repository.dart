@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:splach/features/user/models/gallery.dart';
 import 'package:splach/features/user/models/user.dart';

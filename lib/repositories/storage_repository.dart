@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
-
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as path;
 import 'package:uuid/uuid.dart';

@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:splach/controllers/mention_highlight_controller.dart';
 import 'package:splach/features/chat/models/group_chat.dart';
+import 'package:splach/features/chat/models/message.dart';
 import 'package:splach/features/chat/models/participant.dart';
 import 'package:splach/features/chat/repositories/chat_repository.dart';
+import 'package:splach/features/chat/repositories/message_repository.dart';
 import 'package:splach/features/chat/repositories/message_storage_repository.dart';
 import 'package:splach/features/chat/repositories/participant_repository.dart';
 import 'package:splach/features/notification/controllers/notification_controller.dart';
@@ -14,10 +16,8 @@ import 'package:splach/features/rating/repositories/rating_repository.dart';
 import 'package:splach/features/report/controllers/report_controller.dart';
 import 'package:splach/features/report/models/report.dart';
 import 'package:splach/features/user/models/user.dart';
-import 'package:splach/features/chat/models/message.dart';
 import 'package:splach/features/user/repositories/user_repository.dart';
 import 'package:splach/repositories/firestore_repository.dart';
-import 'package:splach/features/chat/repositories/message_repository.dart';
 import 'package:splach/utils/extensions.dart';
 
 class ChatController extends GetxController {
@@ -32,7 +32,7 @@ class ChatController extends GetxController {
   final ChatRepository _chatRepository = Get.find();
   final _messageStorageRepository = Get.put(MessageStorageRepository());
   final NotificationController notificationController = Get.find();
-  final _repository = Get.put(RatingRepository());
+  final _ratingRepository = Get.put(RatingRepository());
   final User user = Get.find();
   final messageController = MentionHighlightingController();
 
@@ -46,6 +46,7 @@ class ChatController extends GetxController {
   String? imageUrl;
   final private = false.obs;
   final recipients = <String>[].obs;
+  final ratings = <Rating>[].obs;
   final isCameraOpen = false.obs;
   final isTyping = false.obs;
 
@@ -56,7 +57,8 @@ class ChatController extends GetxController {
   final replyMessage = Rx<Message?>(null);
 
   final userRatings = <Rating>[].obs;
-  final rating = Rx<Rating?>(null);
+
+  // final rating = Rx<Rating?>(null);
   final score = 0.obs;
 
   final isShowingMentionList = false.obs;
@@ -348,27 +350,28 @@ class ChatController extends GetxController {
   }
 
   Future<void> _fetchUserRatings() async {
-    userRatings.value =
-        await _repository.getRating(Get.find<User>().id!, isUserRatings: true);
+    userRatings.value = await _ratingRepository.getRating(Get.find<User>().id!,
+        isUserRatings: true);
   }
 
-  void checkRatingValue(String ratedId) {
-    if (alreadyRated(ratedId)) {
-      rating.value =
-          userRatings.firstWhere((rating) => rating.ratedId == ratedId);
-
-      score.value = rating.value!.score;
+  Future<void> checkRatingValue(String ratedId) async {
+    final rating = await _ratingRepository.checkRatingExists(ratedId);
+    if (rating != null) {
+      score.value = rating.score;
+      ratings.add(rating);
     }
   }
 
   bool alreadyRated(String ratedId) {
-    return userRatings.any((rating) => rating.ratedId == ratedId);
+    return ratings.any((rating) => rating.ratedId == ratedId);
   }
 
   Future<void> rate(String ratedId) async {
     if (alreadyRated(ratedId)) {
-      rating.value!.score = score.value;
-      await _repository.update(rating.value!);
+      final rating = ratings.firstWhere((r) => r.ratedId == ratedId);
+
+      rating.score = score.value;
+      await _ratingRepository.update(rating);
     } else {
       final newRating = Rating(
         userId: user.id!,
@@ -378,7 +381,11 @@ class ChatController extends GetxController {
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );
-      await _repository.save(newRating);
+      final id = await _ratingRepository.saveAndGetId(newRating);
+      newRating.id = id;
+      if (newRating.id != null) {
+        ratings.add(newRating);
+      }
     }
   }
 
