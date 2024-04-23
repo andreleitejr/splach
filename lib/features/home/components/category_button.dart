@@ -46,7 +46,7 @@ class CategoryButton extends StatelessWidget {
                       ),
                       child: Center(
                         child: Icon(
-                          Icons.access_alarm,
+                          category.icon,
                           color: isSelected ? Colors.white : ThemeColors.grey4,
                         ),
                       ),

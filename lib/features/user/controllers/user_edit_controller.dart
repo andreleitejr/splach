@@ -117,6 +117,7 @@ class UserEditController extends GetxController {
     } else {
       errorMessage.value = 'Mandatory fields: ${requiredFields.join(', ')}';
     }
+
     return requiredFields;
   }
 

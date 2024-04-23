@@ -93,7 +93,7 @@ class HomeController extends GetxController {
   }
 
   Future<void> addParticipantToChat(GroupChat chat) async {
-    final participantRepository = Get.put(ParticipantRepository(chat.id!));
+    final participantRepository = ParticipantRepository(chat.id!);
 
     final createdAt = chat.participants
         .firstWhereOrNull(

@@ -31,8 +31,7 @@ class HomeView extends StatelessWidget {
                 stretch: true,
                 automaticallyImplyLeading: false,
                 backgroundColor: Colors.transparent,
-                foregroundColor: Colors.white,
-                pinned: true,
+                // pinned: true,
                 // centerTitle: true,
                 title: Text(
                   'splach',
@@ -41,15 +40,15 @@ class HomeView extends StatelessWidget {
                   ),
                 ),
                 actions: [
-                  IconButton(
-                    onPressed: () => Get.to(
-                      () => ChatEditView(),
-                    ),
-                    icon: const Icon(
-                      Icons.add,
-                      color: Colors.black,
-                    ),
-                  ),
+                  // IconButton(
+                  //   onPressed: () => Get.to(
+                  //     () => ChatEditView(),
+                  //   ),
+                  //   icon: const Icon(
+                  //     Icons.add,
+                  //     color: Colors.black,
+                  //   ),
+                  // ),
                 ],
               ),
               SliverToBoxAdapter(

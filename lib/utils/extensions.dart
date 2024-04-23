@@ -23,15 +23,21 @@ extension StringExtensions on String {
   String get removeParenthesis => replaceAll(')', '').replaceAll('(', '');
 
   String toNickname() => '@$this';
+
+  String capitalizeFirstLetter() {
+    if (isEmpty) return this;
+
+    return this[0].toUpperCase() + substring(1);
+  }
 }
 
 extension DoubleExtension on double {
   String get formatDistance {
     if (this <= 999) {
-      return '${toStringAsFixed(0)} m';
+      return '${toStringAsFixed(0)}m';
     } else {
       final distanceInKm = this / 1000;
-      return '${distanceInKm.toStringAsFixed(1)} km';
+      return '${distanceInKm.toStringAsFixed(1)}km';
     }
   }
 }

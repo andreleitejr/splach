@@ -31,7 +31,6 @@ class _BaseViewState extends State<BaseView> {
 
   final List<Widget> _pages = [
     HomeView(),
-    // Container(),
     NotificationView(),
     UserProfileView(user: Get.find<User>()),
   ];
@@ -50,21 +49,24 @@ class _BaseViewState extends State<BaseView> {
     return Scaffold(
       body: Obx(() => _pages[controller.selectedIndex.value]),
       bottomNavigationBar: Obx(
-        () => BottomNavigationBar(
-          backgroundColor: Colors.white,
-          type: BottomNavigationBarType.fixed,
-          selectedFontSize: 0,
-          selectedLabelStyle: ThemeTypography.regular9.apply(
-            color: ThemeColors.primary,
+        () => SizedBox(
+          height: 75,
+          child: BottomNavigationBar(
+            backgroundColor: Colors.white,
+            type: BottomNavigationBarType.fixed,
+            selectedFontSize: 0,
+            selectedLabelStyle: ThemeTypography.regular9.apply(
+              color: ThemeColors.primary,
+            ),
+            unselectedLabelStyle: ThemeTypography.regular9.apply(
+              color: ThemeColors.grey5,
+            ),
+            items: _buildBottomNavBarItems(),
+            currentIndex: controller.selectedIndex.value,
+            unselectedItemColor: ThemeColors.grey3,
+            selectedItemColor: ThemeColors.primary,
+            onTap: controller.selectedIndex,
           ),
-          unselectedLabelStyle: ThemeTypography.regular9.apply(
-            color: ThemeColors.grey5,
-          ),
-          items: _buildBottomNavBarItems(),
-          currentIndex: controller.selectedIndex.value,
-          unselectedItemColor: ThemeColors.grey3,
-          selectedItemColor: ThemeColors.primary,
-          onTap: controller.selectedIndex,
         ),
       ),
     );
@@ -73,7 +75,6 @@ class _BaseViewState extends State<BaseView> {
   List<BottomNavigationBarItem> _buildBottomNavBarItems() {
     return [
       _buildNavBarItem('', 'Home'),
-      // _buildNavBarItem('', 'History'),
       _buildNavBarItemWithBadge('Notifications'),
       _buildNavBarItemWithAvatar(),
     ];
@@ -83,11 +84,11 @@ class _BaseViewState extends State<BaseView> {
     return BottomNavigationBarItem(
       icon: const Padding(
         padding: EdgeInsets.only(bottom: 4),
-        child: Icon(Icons.home),
+        child: Icon(Icons.home_outlined),
       ),
       activeIcon: const Padding(
         padding: EdgeInsets.only(bottom: 4),
-        child: Icon(Icons.add),
+        child: Icon(Icons.home),
       ),
       label: label,
     );
@@ -95,40 +96,35 @@ class _BaseViewState extends State<BaseView> {
 
   BottomNavigationBarItem _buildNavBarItemWithBadge(String label) {
     return BottomNavigationBarItem(
-      icon: badges.Badge(
-        showBadge: controller.notificationController.notifications.isNotEmpty,
-        position: badges.BadgePosition.topEnd(
-          top: -5,
-          end: -5,
-        ),
-        badgeContent: Text(
-          controller.notificationController.notifications.length.toString(),
-          style: ThemeTypography.semiBold12.apply(
-            color: Colors.white,
-          ),
-        ),
-        child: const Icon(
-          Icons.notifications,
-          color: Colors.black,
-        ),
+      icon: _badge(
+        Icons.notifications_outlined,
+        Colors.black,
       ),
-      activeIcon: badges.Badge(
-        position: badges.BadgePosition.topEnd(
-          top: -5,
-          end: -5,
-        ),
-        badgeContent: Text(
-          controller.notificationController.notifications.length.toString(),
-          style: ThemeTypography.semiBold12.apply(
-            color: Colors.white,
-          ),
-        ),
-        child: const Icon(
-          Icons.notifications,
-          color: ThemeColors.primary,
-        ),
+      activeIcon: _badge(
+        Icons.notifications,
+        ThemeColors.primary,
       ),
       label: label,
+    );
+  }
+
+  Widget _badge(IconData icon, Color iconColor) {
+    return badges.Badge(
+      showBadge: controller.notificationController.notifications.isNotEmpty,
+      position: badges.BadgePosition.topEnd(
+        top: -5,
+        end: -5,
+      ),
+      badgeContent: Text(
+        controller.notificationController.notifications.length.toString(),
+        style: ThemeTypography.semiBold12.apply(
+          color: Colors.white,
+        ),
+      ),
+      child: Icon(
+        icon,
+        color: iconColor,
+      ),
     );
   }
 
@@ -138,10 +134,15 @@ class _BaseViewState extends State<BaseView> {
         image: controller.user.image!,
       ),
       activeIcon: Container(
-        margin: const EdgeInsets.only(top: 8),
-        height: 38,
-        width: 38,
-        child: const Icon(Icons.access_alarm),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: ThemeColors.primary,
+          ),
+        ),
+        child: AvatarImage(
+          image: controller.user.image!,
+        ),
       ),
       label: '',
     );
