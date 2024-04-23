@@ -36,6 +36,7 @@ class UserProfileController extends GetxController {
   void _listenToGalleryImages() async {
     _galleryRepository.streamAll().listen((galleryImageData) async {
       galleryImages.assignAll(galleryImageData);
+      galleryImages.sort((b, a) => a.createdAt.compareTo(b.createdAt));
     });
   }
 

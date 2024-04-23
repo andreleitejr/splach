@@ -103,8 +103,16 @@ flutter:
     - family: Gilroy
       fonts:
         - asset: fonts/Gilroy-Light.otf
-        - asset: fonts/Gilroy-ExtraBold.otf
+          weight: 300
+        - asset: fonts/Gilroy-Regular.otf
+          weight: 400
+        - asset: fonts/Gilroy-Medium.otf
+          weight: 500
+        - asset: fonts/Gilroy-Bold.otf
           weight: 700
-  #
+        - asset: fonts/Gilroy-ExtraBold.otf
+          weight: 800
+
+    #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

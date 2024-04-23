@@ -3,8 +3,15 @@ import 'package:get/get.dart';
 import 'package:splach/features/camera/views/camera_view.dart';
 import 'package:splach/features/user/components/user_profile_header.dart';
 import 'package:splach/features/user/controllers/user_profile_controller.dart';
+import 'package:splach/features/user/models/gallery.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/features/user/views/gallery_edit_view.dart';
+import 'package:splach/themes/theme_colors.dart';
+import 'package:splach/themes/theme_typography.dart';
+import 'package:splach/utils/extensions.dart';
+import 'package:splach/widgets/flat_button.dart';
+import 'package:splach/widgets/image_viewer.dart';
+import 'package:splach/widgets/navigator_icon_button.dart';
 import 'package:splach/widgets/top_navigation_bar.dart';
 
 class UserProfileView extends StatefulWidget {
@@ -30,31 +37,98 @@ class _UserProfileViewState extends State<UserProfileView> {
     return Scaffold(
       appBar: TopNavigationBar(
         showLeading: false,
-        title: controller.isCurrentUser ? 'Profile' : controller.user.name,
+        title: controller.currentUser.nickname.toNickname(),
+        actions: [
+          NavigatorIconButton(
+            icon: Icons.add_box_outlined,
+            onPressed: () => _getImage(context),
+          ),
+          NavigatorIconButton(
+            icon: Icons.menu,
+            onPressed: () {},
+          ),
+        ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: SafeArea(
         child: Obx(
-          () => Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              UserProfileHeader(user: controller.user),
-              const SizedBox(height: 16),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: controller.galleryImages.length,
-                  itemBuilder: (BuildContext context, int index) {
+          () => CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: UserProfileHeader(user: controller.user),
+              ),
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 16),
+              ),
+              SliverToBoxAdapter(
+                  child: Column(
+                children: [
+                  if (controller.isCurrentUser) ...[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                      ),
+                      child: FlatButton(
+                        actionText: 'Edit Profile',
+                        onPressed: () {},
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                ],
+              )),
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
                     final galleryImage = controller.galleryImages[index];
-                    return Image.network(galleryImage.image);
+                    return _galleryItem(galleryImage);
                   },
+                  childCount: controller.galleryImages.length,
                 ),
               ),
             ],
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _getImage(context),
+    );
+  }
+
+  Widget _galleryItem(Gallery galleryImage) {
+    final imageSize = MediaQuery.of(context).size.width;
+    return GestureDetector(
+      onTap: () => _showImageViewer(context, galleryImage.image),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: imageSize,
+              minWidth: imageSize,
+            ),
+            child: Image.network(
+              galleryImage.image,
+              fit: BoxFit.cover,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              galleryImage.description,
+              style: ThemeTypography.regular14,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              galleryImage.createdAt.toMonthlyAndYearFormattedString(),
+              style: ThemeTypography.regular12.apply(
+                color: ThemeColors.grey3,
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+        ],
       ),
     );
   }
@@ -73,5 +147,16 @@ class _UserProfileViewState extends State<UserProfileView> {
         ),
       );
     }
+  }
+
+  void _showImageViewer(BuildContext context, String image) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ImageViewer(
+          images: [image],
+        );
+      },
+    );
   }
 }

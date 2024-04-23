@@ -7,6 +7,12 @@ class ThemeTypography {
     fontFamily: 'Gilroy',
   );
 
+  static const nickname = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    fontFamily: 'Gilroy',
+  );
+
   static const semiBold24 = TextStyle(
     fontSize: 24,
     fontWeight: FontWeight.w600,

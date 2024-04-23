@@ -3,11 +3,13 @@ import 'package:get/get.dart';
 import 'package:splach/features/chat/components/group_chat_list_item.dart';
 import 'package:splach/features/chat/components/shimmer_chat_group_list_item.dart';
 import 'package:splach/features/chat/models/chat_category.dart';
+import 'package:splach/features/chat/views/chat_edit_view.dart';
 import 'package:splach/features/chat/views/chat_view.dart';
 import 'package:splach/features/home/components/category_button.dart';
 import 'package:splach/features/home/controllers/home_controller.dart';
 import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
+import 'package:splach/widgets/navigator_icon_button.dart';
 
 class HomeView extends StatelessWidget {
   final HomeController controller = Get.put(HomeController());
@@ -38,16 +40,13 @@ class HomeView extends StatelessWidget {
                     color: ThemeColors.primary,
                   ),
                 ),
-                actions: const [
-                  // IconButton(
-                  //   onPressed: () => Get.to(
-                  //     () => ChatEditView(),
-                  //   ),
-                  //   icon: const Icon(
-                  //     Icons.add,
-                  //     color: Colors.black,
-                  //   ),
-                  // ),
+                actions: [
+                  NavigatorIconButton(
+                    icon: Icons.add,
+                    onPressed: () => Get.to(
+                      () => ChatEditView(),
+                    ),
+                  ),
                 ],
               ),
               SliverToBoxAdapter(

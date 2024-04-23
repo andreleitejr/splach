@@ -13,6 +13,7 @@ class TextArea extends StatelessWidget {
   final List<TextInputFormatter>? inputFormatters;
   final VoidCallback? onSubmit;
   final int maxLines;
+  final int maxLength;
 
   const TextArea({
     super.key,
@@ -25,11 +26,13 @@ class TextArea extends StatelessWidget {
     this.inputFormatters,
     this.onSubmit,
     this.maxLines = 4,
+    this.maxLength = 140,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      maxLength: maxLength,
       maxLines: maxLines,
       enabled: enabled,
       controller: controller,

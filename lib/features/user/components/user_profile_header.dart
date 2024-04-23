@@ -6,28 +6,35 @@ import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/utils/extensions.dart';
 import 'package:splach/widgets/image_viewer.dart';
 
-class UserProfileHeader extends StatelessWidget {
+class UserProfileHeader extends StatefulWidget {
   final User user;
 
   const UserProfileHeader({super.key, required this.user});
 
   @override
+  State<UserProfileHeader> createState() => _UserProfileHeaderState();
+}
+
+class _UserProfileHeaderState extends State<UserProfileHeader> {
+  @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
-        // crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Column(
             children: [
-              if (user.image != null)
+              if (widget.user.image != null)
                 GestureDetector(
                   onTap: () {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
                         return ImageViewer(
-                          images: [user.image!],
+                          images: [
+                            widget.user.image!,
+                          ],
                         );
                       },
                     );
@@ -36,35 +43,74 @@ class UserProfileHeader extends StatelessWidget {
                     height: 64,
                     width: 64,
                     decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.white,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: ThemeColors.tertiary.withOpacity(
+                            0.5,
+                          ),
+                          spreadRadius: -8,
+                          blurRadius: 20,
+                          offset: const Offset(0, 0),
+                        ),
+                      ],
                       shape: BoxShape.circle,
                       image: DecorationImage(
-                        image: NetworkImage(user.image!),
+                        image: NetworkImage(
+                          widget.user.image!,
+                        ),
                         fit: BoxFit.cover,
                       ),
                     ),
                   ),
                 ),
-              if (user.rating != null)
-                Row(
-                  children: [
-                    const Icon(Icons.star),
-                    Text(user.rating!.toString()),
-                  ],
+              if (widget.user.rating != null)
+                SizedBox(
+                  height: 24,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      const Icon(
+                        Icons.star_rounded,
+                        size: 20,
+                        color: ThemeColors.primary,
+                      ),
+                      Text(
+                        widget.user.rating!.toDouble().toString(),
+                        style: ThemeTypography.nickname,
+                      ),
+                      const SizedBox(width: 4),
+                    ],
+                  ),
                 ),
             ],
           ),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const SizedBox(height: 6),
                   Text(
-                    user.nickname.toNickname(),
-                    style: ThemeTypography.semiBold16,
+                    widget.user.name,
+                    style: ThemeTypography.nickname,
                   ),
-                  const SizedBox(height: 8),
+                  // const SizedBox(height: 2),
                   _buildDescriptionText(),
+                  if(widget.user.instagram != null)...[
+
+                    const SizedBox(height: 6),
+                    Text(
+                      'Instagram: @${widget.user.instagram!}',
+                      style: ThemeTypography.semiBold12.apply(
+                        color: ThemeColors.primary,
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -74,28 +120,36 @@ class UserProfileHeader extends StatelessWidget {
     );
   }
 
+  bool showEntireDescription = false;
+
   Widget _buildDescriptionText() {
-    final description = user.description;
-    final showAllText = description.length > 50;
+    final description = widget.user.description;
+    final showAllButtonText = description.length > 50;
 
     return RichText(
       text: TextSpan(
         children: [
           TextSpan(
-            text: description.length <= 50
+            text: description.length <= 50 || showEntireDescription
                 ? description
-                : description.substring(0, 50) + (showAllText ? "..." : ""),
+                : description.substring(0, 50) +
+                    (showAllButtonText ? "..." : ""),
             style: ThemeTypography.regular14.apply(
               color: ThemeColors.grey4,
             ),
           ),
-          if (showAllText) ...[
+          if (showAllButtonText) ...[
             TextSpan(
-              text: ' Ver tudo',
+              text: showEntireDescription ? ' See less' : ' See all',
               style: ThemeTypography.regular14.apply(
                 color: ThemeColors.primary,
               ),
-              recognizer: TapGestureRecognizer()..onTap = () {},
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  setState(() {
+                    showEntireDescription = !showEntireDescription;
+                  });
+                },
             ),
           ],
         ],

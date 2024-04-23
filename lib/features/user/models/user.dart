@@ -12,6 +12,7 @@ class User extends BaseModel {
   final DateTime birthday;
   final String state;
   final String country;
+  final String? instagram;
 
   int? rating;
 
@@ -29,6 +30,7 @@ class User extends BaseModel {
     required this.birthday,
     required this.state,
     required this.country,
+    this.instagram,
   });
 
   User.fromDocument(DocumentSnapshot document)
@@ -42,6 +44,7 @@ class User extends BaseModel {
         birthday = (document.get('birthday') as Timestamp).toDate(),
         state = document.get('state'),
         country = document.get('country'),
+        instagram = document.get('instagram'),
         super.fromDocument(document);
 
 
@@ -58,6 +61,7 @@ class User extends BaseModel {
       'birthday': birthday.toUtc(),
       'state': state,
       'country': country,
+      'instagram': instagram,
       ...super.toMap(),
     };
   }

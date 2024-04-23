@@ -245,7 +245,7 @@ class ChatMessageList extends StatelessWidget {
                             children: [
                               Text(
                                 message.sender!.nickname.toNickname(),
-                                style: ThemeTypography.semiBold16,
+                                style: ThemeTypography.nickname,
                               ),
                               const SizedBox(height: 8),
                               Text(

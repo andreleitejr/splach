@@ -244,6 +244,7 @@ class _UserEditViewState extends State<UserEditView>
                 hintText: 'Description',
                 currentFocus: descriptionFocus,
                 onSubmit: () => focus.unfocus(),
+
               ),
               const SizedBox(height: 16),
             ],

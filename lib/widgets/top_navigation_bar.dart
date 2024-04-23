@@ -25,7 +25,7 @@ class TopNavigationBar extends StatelessWidget implements PreferredSizeWidget {
       leading: showLeading ? _leadingButton() : null,
       title: Text(
         title,
-        style: ThemeTypography.medium16.apply(
+        style: ThemeTypography.semiBold16.apply(
           color: ThemeColors.grey5,
         ),
       ),
