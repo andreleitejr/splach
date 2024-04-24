@@ -63,7 +63,10 @@ class ChatTopNavigationBar extends StatelessWidget {
           Obx(
             () => GestureDetector(
               onTap: () => Get.to(
-                () => NotificationView(showLeading: true),
+                () => NotificationView(
+                  controller: controller.notificationController,
+                  showLeading: true,
+                ),
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4),

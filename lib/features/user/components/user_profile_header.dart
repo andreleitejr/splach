@@ -1,7 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/themes/theme_colors.dart';
+import 'package:splach/themes/theme_images.dart';
 import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/utils/extensions.dart';
 import 'package:splach/widgets/image_viewer.dart';
@@ -66,25 +68,32 @@ class _UserProfileHeaderState extends State<UserProfileHeader> {
                     ),
                   ),
                 ),
-              if (widget.user.rating != null)
-                SizedBox(
-                  height: 24,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      const Icon(
-                        Icons.star_rounded,
-                        size: 20,
-                        color: ThemeColors.primary,
+              if (widget.user.rating != null)...[
+
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    SvgPicture.asset(
+                      ThemeImages.ratingStar,
+                      height: 15,
+                      colorFilter: const ColorFilter.mode(
+                        ThemeColors.primary,
+                        BlendMode.srcIn,
                       ),
-                      Text(
+                    ),
+                    const SizedBox(width: 2),
+                    Container(
+                      padding: const EdgeInsets.only(top: 1),
+                      height: 16,
+                      child: Text(
                         widget.user.rating!.toDouble().toString(),
                         style: ThemeTypography.nickname,
                       ),
-                      const SizedBox(width: 4),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(width: 4),
+                  ],
                 ),
+              ],
             ],
           ),
           Expanded(

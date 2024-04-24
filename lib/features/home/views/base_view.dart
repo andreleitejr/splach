@@ -13,7 +13,8 @@ import 'package:splach/widgets/avatar_image.dart';
 class BaseController extends GetxController {
   final User user = Get.find();
   var selectedIndex = 0.obs;
-  final NotificationController notificationController = Get.find();
+  final notificationController = Get.put( NotificationController());
+
 }
 
 class BaseView extends StatefulWidget {
@@ -28,11 +29,13 @@ class BaseView extends StatefulWidget {
 class _BaseViewState extends State<BaseView> {
   late BaseController controller;
 
-  final List<Widget> _pages = [
-    HomeView(),
-    NotificationView(),
-    UserProfileView(user: Get.find<User>()),
-  ];
+  List<Widget> get _pages => [
+        HomeView(),
+        NotificationView(
+          controller: controller.notificationController,
+        ),
+        UserProfileView(user: Get.find<User>()),
+      ];
 
   @override
   void initState() {

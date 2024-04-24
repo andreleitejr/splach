@@ -63,89 +63,26 @@ class _UserProfileViewState extends State<UserProfileView> {
               }
               return CustomScrollView(
                 slivers: [
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: 12),
+                  ),
                   SliverToBoxAdapter(
-                    child: UserProfileHeader(user: controller.user),
+                    child: UserProfileHeader(
+                      user: controller.user,
+                    ),
                   ),
                   const SliverToBoxAdapter(
                     child: SizedBox(height: 24),
                   ),
                   SliverToBoxAdapter(
-                    child: Column(
-                      children: [
-                        if (controller.user.isCurrentUser) ...[
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                            ),
-                            child: FlatButton(
-                              actionText: 'Edit Profile',
-                              onPressed: () {},
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                        ] else ...[
-                          Obx(() {
-                            return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
-                              child: RatingStars(
-                                score: controller.score.value,
-                                onPressed: controller.score,
-                              ),
-                            );
-                          }),
-                          const SizedBox(height: 16),
-                          Obx(() {
-                            print(
-                                '################# ${controller.showRateButton.value}');
-                            if (controller.showRateButton.isFalse) {
-                              return Container();
-                            }
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                              ),
-                              child: Align(
-                                alignment: Alignment.center,
-                                child: FlatButton(
-                                  onPressed: () {
-                                    controller.rate(widget.user.id!);
-                                    Get.back();
-                                  },
-                                  actionText:
-                                      'Rate ${widget.user.nickname.toNickname()}',
-                                ),
-                              ),
-                            );
-                          })
-                        ],
-                      ],
-                    ),
+                    child: _buildProfileButton(),
                   ),
                   const SliverToBoxAdapter(
                     child: SizedBox(height: 16),
                   ),
                   SliverToBoxAdapter(
                     child: Obx(() {
-                      return StaggeredGrid.count(
-                        crossAxisCount: 4,
-                        mainAxisSpacing: 4,
-                        crossAxisSpacing: 4,
-                        children: [
-                          for (int index = 0;
-                              index < controller.galleryImages.length;
-                              index++) ...[
-                            StaggeredGridTile.count(
-                              crossAxisCellCount:
-                                  buildCrossAxisCellCount(index),
-                              mainAxisCellCount: buildMainAxisCellCount(index),
-                              child: GalleryItem(
-                                galleryImage: controller.galleryImages[index],
-                              ),
-                            ),
-                          ],
-                        ],
-                      );
+                      return _buildGallery();
                     }),
                   ),
                 ],
@@ -154,6 +91,77 @@ class _UserProfileViewState extends State<UserProfileView> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildProfileButton() {
+    return Column(
+      children: [
+        if (controller.user.isCurrentUser) ...[
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+            ),
+            child: FlatButton(
+              actionText: 'Edit Profile',
+              onPressed: () {},
+            ),
+          ),
+          const SizedBox(height: 16),
+        ] else ...[
+          Obx(() {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: RatingStars(
+                score: controller.score.value,
+                onPressed: controller.score,
+              ),
+            );
+          }),
+          const SizedBox(height: 16),
+          Obx(() {
+            if (controller.showRateButton.isFalse) {
+              return Container();
+            }
+            return Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+              ),
+              child: Align(
+                alignment: Alignment.center,
+                child: FlatButton(
+                  onPressed: () {
+                    controller.rate(widget.user.id!);
+                    Get.back();
+                  },
+                  actionText: 'Rate ${widget.user.nickname.toNickname()}',
+                ),
+              ),
+            );
+          })
+        ],
+      ],
+    );
+  }
+
+  Widget _buildGallery() {
+    return StaggeredGrid.count(
+      crossAxisCount: 4,
+      mainAxisSpacing: 4,
+      crossAxisSpacing: 4,
+      children: [
+        for (int index = 0;
+            index < controller.galleryImages.length;
+            index++) ...[
+          StaggeredGridTile.count(
+            crossAxisCellCount: buildCrossAxisCellCount(index),
+            mainAxisCellCount: buildMainAxisCellCount(index),
+            child: GalleryItem(
+              galleryImage: controller.galleryImages[index],
+            ),
+          ),
+        ],
+      ],
     );
   }
 

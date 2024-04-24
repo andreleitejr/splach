@@ -8,11 +8,12 @@ import 'package:splach/features/user/views/user_profile_view.dart';
 import 'package:splach/widgets/top_navigation_bar.dart';
 
 class NotificationView extends StatelessWidget {
-  final controller = Get.put(NotificationController());
+  final NotificationController controller;
   final bool showLeading;
 
-  NotificationView({
+  const NotificationView({
     Key? key,
+    required this.controller,
     this.showLeading = false,
   }) : super(key: key);
 
@@ -23,25 +24,26 @@ class NotificationView extends StatelessWidget {
         showLeading: showLeading,
         title: 'Notifications',
       ),
-      body: ListView.builder(
-        itemCount: controller.notifications.length,
-        itemBuilder: (context, index) {
-          final notification = controller.notifications[index];
-          return NotificationItem(
-            onNotificationTap: () async {
-              print('################### NOTIFICATION RELATED ID: ${notification.relatedId}');
-              final user = await controller.getUser(
-                notification.relatedId,
-              );
-              if (user != null) {
-                Get.to(
-                  () => UserProfileView(user: user),
+      body: Obx(
+        () => ListView.builder(
+          itemCount: controller.notifications.length,
+          itemBuilder: (context, index) {
+            final notification = controller.notifications[index];
+            return NotificationItem(
+              onNotificationTap: () async {
+                final user = await controller.getUser(
+                  notification.relatedId,
                 );
-              }
-            },
-            notification: notification,
-          );
-        },
+                if (user != null) {
+                  Get.to(
+                    () => UserProfileView(user: user),
+                  );
+                }
+              },
+              notification: notification,
+            );
+          },
+        ),
       ),
     );
   }

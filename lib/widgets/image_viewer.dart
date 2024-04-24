@@ -54,21 +54,6 @@ class ImageViewer extends StatelessWidget {
               ),
             ),
           ],
-          if (description != null) ...[
-            const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-              ),
-              child: Text(
-                description!,
-                style: ThemeTypography.regular14.apply(
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-          ],
           Expanded(
             child: SizedBox(
               height: MediaQuery.of(context).size.width,
@@ -91,6 +76,21 @@ class ImageViewer extends StatelessWidget {
               ),
             ),
           ),
+          if (description != null) ...[
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+              ),
+              child: Text(
+                description!,
+                style: ThemeTypography.regular14.apply(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
           const SizedBox(height: 64),
         ],
       ),

@@ -11,4 +11,5 @@ class ThemeColors {
   static const tertiary = Color(0xFF49108B);
   static const fuchsia60 = Color(0xFFFCDDEC);
   static const light = Color(0xFFF3F8FF);
+  static const yellow = Color(0xFFFFD250);
 }
