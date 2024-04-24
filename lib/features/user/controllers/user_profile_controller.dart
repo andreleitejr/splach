@@ -24,7 +24,10 @@ class UserProfileController extends GetxController {
   final galleryImages = <Gallery>[].obs;
   final description = TextEditingController();
   final score = 0.toDouble().obs;
+  final rating = Rx<Rating?>(null);
   final userRatings = <Rating>[].obs;
+
+  RxBool get showRateButton => (rating.value?.score != score.value).obs;
 
   final loading = false.obs;
 
@@ -35,7 +38,7 @@ class UserProfileController extends GetxController {
     await getTotalRatings();
     _listenToGalleryImages();
     await _fetchUserRatings();
-    checkRatingValue();
+    await checkRatingValue();
     loading.value = false;
   }
 
@@ -99,9 +102,9 @@ class UserProfileController extends GetxController {
   Future<void> checkRatingValue() async {
     if (user.isCurrentUser) return;
 
-    final rating = await _ratingRepository.checkRatingExists(user.id!);
-    if (rating != null) {
-      score.value = rating.score.toDouble();
+    rating.value = await _ratingRepository.checkRatingExists(user.id!);
+    if (rating.value != null) {
+      score.value = rating.value!.score.toDouble();
       // ratings.add(rating);
     }
   }

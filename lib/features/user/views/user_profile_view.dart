@@ -5,14 +5,11 @@ import 'package:splach/features/camera/views/camera_view.dart';
 import 'package:splach/features/user/components/gallery_item.dart';
 import 'package:splach/features/user/components/user_profile_header.dart';
 import 'package:splach/features/user/controllers/user_profile_controller.dart';
-import 'package:splach/features/user/models/gallery.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/features/user/views/gallery_edit_view.dart';
 import 'package:splach/themes/theme_colors.dart';
-import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/utils/extensions.dart';
 import 'package:splach/widgets/flat_button.dart';
-import 'package:splach/widgets/image_viewer.dart';
 import 'package:splach/widgets/navigator_icon_button.dart';
 import 'package:splach/widgets/rating_stars.dart';
 import 'package:splach/widgets/top_navigation_bar.dart';
@@ -70,7 +67,7 @@ class _UserProfileViewState extends State<UserProfileView> {
                     child: UserProfileHeader(user: controller.user),
                   ),
                   const SliverToBoxAdapter(
-                    child: SizedBox(height: 8),
+                    child: SizedBox(height: 24),
                   ),
                   SliverToBoxAdapter(
                     child: Column(
@@ -98,26 +95,33 @@ class _UserProfileViewState extends State<UserProfileView> {
                             );
                           }),
                           const SizedBox(height: 16),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                            ),
-                            child: Align(
-                              alignment: Alignment.center,
-                              child: FlatButton(
-                                onPressed: () {
-                                  controller.rate(widget.user.id!);
-                                  Get.back();
-                                },
-                                actionText: 'Rate this user',
+                          Obx(() {
+                            print(
+                                '################# ${controller.showRateButton.value}');
+                            if (controller.showRateButton.isFalse) {
+                              return Container();
+                            }
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
                               ),
-                            ),
-                          ),
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: FlatButton(
+                                  onPressed: () {
+                                    controller.rate(widget.user.id!);
+                                    Get.back();
+                                  },
+                                  actionText:
+                                      'Rate ${widget.user.nickname.toNickname()}',
+                                ),
+                              ),
+                            );
+                          })
                         ],
                       ],
                     ),
                   ),
-
                   const SliverToBoxAdapter(
                     child: SizedBox(height: 16),
                   ),
@@ -144,17 +148,6 @@ class _UserProfileViewState extends State<UserProfileView> {
                       );
                     }),
                   ),
-                  // SliverList(
-                  //   delegate: SliverChildBuilderDelegate(
-                  //     (context, index) {
-                  //       final galleryImage = controller.galleryImages[index];
-                  //       return GalleryItem(
-                  //         galleryImage: galleryImage,
-                  //       );
-                  //     },
-                  //     childCount: controller.galleryImages.length,
-                  //   ),
-                  // ),
                 ],
               );
             }),
