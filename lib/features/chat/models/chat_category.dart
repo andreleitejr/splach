@@ -11,7 +11,7 @@ class ChatCategory extends SelectableItem {
 
   ChatCategory({
     this.category = ChatCategory.all,
-    this.name = 'Todos',
+    this.name = 'All',
     this.icon = Icons.chat_bubble_outline_rounded,
   });
 
@@ -32,42 +32,42 @@ final categories = <ChatCategory>[
   /// "ALL" ALWAYS MUST BE THE FIRST ITEM
   ChatCategory(
     category: ChatCategory.all,
-    name: 'Todos',
+    name: 'All',
     icon: Icons.message_outlined,
   ),
   ChatCategory(
     category: ChatCategory.chat,
-    name: 'Bate-papo',
+    name: 'Just Chat',
     icon: Icons.chat_bubble_outline_rounded,
   ),
   ChatCategory(
     category: ChatCategory.dating,
-    name: 'Namoro',
+    name: 'Dating',
     icon: Icons.heart_broken_outlined,
   ),
   ChatCategory(
     category: ChatCategory.friendship,
-    name: 'Amizade',
+    name: 'Friendship',
     icon: Icons.person_2_outlined,
   ),
   ChatCategory(
     category: ChatCategory.event,
-    name: 'Eventos',
+    name: 'Events',
     icon: Icons.date_range,
   ),
-  ChatCategory(
-    category: ChatCategory.studyGroup,
-    name: 'Grupo de Estudo',
-    icon: Icons.file_open_outlined,
-  ),
+  // ChatCategory(
+  //   category: ChatCategory.studyGroup,
+  //   name: 'Grupo de Estudo',
+  //   icon: Icons.file_open_outlined,
+  // ),
   ChatCategory(
     category: ChatCategory.work,
-    name: 'Trabalho',
+    name: 'Work',
     icon: Icons.work_outline_outlined,
   ),
   ChatCategory(
     category: ChatCategory.other,
-    name: 'Outros',
+    name: 'Other',
     icon: Icons.more_horiz_outlined,
   ),
 ];

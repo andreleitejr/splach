@@ -31,7 +31,7 @@ class CodeWidget extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         const Text(
-          'Enviamos um código para o número:',
+          'We sent a verification code to number:',
           style: ThemeTypography.medium14,
         ),
         const SizedBox(height: 4),

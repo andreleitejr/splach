@@ -146,7 +146,7 @@ class ChatInfoView extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.grey[200],
         image: DecorationImage(
-          image: MemoryImage(base64Decode(message.imageUrl!)),
+          image: NetworkImage(message.imageUrl!),
           fit: BoxFit.cover,
         ),
       ),

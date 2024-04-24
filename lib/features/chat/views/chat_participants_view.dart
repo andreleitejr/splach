@@ -56,9 +56,7 @@ class ChatParticipantsView extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
               image: DecorationImage(
-                image: MemoryImage(
-                  base64Decode(participant.image),
-                ),
+                image: NetworkImage(participant.image),
                 fit: BoxFit.cover,
               ),
             ),
