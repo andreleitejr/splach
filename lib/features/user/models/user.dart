@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
 import 'package:splach/models/base_model.dart';
 
 class User extends BaseModel {
@@ -34,7 +35,7 @@ class User extends BaseModel {
   });
 
   User.fromDocument(DocumentSnapshot document)
-      : phone =  document.get('phone'),
+      : phone = document.get('phone'),
         email = document.get('email'),
         nickname = document.get('nickname'),
         image = document.get('image'),
@@ -46,7 +47,6 @@ class User extends BaseModel {
         country = document.get('country'),
         instagram = document.get('instagram'),
         super.fromDocument(document);
-
 
   @override
   Map<String, dynamic> toMap() {
@@ -65,4 +65,6 @@ class User extends BaseModel {
       ...super.toMap(),
     };
   }
+
+  bool get isCurrentUser => id == Get.find<User>().id;
 }

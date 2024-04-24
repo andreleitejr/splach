@@ -101,13 +101,24 @@ class _UserProfileHeaderState extends State<UserProfileHeader> {
                   ),
                   // const SizedBox(height: 2),
                   _buildDescriptionText(),
-                  if(widget.user.instagram != null)...[
+                  if (widget.user.instagram != null) ...[
+                    const SizedBox(height: 4),
+                    GestureDetector(
+                      onTap: () {
+                        if (!widget.user.isCurrentUser) {
+                          // Abrir ads e redirecionar ao Instagram
+                        }
+                      },
+                      child: Text(
+                        'Instagram: @${widget.user.instagram!}',
 
-                    const SizedBox(height: 6),
-                    Text(
-                      'Instagram: @${widget.user.instagram!}',
-                      style: ThemeTypography.semiBold12.apply(
-                        color: ThemeColors.primary,
+                        /// TODO: Descomentar quando implementar o Ads
+                        // widget.user.isCurrentUser
+                        //     ? 'Instagram: @${widget.user.instagram!}'
+                        //     : 'See on Instagram',
+                        style: ThemeTypography.semiBold12.apply(
+                          color: ThemeColors.primary,
+                        ),
                       ),
                     ),
                   ],
@@ -146,9 +157,11 @@ class _UserProfileHeaderState extends State<UserProfileHeader> {
               ),
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
-                  setState(() {
-                    showEntireDescription = !showEntireDescription;
-                  });
+                  setState(
+                    () {
+                      showEntireDescription = !showEntireDescription;
+                    },
+                  );
                 },
             ),
           ],

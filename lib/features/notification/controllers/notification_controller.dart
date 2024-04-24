@@ -9,7 +9,6 @@ import 'package:splach/utils/extensions.dart';
 
 class NotificationController extends GetxController {
   final User user = Get.find();
-
   final _ratingRepository = Get.put(RatingRepository());
   final _userRepository = Get.put(UserRepository());
 
@@ -56,6 +55,11 @@ class NotificationController extends GetxController {
     });
   }
 
+  Future<User?> getUser(String userId) async {
+    print('################### NOTIFICATION USER ID: $userId');
+    return await _userRepository.get(userId);
+  }
+
   Future<void> _getRatingUsers() async {
     final ratingUserIds = ratings.map((rating) => rating.userId).toList();
 
@@ -70,7 +74,7 @@ class NotificationController extends GetxController {
       updatedAt: rating.updatedAt,
       createdAt: rating.createdAt,
       content:
-          '$nickname rated you with ${rating.score} $starsText ${_getEmoji(rating.score)}',
+          '$nickname rated you with ${rating.score.round()} $starsText ${_getEmoji(rating.score.toInt())}',
       relatedId: rating.userId,
       notificationType: AppNotificationType.rating,
       image: rating.user?.image,

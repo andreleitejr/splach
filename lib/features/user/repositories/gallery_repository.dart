@@ -4,9 +4,9 @@ import 'package:splach/features/user/models/user.dart';
 import 'package:splach/repositories/firestore_repository.dart';
 
 class GalleryRepository extends FirestoreRepository<Gallery> {
-  GalleryRepository()
+  GalleryRepository(User user)
       : super(
-          collectionName: 'users/${Get.find<User>().id}/gallery',
+          collectionName: 'users/${user.id}/gallery',
           fromDocument: (document) => Gallery.fromDocument(document),
         );
 }

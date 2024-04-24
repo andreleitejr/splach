@@ -16,12 +16,6 @@ class NotificationView extends StatelessWidget {
     this.showLeading = false,
   }) : super(key: key);
 
-  final UserRepository _userRepository = Get.find();
-
-  Future<User?> _getUser(String userId) async {
-    return await _userRepository.get(userId);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +29,8 @@ class NotificationView extends StatelessWidget {
           final notification = controller.notifications[index];
           return NotificationItem(
             onNotificationTap: () async {
-              final user = await _getUser(
+              print('################### NOTIFICATION RELATED ID: ${notification.relatedId}');
+              final user = await controller.getUser(
                 notification.relatedId,
               );
               if (user != null) {

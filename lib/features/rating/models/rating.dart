@@ -10,7 +10,7 @@ class Rating extends BaseModel {
   final String userId;
   final String userNickname;
   final String ratedId;
-  int score;
+  double score;
   final RatingType type;
 
   User? user;
@@ -29,7 +29,7 @@ class Rating extends BaseModel {
       : userId = document.get('userId'),
         userNickname = document.get('userNickname'),
         ratedId = document.get('ratedId'),
-        score = document.get('ratingValue'),
+        score = double.parse(document.get('ratingValue').toString()),
         type = RatingTypeExtension.fromString(document.get('type')),
         super.fromDocument(document);
 

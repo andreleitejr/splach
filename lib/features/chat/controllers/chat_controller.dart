@@ -59,7 +59,7 @@ class ChatController extends GetxController {
   final userRatings = <Rating>[].obs;
 
   // final rating = Rx<Rating?>(null);
-  final score = 0.obs;
+  final score = 0.toDouble().obs;
 
   final isShowingMentionList = false.obs;
   final mentions = <String>[];
@@ -357,7 +357,7 @@ class ChatController extends GetxController {
   Future<void> checkRatingValue(String ratedId) async {
     final rating = await _ratingRepository.checkRatingExists(ratedId);
     if (rating != null) {
-      score.value = rating.score;
+      score.value = rating.score.toDouble();
       ratings.add(rating);
     }
   }

@@ -10,6 +10,7 @@ import 'package:splach/themes/theme_colors.dart';
 import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/utils/extensions.dart';
 import 'package:splach/widgets/flat_button.dart';
+import 'package:splach/widgets/rating_stars.dart';
 
 import 'chat_sender_message.dart';
 import 'chat_system_message.dart';
@@ -346,21 +347,9 @@ class ChatMessageList extends StatelessWidget {
 
   Widget _buildRatingStars() {
     return Obx(() {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: List.generate(
-          5,
-          (index) => IconButton(
-            onPressed: () {
-              controller.score.value = index + 1;
-            },
-            icon: Icon(
-              index < controller.score.value ? Icons.star : Icons.star_border,
-              color: Colors.orange,
-              size: 36,
-            ),
-          ),
-        ),
+      return RatingStars(
+        score: controller.score.value,
+        onPressed: controller.score,
       );
     });
   }
