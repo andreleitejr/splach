@@ -46,16 +46,16 @@ extension DateTimeExtensions on DateTime {
   String toTimeString() {
     final timeDifference = DateTime.now().difference(this).inSeconds;
     if (timeDifference < 60) {
-      return '${timeDifference.toStringAsFixed(0)}s ago';
+      return '${timeDifference.toStringAsFixed(0)}s';
     } else if (timeDifference < 3600) {
       final minutes = timeDifference / 60.toInt();
-      return '${minutes.toStringAsFixed(0)}m ago';
+      return '${minutes.toStringAsFixed(0)}m';
     } else if (timeDifference < 86400) {
       final hours = timeDifference / 3600.toInt();
-      return '${hours.toStringAsFixed(0)}h ago';
+      return '${hours.toStringAsFixed(0)}h';
     } else {
       final days = timeDifference / 86400.toInt();
-      return '${days.toStringAsFixed(0)}d ago';
+      return '${days.toStringAsFixed(0)}d';
     }
   }
 

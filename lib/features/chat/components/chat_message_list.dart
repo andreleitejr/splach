@@ -41,6 +41,7 @@ class ChatMessageList extends StatelessWidget {
               child: ListView.builder(
                 controller: controller.scrollController,
                 reverse: true,
+                shrinkWrap: true,
                 padding: const EdgeInsets.all(8),
                 itemCount: messages.length,
                 itemBuilder: (context, index) {
@@ -55,11 +56,14 @@ class ChatMessageList extends StatelessWidget {
                   }
 
                   return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if (message.isFromSystem) ...[
+                        const SizedBox(height: 4),
                         ChatSystemMessage(
                           message: message,
-                        )
+                        ),
+                        const SizedBox(height: 4),
                       ] else if (message.isFromUser) ...[
                         ChatUserMessage(
                           message: message,
@@ -69,15 +73,13 @@ class ChatMessageList extends StatelessWidget {
                         ChatSenderMessage(
                           message: message,
                           onHorizontalDragEnd: () => _replyMessage(message),
-                          onMoreButtonTap: () => _showBottomSheet(message),
+                          onDoubleTap: () => _showBottomSheet(message),
                           onAvatarTap: () => _goToUserPage(message),
-                          onAvatarLongPress: () => _showBottomSheet(message),
+                          onLongPress: () => _showBottomSheet(message),
                           onTitleTap: () => _goToUserPage(message),
                         ),
+                        const SizedBox(height: 6),
                       ],
-                      SizedBox(
-                        height: message.isFromSystem ? 12 : 8,
-                      ),
                     ],
                   );
                 },

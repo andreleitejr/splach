@@ -78,4 +78,10 @@ class Message extends BaseModel {
   bool get isFromSystem => messageType == MessageType.system;
 
   bool get isFromUser => senderId == Get.find<User>().id;
+
+  bool get isPrivate => private/* && replyId == Get.find<User>().id*/;
+
+  bool get isReplied => recipients!.contains(Get.find<User>().id);
+
+  bool get isHighlighted => isReplied && isPrivate;
 }

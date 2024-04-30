@@ -447,8 +447,8 @@ class ChatController extends GetxController {
   @override
   void onClose() {
     removeChatParticipant();
-    scrollController.removeListener(scrollListener);
-    scrollController.dispose();
+    // scrollController.removeListener(scrollListener);
+    // scrollController.dispose();
     super.onClose();
   }
 

@@ -8,23 +8,25 @@ class PrivateMessageSign extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(4),
+      padding: const EdgeInsets.all(2.5),
       decoration: BoxDecoration(
-        color: ThemeColors.grey2,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(4),
       ),
       child: Row(
         children: [
+          const SizedBox(width: 2),
           Text(
             'Private',
-            style: ThemeTypography.semiBold12.copyWith(
-              color: ThemeColors.grey4,
+            style: ThemeTypography.medium10.copyWith(
+              color: ThemeColors.tertiary,
             ),
           ),
-          const SizedBox(width: 4),
+          const SizedBox(width: 2),
           const Icon(
             Icons.lock_outline,
-            size: 12,
+            size: 11,
+            color: ThemeColors.tertiary,
           ),
         ],
       ),

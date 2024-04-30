@@ -93,6 +93,12 @@ class ThemeTypography {
     fontFamily: 'Inter',
   );
 
+  static const medium10 = TextStyle(
+    fontSize: 10,
+    fontWeight: FontWeight.w500,
+    fontFamily: 'Inter',
+  );
+
   static const regular10 = TextStyle(
     fontSize: 10,
     fontWeight: FontWeight.w400,

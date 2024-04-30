@@ -15,8 +15,7 @@ class ChatSenderMessage extends StatelessWidget {
   final Message message;
   final VoidCallback? onDoubleTap;
   final VoidCallback? onHorizontalDragEnd;
-  final VoidCallback? onMoreButtonTap;
-  final VoidCallback? onAvatarLongPress;
+  final VoidCallback? onLongPress;
   final VoidCallback? onAvatarTap;
   final VoidCallback? onTitleTap;
 
@@ -25,8 +24,7 @@ class ChatSenderMessage extends StatelessWidget {
     required this.message,
     this.onDoubleTap,
     this.onHorizontalDragEnd,
-    this.onMoreButtonTap,
-    this.onAvatarLongPress,
+    this.onLongPress,
     this.onAvatarTap,
     this.onTitleTap,
   });
@@ -35,21 +33,29 @@ class ChatSenderMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userId = Get.find<User>().id;
-
-    final isReplied = message.recipients!.contains(userId);
-
-    if (message.private && !isReplied) {
+    if (message.isPrivate && !message.isReplied) {
       return Container();
     }
 
-    final isHighlighted = message.private || isReplied;
+    final showMessageReply = message.replyMessage != null;
+
+    final hasImage = message.imageUrl != null && message.imageUrl!.isNotEmpty;
+
+    final hasTemporaryImage = message.temporaryImage != null;
+
+    final showMessageImage = hasImage || hasTemporaryImage;
+
+    final showMessageContent = message.content != null;
 
     return GestureDetector(
       onDoubleTap: onDoubleTap,
+      onLongPress: onLongPress,
       onHorizontalDragEnd: (_) {
         onHorizontalDragEnd?.call();
       },
+      // onHorizontalDragStart: (_) {
+      //   onLongPress?.call();
+      // },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,18 +63,33 @@ class ChatSenderMessage extends StatelessWidget {
           if (message.sender != null) ...[
             GestureDetector(
               onTap: onAvatarTap,
-              onLongPress: onAvatarLongPress,
               child: AvatarImage(image: message.sender!.image),
             ),
             const SizedBox(width: 8),
           ],
           Container(
             padding: const EdgeInsets.all(8),
+            // constraints: BoxConstraints(
+            //   minWidth: 75,
+            //   maxWidth: MediaQuery.of(context).size.width * .65,
+            // ),
             decoration: BoxDecoration(
-              color: isHighlighted ? ThemeColors.grey1 : Colors.white,
+              color: message.isHighlighted ? null : Colors.white,
+              gradient: message.isHighlighted
+                  ? LinearGradient(
+                      colors: [
+                        const Color(0xFFD7B7FF).withOpacity(.18),
+                        const Color(0xFFA8CCFF).withOpacity(.18),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    )
+                  : null,
               border: Border.all(
-                color:
-                    isHighlighted ? ThemeColors.secondary : ThemeColors.grey2,
+                color: message.isHighlighted
+                    ? ThemeColors.primary
+                    : ThemeColors.grey2,
+                width: 0.5,
               ),
               borderRadius: BorderRadius.only(
                 topLeft: Radius.zero,
@@ -77,156 +98,152 @@ class ChatSenderMessage extends StatelessWidget {
                 bottomRight: Radius.circular(_borderRadius),
               ),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Stack(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    GestureDetector(
-                      onTap: onTitleTap,
-                      child: Text(
-                        message.sender?.nickname.toNickname() ?? 'user',
-                        style: ThemeTypography.semiBold12.copyWith(
-                          color: ThemeColors.primary,
-                        ),
-                      ),
-                    ),
-                    if (message.private) ...[
-                      const SizedBox(width: 4),
-                      const PrivateMessageSign(),
-                    ],
-                    GestureDetector(
-                      onTap: () {
-                        onMoreButtonTap?.call();
-                      },
-                      child: Container(
-                        constraints: const BoxConstraints(
-                          maxHeight: 24,
-                          maxWidth: 24,
-                        ),
-                        child: const Icon(
-                          Icons.more_horiz,
-                          size: 24,
-                        ),
-                      ),
-                    ),
+                    _buildMessageHeader(),
+                    const SizedBox(height: 4),
+                    if (showMessageReply) _buildMessageReply(),
+                    if (showMessageImage) _buildMessageImage(),
+                    if (showMessageContent) _buildMessageContent(),
+                    const SizedBox(height: 12),
                   ],
                 ),
-                if (message.replyMessage != null) ...[
-                  // const SizedBox(height: 2),
-                  if (message.replyMessage!.content != null ||
-                      message.replyMessage!.imageUrl != null) ...[
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: ThemeColors.grey1,
-                        border: Border.all(
-                          color: ThemeColors.grey2,
-                        ),
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.zero,
-                          topRight: Radius.circular(8),
-                          bottomLeft: Radius.circular(8),
-                          bottomRight: Radius.circular(8),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                message.replyMessage?.sender?.nickname
-                                        .toNickname() ??
-                                    '',
-                                style: ThemeTypography.semiBold12.apply(
-                                  color: ThemeColors.primary,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Row(
-                                children: [
-                                  if (message.replyMessage!.imageUrl != null &&
-                                      message.replyMessage!.imageUrl!
-                                          .isNotEmpty) ...[
-                                    ChatImage(
-                                      image: message.replyMessage!.imageUrl!,
-                                      maxWidth: 64,
-                                      maxHeight: 64,
-                                    ),
-                                    const SizedBox(width: 8),
-                                  ],
-                                  if (message.replyMessage!.content !=
-                                      null) ...[
-                                    ConstrainedBox(
-                                      constraints: BoxConstraints(
-                                        minWidth: 75,
-                                        maxWidth:
-                                            MediaQuery.of(context).size.width *
-                                                    (message.replyMessage!
-                                                                .imageUrl !=
-                                                            null
-                                                        ? 0.55
-                                                        : 0.65) -
-                                                32,
-                                      ),
-                                      child: HighlightText(
-                                        message.replyMessage!.content!,
-                                      ),
-                                    ),
-                                  ],
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                  const SizedBox(height: 8),
-                ],
-                if ((message.imageUrl != null &&
-                        message.imageUrl!.isNotEmpty) ||
-                    message.temporaryImage != null) ...[
-                  ChatImage(
-                    image: message.imageUrl!,
-                    temporaryImage: message.temporaryImage,
-                  ),
-                  const SizedBox(height: 4),
-                ],
-                if (message.content != null) ...[
-                  ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minWidth: 75,
-                      maxWidth: MediaQuery.of(context).size.width * 0.65 - 32,
-                    ),
-                    child: RichText(
-                      text: TextSpan(
-                        style: ThemeTypography.regular14.apply(
-                          color: Colors.black,
-                        ),
-                        children: highlightMention(
-                          message.content!,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-                const SizedBox(height: 4),
-                Text(
-                  '${message.createdAt.toTimeString()} ago',
-                  style: ThemeTypography.regular9.apply(
-                    color: ThemeColors.grey4,
-                  ),
-                  textAlign: TextAlign.right,
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: _buildMessageTimestamp(),
                 ),
               ],
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildMessageHeader() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        GestureDetector(
+          onTap: onTitleTap,
+          child: Text(
+            message.sender?.nickname.toNickname() ?? 'user'.toNickname(),
+            style: ThemeTypography.semiBold12.copyWith(
+              color: ThemeColors.primary,
+            ),
+          ),
+        ),
+        if (message.private) ...[
+          const SizedBox(width: 4),
+          const PrivateMessageSign(),
+        ],
+        // GestureDetector(
+        //   onTap: () {
+        //     onMoreButtonTap?.call();
+        //   },
+        //   child: Container(
+        //     constraints: const BoxConstraints(
+        //       maxHeight: 24,
+        //       maxWidth: 24,
+        //     ),
+        //     child: const Icon(
+        //       Icons.more_horiz,
+        //       size: 24,
+        //     ),
+        //   ),
+        // ),
+      ],
+    );
+  }
+
+  Widget _buildMessageReply() {
+    final showImage = message.replyMessage!.imageUrl != null &&
+        message.replyMessage!.imageUrl!.isNotEmpty;
+
+    final showContent = message.replyMessage!.content != null;
+
+    final content =
+        '${message.replyMessage?.sender?.nickname.toNickname() ?? 'user'.toNickname()}'
+        ' ${message.replyMessage!.content!}';
+    if (showContent || showImage) {
+      return Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: ThemeColors.grey1,
+              border: Border.all(
+                color: ThemeColors.grey2,
+              ),
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.zero,
+                topRight: Radius.circular(8),
+                bottomLeft: Radius.circular(8),
+                bottomRight: Radius.circular(8),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    if (showImage) ...[
+                      ChatImage(
+                        image: message.replyMessage!.imageUrl!,
+                        maxWidth: 64,
+                        maxHeight: 64,
+                      ),
+                      const SizedBox(width: 8),
+                    ],
+                    if (showContent) ...[
+                      HighlightText(content),
+                    ],
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 4),
+        ],
+      );
+    }
+    return Container();
+  }
+
+  Widget _buildMessageImage() {
+    return Column(
+      children: [
+        ChatImage(
+          image: message.imageUrl!,
+          temporaryImage: message.temporaryImage,
+        ),
+        const SizedBox(height: 4),
+      ],
+    );
+  }
+
+  Widget _buildMessageContent() {
+    return RichText(
+      text: TextSpan(
+        style: ThemeTypography.regular14.apply(
+          color: Colors.black,
+        ),
+        children: highlightMention(
+          message.content!,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMessageTimestamp() {
+    return Text(
+      '${message.createdAt.toTimeString()} ago',
+      style: ThemeTypography.regular8.apply(
+        color: message.isPrivate ? ThemeColors.tertiary : ThemeColors.grey4,
       ),
     );
   }
