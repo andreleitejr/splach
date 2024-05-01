@@ -6,8 +6,10 @@ class ThemeIcons {
   static const arrowTopAlt = 'images/icons/arrow_top_alt.svg';
   static const bell = 'images/icons/bell.svg';
   static const bellFilled = 'images/icons/bell_filled.svg';
+  static const book = 'images/icons/book.svg';
   static const bookmark = 'images/icons/bookmark.svg';
   static const bookmarkFilled = 'images/icons/bookmark_filled.svg';
+  static const calendar = 'images/icons/calendar.svg';
   static const camera = 'images/icons/camera.svg';
   static const cancel = 'images/icons/cancel.svg';
   static const chat = 'images/icons/chat.svg';
@@ -24,10 +26,12 @@ class ThemeIcons {
   static const home = 'images/icons/home.svg';
   static const homeAlt = 'images/icons/home_alt.svg';
   static const homeAltFilled = 'images/icons/home_alt_filled.svg';
+  static const iceCream = 'images/icons/ice_cream.svg';
   static const image = 'images/icons/image.svg';
   static const info = 'images/icons/info.svg';
   static const instagram = 'images/icons/instagram.svg';
   static const lock = 'images/icons/lock.svg';
+  static const menu = 'images/icons/menu.svg';
   static const message = 'images/icons/message.svg';
   static const people = 'images/icons/people.svg';
   static const pin = 'images/icons/pin.svg';
@@ -40,6 +44,7 @@ class ThemeIcons {
   static const squareAdd = 'images/icons/square_add.svg';
   static const starOne = 'images/icons/star-1.svg';
   static const star = 'images/icons/star.svg';
+  static const suitcase = 'images/icons/suitcase.svg';
   static const trash = 'images/icons/trash.svg';
   static const user = 'images/icons/user.svg';
   static const userAlt = 'images/icons/user_alt.svg';

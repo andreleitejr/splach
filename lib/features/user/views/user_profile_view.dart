@@ -8,6 +8,7 @@ import 'package:splach/features/user/controllers/user_profile_controller.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/features/user/views/gallery_edit_view.dart';
 import 'package:splach/themes/theme_colors.dart';
+import 'package:splach/themes/theme_icons.dart';
 import 'package:splach/utils/extensions.dart';
 import 'package:splach/widgets/flat_button.dart';
 import 'package:splach/widgets/navigator_icon_button.dart';
@@ -44,12 +45,14 @@ class _UserProfileViewState extends State<UserProfileView> {
             actions: [
               if (controller.user.isCurrentUser) ...[
                 NavigatorIconButton(
-                  icon: Icons.add_box_outlined,
+                  icon: ThemeIcons.squareAdd,
                   onPressed: () => _getImage(context),
                 ),
                 NavigatorIconButton(
-                  icon: Icons.menu,
                   onPressed: () {},
+                  icon: ThemeIcons.menu,
+                  iconHeight: 26,
+                  padding: const EdgeInsets.fromLTRB(8, 0, 16, 0),
                 ),
               ],
             ],
@@ -81,9 +84,11 @@ class _UserProfileViewState extends State<UserProfileView> {
                     child: SizedBox(height: 16),
                   ),
                   SliverToBoxAdapter(
-                    child: Obx(() {
-                      return _buildGallery();
-                    }),
+                    child: Obx(
+                      () {
+                        return _buildGallery();
+                      },
+                    ),
                   ),
                 ],
               );
@@ -120,9 +125,6 @@ class _UserProfileViewState extends State<UserProfileView> {
           }),
           const SizedBox(height: 16),
           Obx(() {
-            if (controller.showRateButton.isFalse) {
-              return Container();
-            }
             return Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 16,
@@ -131,10 +133,13 @@ class _UserProfileViewState extends State<UserProfileView> {
                 alignment: Alignment.center,
                 child: FlatButton(
                   onPressed: () {
+                    if(controller.showRateButton.isFalse) return;
+
                     controller.rate(widget.user.id!);
                     Get.back();
                   },
                   actionText: 'Rate ${widget.user.nickname.toNickname()}',
+                  isValid: controller.showRateButton.value,
                 ),
               ),
             );

@@ -68,8 +68,7 @@ class _UserProfileHeaderState extends State<UserProfileHeader> {
                     ),
                   ),
                 ),
-              if (widget.user.rating != null)...[
-
+              if (widget.user.rating != null) ...[
                 const SizedBox(height: 4),
                 Row(
                   children: [
@@ -81,7 +80,7 @@ class _UserProfileHeaderState extends State<UserProfileHeader> {
                         BlendMode.srcIn,
                       ),
                     ),
-                    const SizedBox(width: 2),
+                    const SizedBox(width: 4),
                     Container(
                       padding: const EdgeInsets.only(top: 1),
                       height: 16,

@@ -7,14 +7,15 @@ import 'package:splach/features/notification/views/notification_view.dart';
 import 'package:splach/features/user/models/user.dart';
 import 'package:splach/features/user/views/user_profile_view.dart';
 import 'package:splach/themes/theme_colors.dart';
+import 'package:splach/themes/theme_icons.dart';
 import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/widgets/avatar_image.dart';
+import 'package:splach/widgets/custom_icon.dart';
 
 class BaseController extends GetxController {
   final User user = Get.find();
   var selectedIndex = 0.obs;
-  final notificationController = Get.put( NotificationController());
-
+  final notificationController = Get.put(NotificationController());
 }
 
 class BaseView extends StatefulWidget {
@@ -76,45 +77,64 @@ class _BaseViewState extends State<BaseView> {
 
   List<BottomNavigationBarItem> _buildBottomNavBarItems() {
     return [
-      _buildNavBarItem('', 'Home'),
-      _buildNavBarItemWithBadge('Notifications'),
+      _buildNavBarItem(
+        icon: ThemeIcons.homeAlt,
+        activeIcon: ThemeIcons.homeAltFilled,
+        label: 'Home',
+      ),
+      _buildNavBarItemWithBadge(
+        icon: ThemeIcons.bell,
+        activeIcon: ThemeIcons.bellFilled,
+        label: 'Notifications',
+      ),
       _buildNavBarItemWithAvatar(),
     ];
   }
 
-  BottomNavigationBarItem _buildNavBarItem(String icon, String label) {
+  BottomNavigationBarItem _buildNavBarItem({
+    required String icon,
+    required String activeIcon,
+    String? label,
+  }) {
     return BottomNavigationBarItem(
-      icon: const Padding(
-        padding: EdgeInsets.only(bottom: 4),
-        child: Icon(Icons.home_outlined),
+      icon: Padding(
+        padding: const EdgeInsets.only(bottom: 4),
+        child: CustomIcon(icon),
       ),
-      activeIcon: const Padding(
-        padding: EdgeInsets.only(bottom: 4),
-        child: Icon(Icons.home),
+      activeIcon: Padding(
+        padding: const EdgeInsets.only(bottom: 4),
+        child: CustomIcon(
+          activeIcon,
+          color: ThemeColors.primary,
+        ),
       ),
       label: label,
     );
   }
 
-  BottomNavigationBarItem _buildNavBarItemWithBadge(String label) {
+  BottomNavigationBarItem _buildNavBarItemWithBadge({
+    required String icon,
+    required String activeIcon,
+    String? label,
+  }) {
     return BottomNavigationBarItem(
       icon: _badge(
-        Icons.notifications_outlined,
+        icon,
         Colors.black,
       ),
       activeIcon: _badge(
-        Icons.notifications,
+        activeIcon,
         ThemeColors.primary,
       ),
       label: label,
     );
   }
 
-  Widget _badge(IconData icon, Color iconColor) {
+  Widget _badge(String icon, Color iconColor) {
     return badges.Badge(
       showBadge: controller.notificationController.notifications.isNotEmpty,
       position: badges.BadgePosition.topEnd(
-        top: -5,
+        top: -8,
         end: -5,
       ),
       badgeContent: Text(
@@ -123,7 +143,7 @@ class _BaseViewState extends State<BaseView> {
           color: Colors.white,
         ),
       ),
-      child: Icon(
+      child: CustomIcon(
         icon,
         color: iconColor,
       ),

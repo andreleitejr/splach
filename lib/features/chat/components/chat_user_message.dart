@@ -98,49 +98,45 @@ class ChatUserMessage extends StatelessWidget {
     if (showContent || showImage) {
       return Padding(
         padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: ThemeColors.grey1,
-                border: Border.all(
-                  color: ThemeColors.grey2,
-                ),
-                borderRadius: const BorderRadius.only(
-                  topRight: Radius.zero,
-                  topLeft: Radius.circular(8),
-                  bottomLeft: Radius.circular(8),
-                  bottomRight: Radius.circular(8),
-                ),
-              ),
-              child: Row(
-                children: [
-                  if (showImage) ...[
-                    ChatImage(
-                      image: message.replyMessage!.imageUrl!,
-                      maxWidth: 64,
-                      maxHeight: 64,
-                    ),
-                    const SizedBox(width: 8),
-                  ],
-                  if (showContent) ...[
-                    Container(
-                      constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * .65,
-                      ),
-                      child: HighlightText(
-                        replyContent,
-                        maxLines: 3,
-                        isReply: true,
-                      ),
-                    ),
-                  ],
-                ],
-              ),
+        child:
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: ThemeColors.grey1,
+            border: Border.all(
+              color: ThemeColors.grey2,
             ),
-            const SizedBox(height: 4),
-          ],
+            borderRadius: const BorderRadius.only(
+              topRight: Radius.zero,
+              topLeft: Radius.circular(8),
+              bottomLeft: Radius.circular(8),
+              bottomRight: Radius.circular(8),
+            ),
+          ),
+          child: Row(
+            children: [
+              if (showImage) ...[
+                ChatImage(
+                  image: message.replyMessage!.imageUrl!,
+                  maxWidth: 64,
+                  maxHeight: 64,
+                ),
+                const SizedBox(width: 8),
+              ],
+              if (showContent) ...[
+                Container(
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width * .65,
+                  ),
+                  child: HighlightText(
+                    replyContent,
+                    maxLines: 3,
+                    isReply: true,
+                  ),
+                ),
+              ],
+            ],
+          ),
         ),
       );
     }
@@ -166,7 +162,7 @@ class ChatUserMessage extends StatelessWidget {
       constraints: BoxConstraints(
         maxWidth: MediaQuery.of(context).size.width * .65,
       ),
-      padding: const EdgeInsets.fromLTRB(8, 8, 8, 12),
+      padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
       child: RichText(
         text: TextSpan(
           style: ThemeTypography.regular14.apply(

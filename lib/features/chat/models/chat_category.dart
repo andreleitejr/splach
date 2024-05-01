@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:splach/themes/theme_icons.dart';
 
 import '../../../models/selectable_item.dart';
 
 class ChatCategory extends SelectableItem {
   final String name;
   late final String category;
-  final IconData icon;
+  final String icon;
 
   /// TROCAR TIPO
 
   ChatCategory({
     this.category = ChatCategory.all,
     this.name = 'All',
-    this.icon = Icons.chat_bubble_outline_rounded,
+    this.icon = ThemeIcons.chat,
   });
 
   @override
@@ -33,27 +34,27 @@ final categories = <ChatCategory>[
   ChatCategory(
     category: ChatCategory.all,
     name: 'All',
-    icon: Icons.message_outlined,
+    icon: ThemeIcons.chat,
   ),
   ChatCategory(
     category: ChatCategory.chat,
     name: 'Just Chat',
-    icon: Icons.chat_bubble_outline_rounded,
+    icon: ThemeIcons.chatAlt,
   ),
   ChatCategory(
     category: ChatCategory.dating,
     name: 'Dating',
-    icon: Icons.heart_broken_outlined,
+    icon: ThemeIcons.heart,
   ),
   ChatCategory(
     category: ChatCategory.friendship,
     name: 'Friendship',
-    icon: Icons.person_2_outlined,
+    icon:  ThemeIcons.people,
   ),
   ChatCategory(
     category: ChatCategory.event,
     name: 'Events',
-    icon: Icons.date_range,
+    icon: ThemeIcons.calendar,
   ),
   // ChatCategory(
   //   category: ChatCategory.studyGroup,
@@ -63,11 +64,11 @@ final categories = <ChatCategory>[
   ChatCategory(
     category: ChatCategory.work,
     name: 'Work',
-    icon: Icons.work_outline_outlined,
+    icon: ThemeIcons.suitcase,
   ),
   ChatCategory(
     category: ChatCategory.other,
     name: 'Other',
-    icon: Icons.more_horiz_outlined,
+    icon:  ThemeIcons.iceCream,
   ),
 ];

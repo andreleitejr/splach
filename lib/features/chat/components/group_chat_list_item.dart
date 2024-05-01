@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:splach/features/chat/models/group_chat.dart';
 import 'package:splach/themes/theme_colors.dart';
+import 'package:splach/themes/theme_icons.dart';
 import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/utils/extensions.dart';
 import 'package:splach/widgets/avatar_image.dart';
+import 'package:splach/widgets/custom_icon.dart';
 
 class ChatLargeListItem extends StatelessWidget {
   final GroupChat chat;
@@ -87,12 +89,12 @@ class ChatLargeListItem extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    const Icon(
-                      Icons.pin_drop_outlined,
+                    const CustomIcon(
+                      ThemeIcons.pin,
                       color: ThemeColors.grey4,
-                      size: 14,
+                      height: 14,
                     ),
-                    const SizedBox(width: 4),
+                    const SizedBox(width: 2),
                     Text(
                       '${chat.distance!.formatDistance} distance',
                       style: ThemeTypography.regular14.apply(
