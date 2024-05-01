@@ -87,6 +87,7 @@ flutter:
   assets:
     - images/
     - images/common/
+    - images/icons/
     - images/intro/
     - images/countries/
     - images/rating/

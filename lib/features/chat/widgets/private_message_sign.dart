@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:splach/themes/theme_colors.dart';
+import 'package:splach/themes/theme_icons.dart';
 import 'package:splach/themes/theme_typography.dart';
+import 'package:splach/widgets/custom_icon.dart';
 
 class PrivateMessageSign extends StatelessWidget {
   const PrivateMessageSign({super.key});
@@ -23,9 +25,9 @@ class PrivateMessageSign extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 2),
-          const Icon(
-            Icons.lock_outline,
-            size: 11,
+           CustomIcon(
+            ThemeIcons.lock,
+            height: 11,
             color: ThemeColors.tertiary,
           ),
         ],

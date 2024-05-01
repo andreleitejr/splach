@@ -55,43 +55,38 @@ class ImageViewer extends StatelessWidget {
             ),
           ],
           Expanded(
-            child: SizedBox(
-              height: MediaQuery.of(context).size.width,
-              child: PageView.builder(
-                itemCount: images.length,
-                controller: PageController(
-                  initialPage: initialIndex,
-                ),
-                itemBuilder: (context, index) {
-                  final image = images[index];
-                  return Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage(image),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  );
-                },
+            child: PageView.builder(
+              itemCount: images.length,
+              controller: PageController(
+                initialPage: initialIndex,
               ),
+              itemBuilder: (context, index) {
+                final image = images[index];
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Image.network(image),
+                    if (description != null) ...[
+                      const SizedBox(height: 8),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                        ),
+                        child: Text(
+                          description!,
+                          style: ThemeTypography.regular14.apply(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                  ],
+                );
+              },
             ),
           ),
-          if (description != null) ...[
-            const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-              ),
-              child: Text(
-                description!,
-                style: ThemeTypography.regular14.apply(
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-          ],
-          const SizedBox(height: 64),
         ],
       ),
     );

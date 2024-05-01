@@ -59,11 +59,9 @@ class ChatMessageList extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if (message.isFromSystem) ...[
-                        const SizedBox(height: 4),
                         ChatSystemMessage(
                           message: message,
                         ),
-                        const SizedBox(height: 4),
                       ] else if (message.isFromUser) ...[
                         ChatUserMessage(
                           message: message,
@@ -78,8 +76,9 @@ class ChatMessageList extends StatelessWidget {
                           onLongPress: () => _showBottomSheet(message),
                           onTitleTap: () => _goToUserPage(message),
                         ),
-                        const SizedBox(height: 6),
                       ],
+
+                      const SizedBox(height: 6),
                     ],
                   );
                 },

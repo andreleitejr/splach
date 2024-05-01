@@ -143,7 +143,7 @@ class _ChatInputState extends State<ChatInput> {
                 const SizedBox(height: 16),
                 Container(
                   width: double.infinity,
-                  height: 1,
+                  height: 0.75,
                   color: ThemeColors.grey2,
                 ),
                 const SizedBox(height: 16),

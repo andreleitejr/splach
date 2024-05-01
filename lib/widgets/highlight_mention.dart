@@ -11,6 +11,7 @@ List<TextSpan> highlightMention(
   List<RegExpMatch> matches = mentionRegex.allMatches(text).toList();
 
   int lastMatchEnd = 0;
+
   for (RegExpMatch match in matches) {
     if (match.start > lastMatchEnd) {
       spans.add(

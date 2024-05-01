@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:splach/features/chat/models/message.dart';
 import 'package:splach/themes/theme_colors.dart';
+import 'package:splach/themes/theme_icons.dart';
 import 'package:splach/themes/theme_typography.dart';
 import 'package:splach/widgets/avatar_image.dart';
+import 'package:splach/widgets/custom_icon.dart';
 import 'package:splach/widgets/highlight_mention.dart';
 import 'package:splach/widgets/highlight_text.dart';
 
@@ -100,9 +102,9 @@ class ChatReplyMessage extends StatelessWidget {
       children: [
         if (replyMessage.sender != null) ...[
           if (isPrivate) ...[
-            const Icon(
-              Icons.lock_outline,
-              size: 14,
+            const CustomIcon(
+              ThemeIcons.lock,
+              height: 14,
               color: ThemeColors.primary,
             ),
             const SizedBox(width: 2),
@@ -122,11 +124,11 @@ class ChatReplyMessage extends StatelessWidget {
         IconButton(
           onPressed: onClose,
           constraints: const BoxConstraints(
-            maxHeight: 30,
+            maxHeight: 32,
           ),
-          icon: const Icon(
-            size: 20,
-            Icons.close,
+          icon: const CustomIcon(
+            ThemeIcons.close,
+            // height: 20,
           ),
         ),
       ],

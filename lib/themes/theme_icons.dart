@@ -1,0 +1,47 @@
+class ThemeIcons {
+  static const arrowBack = 'images/icons/arrow_back.svg';
+  static const arrowDownAlt = 'images/icons/arrow_down_alt.svg';
+  static const arrowLeftAlt = 'images/icons/arrow_left_alt.svg';
+  static const arrowRightAlt = 'images/icons/arrow_right_alt.svg';
+  static const arrowTopAlt = 'images/icons/arrow_top_alt.svg';
+  static const bell = 'images/icons/bell.svg';
+  static const bellFilled = 'images/icons/bell_filled.svg';
+  static const bookmark = 'images/icons/bookmark.svg';
+  static const bookmarkFilled = 'images/icons/bookmark_filled.svg';
+  static const camera = 'images/icons/camera.svg';
+  static const cancel = 'images/icons/cancel.svg';
+  static const chat = 'images/icons/chat.svg';
+  static const chatAdd = 'images/icons/chat_add.svg';
+  static const chatAlt = 'images/icons/chat_alt.svg';
+  static const clock = 'images/icons/clock.svg';
+  static const close = 'images/icons/close.svg';
+  static const config = 'images/icons/config.svg';
+  static const done = 'images/icons/done.svg';
+  static const doneAll = 'images/icons/done_all.svg';
+  static const downDouble = 'images/icons/down_double.svg';
+  static const heart = 'images/icons/heart.svg';
+  static const heartFilled = 'images/icons/heart_filled.svg';
+  static const home = 'images/icons/home.svg';
+  static const homeAlt = 'images/icons/home_alt.svg';
+  static const homeAltFilled = 'images/icons/home_alt_filled.svg';
+  static const image = 'images/icons/image.svg';
+  static const info = 'images/icons/info.svg';
+  static const instagram = 'images/icons/instagram.svg';
+  static const lock = 'images/icons/lock.svg';
+  static const message = 'images/icons/message.svg';
+  static const people = 'images/icons/people.svg';
+  static const pin = 'images/icons/pin.svg';
+  static const pinAlt = 'images/icons/pin_alt.svg';
+  static const question = 'images/icons/question.svg';
+  static const search = 'images/icons/search.svg';
+  static const send = 'images/icons/send.svg';
+  static const sendAlt = 'images/icons/send_alt.svg';
+  static const share = 'images/icons/share.svg';
+  static const squareAdd = 'images/icons/square_add.svg';
+  static const starOne = 'images/icons/star-1.svg';
+  static const star = 'images/icons/star.svg';
+  static const trash = 'images/icons/trash.svg';
+  static const user = 'images/icons/user.svg';
+  static const userAlt = 'images/icons/user_alt.svg';
+
+}

@@ -22,15 +22,25 @@ class ChatUserMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final showMessageReply = message.replyMessage != null;
+
+    final hasImage = message.imageUrl != null && message.imageUrl!.isNotEmpty;
+
+    final hasTemporaryImage = message.temporaryImage != null;
+
+    final showMessageImage = hasImage || hasTemporaryImage;
+
+    final showMessageContent = message.content != null;
+    final showMessageError = message.status == MessageStatus.error;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Column(
           children: [
             Container(
-              padding: const EdgeInsets.symmetric(
-                vertical: 6,
-                horizontal: 8,
+              constraints: const BoxConstraints(
+                minWidth: 75,
               ),
               decoration: BoxDecoration(
                 color: ThemeColors.primary,
@@ -44,175 +54,171 @@ class ChatUserMessage extends StatelessWidget {
                   bottomRight: Radius.circular(_borderRadius),
                 ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Stack(
                 children: [
-                  if (message.replyMessage != null) ...[
-                    if (message.replyMessage!.content != null ||
-                        message.replyMessage!.imageUrl != null) ...[
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: ThemeColors.grey1,
-                          border: Border.all(
-                            color: ThemeColors.grey2,
-                          ),
-                          borderRadius: const BorderRadius.only(
-                            topRight: Radius.zero,
-                            topLeft: Radius.circular(8),
-                            bottomLeft: Radius.circular(8),
-                            bottomRight: Radius.circular(8),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      message.replyMessage?.sender?.nickname
-                                              .toNickname() ??
-                                          'user',
-                                      style: ThemeTypography.semiBold12.apply(
-                                        color: ThemeColors.primary,
-                                      ),
-                                    ),
-                                    if (message.private) ...[
-                                      const PrivateMessageSign(),
-                                    ],
-                                  ],
-                                ),
-                                const SizedBox(height: 8),
-                                Row(
-                                  children: [
-                                    if (message.replyMessage!.imageUrl !=
-                                            null &&
-                                        message.replyMessage!.imageUrl!
-                                            .isNotEmpty) ...[
-                                      ChatImage(
-                                        image: message.replyMessage!.imageUrl!,
-                                        maxWidth: 64,
-                                        maxHeight: 64,
-                                      ),
-                                      const SizedBox(width: 8),
-                                    ],
-                                    if (message.replyMessage!.content !=
-                                        null) ...[
-                                      ConstrainedBox(
-                                        constraints: BoxConstraints(
-                                          minWidth: 75,
-                                          maxWidth: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  (message.replyMessage!
-                                                              .imageUrl !=
-                                                          null
-                                                      ? 0.55
-                                                      : 0.65) -
-                                              32,
-                                        ),
-                                        child: HighlightText(
-                                          message.replyMessage!.content!,
-                                        ),
-                                      ),
-                                    ],
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                    const SizedBox(height: 16),
-                  ],
-                  if ((message.imageUrl != null &&
-                          message.imageUrl!.isNotEmpty) ||
-                      message.temporaryImage != null) ...[
-                    ChatImage(
-                      image: message.imageUrl!,
-                      temporaryImage: message.temporaryImage,
-                    ),
-                    const SizedBox(height: 8),
-                  ],
-                  if (message.content != null) ...[
-                    ConstrainedBox(
-                      constraints: BoxConstraints(
-                        minWidth: 75,
-                        maxWidth: MediaQuery.of(context).size.width * 0.65 - 32,
-                      ),
-                      child: RichText(
-                        text: TextSpan(
-                          style: ThemeTypography.regular14.apply(
-                            color: Colors.white,
-                          ),
-                          children: highlightMention(
-                            message.content!,
-                            isFromUser: true,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                  const SizedBox(height: 8),
-                  Row(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        '${message.createdAt.toTimeString()} ago',
-                        style: ThemeTypography.regular9.apply(
-                          color: ThemeColors.light,
-                        ),
-                        textAlign: TextAlign.right,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        '${message.status}',
-                        style: ThemeTypography.regular9.apply(
-                          color: ThemeColors.light,
-                        ),
-                        textAlign: TextAlign.right,
-                      ),
+                      if (showMessageReply) _buildMessageReply(context),
+                      if (showMessageImage) _buildMessageImage(),
+                      if (showMessageContent) _buildMessageContent(context),
+                      const SizedBox(height: 12),
                     ],
-                  )
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: _buildMessageTimestamp(),
+                  ),
                 ],
               ),
             ),
-            if (message.status == MessageStatus.error) ...[
-              const SizedBox(height: 16),
-              GestureDetector(
-                onTap: onMessageFailed,
-                child: Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(64),
-                    color: Colors.white,
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.error_outline,
-                        color: Colors.redAccent,
-                        size: 16,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        'Failed to send message. Tap here to try again.',
-                        style: ThemeTypography.regular12.apply(
-                          color: Colors.redAccent,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              )
-            ],
+            if (showMessageError) ...[
+              const SizedBox(height: 6),
+              _buildMessageError(),
+            ]
           ],
         ),
       ],
+    );
+  }
+
+  Widget _buildMessageReply(BuildContext context) {
+    final reply = message.replyMessage!;
+    final content = reply.content;
+    final image = reply.imageUrl;
+    final nickname = (reply.sender?.nickname ?? 'user').toNickname();
+
+    final replyContent = '$nickname $content';
+
+    final showImage = image != null && image.isNotEmpty;
+
+    final showContent = content != null;
+
+    if (showContent || showImage) {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: ThemeColors.grey1,
+                border: Border.all(
+                  color: ThemeColors.grey2,
+                ),
+                borderRadius: const BorderRadius.only(
+                  topRight: Radius.zero,
+                  topLeft: Radius.circular(8),
+                  bottomLeft: Radius.circular(8),
+                  bottomRight: Radius.circular(8),
+                ),
+              ),
+              child: Row(
+                children: [
+                  if (showImage) ...[
+                    ChatImage(
+                      image: message.replyMessage!.imageUrl!,
+                      maxWidth: 64,
+                      maxHeight: 64,
+                    ),
+                    const SizedBox(width: 8),
+                  ],
+                  if (showContent) ...[
+                    Container(
+                      constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width * .65,
+                      ),
+                      child: HighlightText(
+                        replyContent,
+                        maxLines: 3,
+                        isReply: true,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(height: 4),
+          ],
+        ),
+      );
+    }
+    return Container();
+  }
+
+  Widget _buildMessageImage() {
+    return Column(
+      children: [
+        const SizedBox(height: 16),
+        ChatImage(
+          maxHeight: 120,
+          image: message.imageUrl!,
+          temporaryImage: message.temporaryImage,
+        ),
+        const SizedBox(height: 4),
+      ],
+    );
+  }
+
+  Widget _buildMessageContent(BuildContext context) {
+    return Container(
+      constraints: BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width * .65,
+      ),
+      padding: const EdgeInsets.fromLTRB(8, 8, 8, 12),
+      child: RichText(
+        text: TextSpan(
+          style: ThemeTypography.regular14.apply(
+            color: Colors.white,
+          ),
+          children: highlightMention(
+            message.content!,
+            isFromUser: true,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMessageTimestamp() {
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: Text(
+        '${message.createdAt.toTimeString()} ago',
+        style: ThemeTypography.regular8.apply(
+          color: ThemeColors.light,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMessageError() {
+    return GestureDetector(
+      onTap: onMessageFailed,
+      child: Container(
+        padding: const EdgeInsets.all(6),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(64),
+          color: Colors.white,
+        ),
+        child: Row(
+          children: [
+            const Icon(
+              Icons.error_outline,
+              color: Colors.redAccent,
+              size: 16,
+            ),
+            const SizedBox(width: 4),
+            Text(
+              'Failed to send message. Tap here to try again.',
+              style: ThemeTypography.regular12.apply(
+                color: Colors.redAccent,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
