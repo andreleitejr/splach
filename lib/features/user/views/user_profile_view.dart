@@ -84,11 +84,7 @@ class _UserProfileViewState extends State<UserProfileView> {
                     child: SizedBox(height: 16),
                   ),
                   SliverToBoxAdapter(
-                    child: Obx(
-                      () {
-                        return _buildGallery();
-                      },
-                    ),
+                    child: _buildGallery(),
                   ),
                 ],
               );
@@ -133,7 +129,7 @@ class _UserProfileViewState extends State<UserProfileView> {
                 alignment: Alignment.center,
                 child: FlatButton(
                   onPressed: () {
-                    if(controller.showRateButton.isFalse) return;
+                    if (controller.showRateButton.isFalse) return;
 
                     controller.rate(widget.user.id!);
                     Get.back();
@@ -150,23 +146,27 @@ class _UserProfileViewState extends State<UserProfileView> {
   }
 
   Widget _buildGallery() {
-    return StaggeredGrid.count(
-      crossAxisCount: 4,
-      mainAxisSpacing: 4,
-      crossAxisSpacing: 4,
-      children: [
-        for (int index = 0;
-            index < controller.galleryImages.length;
-            index++) ...[
-          StaggeredGridTile.count(
-            crossAxisCellCount: buildCrossAxisCellCount(index),
-            mainAxisCellCount: buildMainAxisCellCount(index),
-            child: GalleryItem(
-              galleryImage: controller.galleryImages[index],
-            ),
-          ),
-        ],
-      ],
+    return Obx(
+      () {
+        return StaggeredGrid.count(
+          crossAxisCount: 4,
+          mainAxisSpacing: 4,
+          crossAxisSpacing: 4,
+          children: [
+            for (int index = 0;
+                index < controller.galleryImages.length;
+                index++) ...[
+              StaggeredGridTile.count(
+                crossAxisCellCount: buildCrossAxisCellCount(index),
+                mainAxisCellCount: buildMainAxisCellCount(index),
+                child: GalleryItem(
+                  galleryImage: controller.galleryImages[index],
+                ),
+              ),
+            ],
+          ],
+        );
+      },
     );
   }
 
@@ -208,14 +208,6 @@ class _UserProfileViewState extends State<UserProfileView> {
         return 4;
       case 5:
         return 2;
-      // case 6:
-      //   return 2;
-      // case 7:
-      //   return 1;
-      // case 8:
-      //   return 1;
-      // case 9:
-      //   return 4;
       default:
         return 2;
     }
@@ -235,14 +227,6 @@ class _UserProfileViewState extends State<UserProfileView> {
         return 2;
       case 5:
         return 2;
-      // case 6:
-      //   return 1;
-      // case 7:
-      //   return 1;
-      // case 8:
-      //   return 1;
-      // case 9:
-      //   return 2;
       default:
         return 2;
     }

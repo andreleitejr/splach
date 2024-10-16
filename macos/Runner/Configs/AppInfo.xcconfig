@@ -8,7 +8,7 @@
 PRODUCT_NAME = splach
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.splach.splach
+PRODUCT_BUNDLE_IDENTIFIER = com.splach
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2024 com.splach. All rights reserved.

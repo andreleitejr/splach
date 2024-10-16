@@ -1,4 +1,4 @@
-package com.splach.splach
+package com.splach
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -67,7 +67,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '613182012538',
     projectId: 'splach-413a8',
     storageBucket: 'splach-413a8.appspot.com',
-    iosBundleId: 'com.splach.splach',
+    iosBundleId: 'com.splach',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -76,6 +76,6 @@ class DefaultFirebaseOptions {
     messagingSenderId: '613182012538',
     projectId: 'splach-413a8',
     storageBucket: 'splach-413a8.appspot.com',
-    iosBundleId: 'com.splach.splach.RunnerTests',
+    iosBundleId: 'com.splach.RunnerTests',
   );
 }
